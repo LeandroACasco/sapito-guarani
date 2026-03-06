@@ -3002,7 +3002,6 @@ async function speakViaHF(text, onend){
   try {
     const sessionHash = Math.random().toString(36).slice(2);
 
-    // Gradio 5 — use named endpoint /predict, not fn_index
     const joinRes = await fetch(HF_SPACE + '/gradio_api/queue/join', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
@@ -3015,10 +3014,11 @@ async function speakViaHF(text, onend){
       }),
     });
     if(!joinRes.ok) throw new Error('Queue join failed: ' + joinRes.status);
-    const {event_id} = await joinRes.json();
+    const joined = await joinRes.json();
+    const event_id = joined.event_id;
     if(!event_id) throw new Error('No event_id');
 
-    // SSE stream
+    // Gradio 5: SSE uses event_id in URL, not session_hash
     const audioSrc = await new Promise((resolve, reject)=>{
       const es = new EventSource(HF_SPACE + '/gradio_api/queue/data?session_hash=' + sessionHash);
       const timeout = setTimeout(()=>{ es.close(); reject(new Error('Timeout')); }, 25000);
@@ -3026,40 +3026,36 @@ async function speakViaHF(text, onend){
       es.onmessage = (e)=>{
         try {
           const msg = JSON.parse(e.data);
-          if(msg.msg === 'process_completed'){
+          console.log('SSE msg:', msg.msg, JSON.stringify(msg).slice(0,300));
+
+          if(msg.msg === 'process_completed' && msg.event_id === event_id){
             clearTimeout(timeout);
             es.close();
 
-            if(!msg.success) {
-              reject(new Error('Server error: ' + JSON.stringify(msg.output)));
+            const out = msg.output;
+            // Log full output to debug
+            console.log('Full output:', JSON.stringify(out));
+
+            if(!out || !out.data || !out.data[0]) {
+              reject(new Error('Empty output: ' + JSON.stringify(out)));
               return;
             }
 
-            // Response is FileData object: {path, url, ...}
-            const d = msg.output && msg.output.data && msg.output.data[0];
-            if(!d) { reject(new Error('No audio data')); return; }
-
-            // Prefer url (absolute), fall back to path via /gradio_api/file=
+            const d = out.data[0];
             let src;
-            if(d.url && d.url.startsWith('http')) {
-              src = d.url;
-            } else if(d.url) {
-              src = HF_SPACE + d.url;
-            } else if(d.path) {
-              src = HF_SPACE + '/gradio_api/file=' + d.path;
-            } else {
-              reject(new Error('No path/url in FileData: ' + JSON.stringify(d)));
-              return;
-            }
-            resolve(src);
+            if(d.url && d.url.startsWith('http')) src = d.url;
+            else if(d.url) src = HF_SPACE + d.url;
+            else if(d.path) src = HF_SPACE + '/gradio_api/file=' + d.path;
+            else reject(new Error('No src in: ' + JSON.stringify(d)));
+            if(src) resolve(src);
 
-          } else if(msg.msg === 'process_errored'){
+          } else if(msg.msg === 'process_errored' && msg.event_id === event_id){
             clearTimeout(timeout); es.close();
-            reject(new Error('Process errored'));
+            reject(new Error('Process errored: ' + JSON.stringify(msg)));
           }
-        } catch(err){}
+        } catch(err){ console.warn('SSE parse err:', err); }
       };
-      es.onerror = ()=>{ clearTimeout(timeout); es.close(); reject(new Error('SSE error')); };
+      es.onerror = (e)=>{ clearTimeout(timeout); es.close(); reject(new Error('SSE error')); };
     });
 
     hfSpaceStatus = 'ok';
