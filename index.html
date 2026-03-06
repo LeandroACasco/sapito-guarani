@@ -3002,22 +3002,26 @@ async function speakViaHF(text, onend){
   try {
     const sessionHash = Math.random().toString(36).slice(2);
 
-    // Gradio 5.x uses /gradio_api/ prefix
+    // Gradio 5 — use named endpoint /predict, not fn_index
     const joinRes = await fetch(HF_SPACE + '/gradio_api/queue/join', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
         data: [text],
+        event_data: null,
         fn_index: 0,
+        trigger_id: null,
         session_hash: sessionHash,
       }),
     });
     if(!joinRes.ok) throw new Error('Queue join failed: ' + joinRes.status);
+    const {event_id} = await joinRes.json();
+    if(!event_id) throw new Error('No event_id');
 
-    // Step 2: SSE stream for result
+    // SSE stream
     const audioSrc = await new Promise((resolve, reject)=>{
       const es = new EventSource(HF_SPACE + '/gradio_api/queue/data?session_hash=' + sessionHash);
-      const timeout = setTimeout(()=>{ es.close(); reject(new Error('Timeout')); }, 20000);
+      const timeout = setTimeout(()=>{ es.close(); reject(new Error('Timeout')); }, 25000);
 
       es.onmessage = (e)=>{
         try {
@@ -3025,16 +3029,30 @@ async function speakViaHF(text, onend){
           if(msg.msg === 'process_completed'){
             clearTimeout(timeout);
             es.close();
+
+            if(!msg.success) {
+              reject(new Error('Server error: ' + JSON.stringify(msg.output)));
+              return;
+            }
+
+            // Response is FileData object: {path, url, ...}
             const d = msg.output && msg.output.data && msg.output.data[0];
             if(!d) { reject(new Error('No audio data')); return; }
+
+            // Prefer url (absolute), fall back to path via /gradio_api/file=
             let src;
-            if(typeof d === 'string' && d.startsWith('data:')) src = d;
-            else if(typeof d === 'string') src = HF_SPACE + '/gradio_api/file=' + d;
-            else if(d && d.url) src = d.url.startsWith('http') ? d.url : HF_SPACE + d.url;
-            else if(d && d.path) src = HF_SPACE + '/gradio_api/file=' + d.path;
-            else if(d && d.name) src = HF_SPACE + '/gradio_api/file=' + d.name;
-            else { reject(new Error('Unknown format: ' + JSON.stringify(d).slice(0,80))); return; }
+            if(d.url && d.url.startsWith('http')) {
+              src = d.url;
+            } else if(d.url) {
+              src = HF_SPACE + d.url;
+            } else if(d.path) {
+              src = HF_SPACE + '/gradio_api/file=' + d.path;
+            } else {
+              reject(new Error('No path/url in FileData: ' + JSON.stringify(d)));
+              return;
+            }
             resolve(src);
+
           } else if(msg.msg === 'process_errored'){
             clearTimeout(timeout); es.close();
             reject(new Error('Process errored'));
