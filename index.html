@@ -2980,12 +2980,11 @@ async function wakeHFSpace(){
   try {
     const controller = new AbortController();
     const tid = setTimeout(()=>controller.abort(), 8000);
-    const r = await fetch(HF_SPACE + '/', {method:'GET', signal: controller.signal});
+    // Gradio 5 info endpoint
+    const r = await fetch(HF_SPACE + '/gradio_api/info', {method:'GET', signal: controller.signal});
     clearTimeout(tid);
     if(r.ok) hfSpaceStatus = 'ok';
-  } catch(e) {
-    // Space sleeping or unreachable — will try on first speak
-  }
+  } catch(e) {}
   hfWaking = false;
 }
 
@@ -3001,23 +3000,23 @@ async function speakGuarani(text, onend){
 
 async function speakViaHF(text, onend){
   try {
-    // Gradio uses a queue system. Step 1: join the queue
-    const joinRes = await fetch(HF_SPACE + '/queue/join', {
+    const sessionHash = Math.random().toString(36).slice(2);
+
+    // Gradio 5.x uses /gradio_api/ prefix
+    const joinRes = await fetch(HF_SPACE + '/gradio_api/queue/join', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
         data: [text],
         fn_index: 0,
-        session_hash: Math.random().toString(36).slice(2),
+        session_hash: sessionHash,
       }),
     });
     if(!joinRes.ok) throw new Error('Queue join failed: ' + joinRes.status);
-    const {event_id} = await joinRes.json();
-    if(!event_id) throw new Error('No event_id from queue');
 
-    // Step 2: listen on SSE stream for result
+    // Step 2: SSE stream for result
     const audioSrc = await new Promise((resolve, reject)=>{
-      const es = new EventSource(HF_SPACE + '/queue/data?session_hash=' + event_id);
+      const es = new EventSource(HF_SPACE + '/gradio_api/queue/data?session_hash=' + sessionHash);
       const timeout = setTimeout(()=>{ es.close(); reject(new Error('Timeout')); }, 20000);
 
       es.onmessage = (e)=>{
@@ -3030,17 +3029,17 @@ async function speakViaHF(text, onend){
             if(!d) { reject(new Error('No audio data')); return; }
             let src;
             if(typeof d === 'string' && d.startsWith('data:')) src = d;
-            else if(typeof d === 'string') src = HF_SPACE + '/file=' + d;
+            else if(typeof d === 'string') src = HF_SPACE + '/gradio_api/file=' + d;
             else if(d && d.url) src = d.url.startsWith('http') ? d.url : HF_SPACE + d.url;
-            else if(d && d.path) src = HF_SPACE + '/file=' + d.path;
-            else if(d && d.name) src = HF_SPACE + '/file=' + d.name;
+            else if(d && d.path) src = HF_SPACE + '/gradio_api/file=' + d.path;
+            else if(d && d.name) src = HF_SPACE + '/gradio_api/file=' + d.name;
             else { reject(new Error('Unknown format: ' + JSON.stringify(d).slice(0,80))); return; }
             resolve(src);
           } else if(msg.msg === 'process_errored'){
             clearTimeout(timeout); es.close();
             reject(new Error('Process errored'));
           }
-        } catch(err){ /* ignore parse errors on heartbeat messages */ }
+        } catch(err){}
       };
       es.onerror = ()=>{ clearTimeout(timeout); es.close(); reject(new Error('SSE error')); };
     });
