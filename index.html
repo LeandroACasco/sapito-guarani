@@ -1,0 +1,3355 @@
+<!DOCTYPE html>
+<html lang="es">
+<!--
+  ╔══════════════════════════════════════════════════════╗
+  ║           SAPITO GUARANÍ — Roguelike Edition         ║
+  ║   Juego educativo de lengua guaraní                  ║
+  ║                                                      ║
+  ║   © 2026 LeandroACasco                               ║
+  ║   https://github.com/LeandroACasco                   ║
+  ║                                                      ║
+  ║   TTS Guaraní: bigproof2010/guarani (HuggingFace)    ║
+  ║   Modelo: joselobenitezg/mms-grn-tts (Meta MMS)     ║
+  ║   Desarrollado con Claude (Anthropic)                ║
+  ╚══════════════════════════════════════════════════════╝
+-->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>🐸 Sapito Guaraní</title>
+<link href="https://fonts.googleapis.com/css2?family=Boogaloo&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --g1:#072312;--g2:#0f3d1f;--g3:#1a5c34;--g4:#2e8b57;--g5:#52b788;--g6:#95d5b2;
+  --w1:#012030;--w2:#023e58;--w3:#0a6a8a;--w4:#1a9ab8;--w5:#4dd0e1;
+  --y:#ffd166;--o:#f4845f;--r:#e63946;--coin:#ffc300;--white:#f0fff4;
+  --shadow:rgba(0,0,0,0.5);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Nunito',sans-serif;background:var(--g1);color:var(--white);display:flex;flex-direction:column;height:100vh;}
+
+/* ── NAV BAR ── */
+#navbar{
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(0,0,0,0.5);border-bottom:1px solid rgba(255,255,255,0.07);
+  padding:0 12px;height:52px;flex-shrink:0;gap:4px;
+  backdrop-filter:blur(10px);z-index:50;
+}
+.nav-brand{font-family:'Boogaloo',cursive;font-size:1.2rem;color:var(--y);white-space:nowrap;}
+.nav-tabs{display:flex;gap:2px;flex:1;justify-content:center;}
+.nav-tab{
+  padding:6px 10px;border-radius:10px;border:none;background:transparent;
+  color:rgba(255,255,255,0.5);font-family:'Nunito',sans-serif;font-weight:700;
+  font-size:0.72rem;cursor:pointer;transition:all 0.2s;white-space:nowrap;
+  display:flex;flex-direction:column;align-items:center;gap:1px;
+}
+.nav-tab .nt-icon{font-size:1rem;}
+.nav-tab:hover{color:var(--white);background:rgba(255,255,255,0.08);}
+.nav-tab.active{color:var(--y);background:rgba(255,209,102,0.15);border:1px solid rgba(255,209,102,0.25);}
+.nav-coins{font-family:'Boogaloo',cursive;font-size:1rem;color:var(--coin);white-space:nowrap;display:flex;align-items:center;gap:4px;}
+
+/* ── PAGES ── */
+#pages{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;}
+.page{display:none;min-height:100%;padding:16px;}
+.page.active{display:block;}
+
+/* ── PAGE: HOME ── */
+#page-home{
+  display:none;
+  background:radial-gradient(ellipse at 30% 20%,rgba(46,139,87,0.3) 0%,transparent 60%),
+             radial-gradient(ellipse at 70% 80%,rgba(26,154,184,0.2) 0%,transparent 60%);
+  text-align:center;padding:20px 16px 30px;
+}
+#page-home.active{display:block;}
+.home-frog-wrap{position:relative;display:inline-block;margin:10px 0 4px;}
+.home-frog-svg{filter:drop-shadow(0 8px 24px rgba(0,0,0,0.5));}
+.home-frog-hat{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:2rem;pointer-events:none;}
+.home-frog-acc{position:absolute;bottom:10px;right:-10px;font-size:1.4rem;pointer-events:none;}
+.home-frog-scarf{position:absolute;top:38%;left:50%;transform:translateX(-50%);font-size:1rem;pointer-events:none;}
+
+.home-title{font-family:'Boogaloo',cursive;font-size:clamp(2rem,7vw,3.2rem);color:var(--y);
+  text-shadow:3px 3px 0 var(--g1);line-height:1;}
+.home-tagline{color:var(--g5);font-size:0.85rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;}
+.home-energy{
+  display:inline-flex;align-items:center;gap:10px;
+  background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.1);
+  border-radius:40px;padding:8px 18px;margin-bottom:20px;
+}
+.energy-label{font-size:0.75rem;font-weight:800;color:var(--g5);}
+.energy-bar-wrap{width:100px;height:8px;background:rgba(255,255,255,0.1);border-radius:10px;overflow:hidden;}
+.energy-bar{height:100%;border-radius:10px;background:linear-gradient(90deg,#43e97b,#38f9d7);transition:width 0.5s;}
+.energy-val{font-family:'Boogaloo',cursive;font-size:0.9rem;color:var(--g6);}
+
+.home-actions{display:flex;flex-direction:column;gap:10px;align-items:center;margin-bottom:20px;}
+.btn-feed{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);
+  border-radius:14px;padding:8px 18px;cursor:pointer;
+  font-family:'Nunito',sans-serif;font-weight:800;font-size:0.85rem;color:var(--white);
+  transition:all 0.2s;
+}
+.btn-feed:hover{background:rgba(255,255,255,0.14);transform:translateY(-2px);}
+.btn-feed:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+.feed-actions{display:flex;gap:8px;}
+
+.btn-play-big{
+  background:linear-gradient(135deg,var(--g4),var(--g5));
+  border:none;border-radius:20px;padding:16px 48px;
+  font-family:'Boogaloo',cursive;font-size:1.7rem;color:white;
+  cursor:pointer;box-shadow:0 6px 0 var(--g1),0 10px 24px rgba(46,139,87,0.4);
+  transition:all 0.2s;letter-spacing:1px;
+}
+.btn-play-big:hover{transform:translateY(-3px);box-shadow:0 9px 0 var(--g1),0 14px 28px rgba(46,139,87,0.5);}
+.btn-play-big:active{transform:translateY(2px);box-shadow:0 4px 0 var(--g1);}
+.btn-play-big:disabled{opacity:0.45;cursor:not-allowed;transform:none;box-shadow:0 4px 0 var(--g1);}
+
+.home-setup{
+  background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);
+  border-radius:18px;padding:16px;margin-bottom:16px;text-align:left;
+}
+.setup-title{font-family:'Boogaloo',cursive;font-size:1rem;color:var(--g5);margin-bottom:10px;}
+.tema-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+.tema-chip{
+  padding:6px 12px;border:1.5px solid rgba(255,255,255,0.15);border-radius:20px;
+  cursor:pointer;font-weight:800;font-size:0.75rem;transition:all 0.2s;
+  background:rgba(255,255,255,0.04);
+}
+.tema-chip.sel{background:rgba(82,183,136,0.25);border-color:var(--g5);color:var(--g5);}
+.nivel-row{display:flex;gap:8px;flex-wrap:wrap;}
+.nivel-pill{
+  flex:1;min-width:80px;padding:10px 8px;border-radius:14px;border:2px solid rgba(255,255,255,0.12);
+  background:rgba(255,255,255,0.04);cursor:pointer;text-align:center;transition:all 0.2s;
+}
+.nivel-pill.sel{border-color:var(--y);background:rgba(255,209,102,0.1);}
+.np-emoji{font-size:1.3rem;display:block;margin-bottom:2px;}
+.np-name{font-family:'Boogaloo',cursive;font-size:0.95rem;color:var(--y);}
+.np-info{font-size:0.65rem;color:#8fbc8f;}
+
+/* ── PAGE: JUEGO ── */
+#page-game{display:none;padding:8px 10px 12px;}
+#page-game.active{display:block;}
+
+.game-hud{
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px;
+  background:rgba(0,0,0,0.4);border-radius:14px;padding:7px 12px;margin-bottom:8px;
+  border:1px solid rgba(255,255,255,0.07);
+}
+.hud-item{font-family:'Boogaloo',cursive;font-size:0.9rem;}
+.hud-coins{color:var(--coin);}
+.hud-level{color:var(--o);}
+.hud-tema{color:var(--g5);font-size:0.8rem;}
+.hud-q{color:rgba(255,255,255,0.5);font-size:0.8rem;}
+
+/* Timer */
+.timer-wrap{height:6px;background:rgba(255,255,255,0.08);border-radius:10px;margin-bottom:8px;overflow:hidden;}
+.timer-bar{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--g5),var(--y));transition:width 0.1s linear,background 0.4s;}
+.timer-bar.warn{background:linear-gradient(90deg,var(--o),var(--r));}
+.timer-bar.crit{animation:t-pulse 0.35s infinite;}
+@keyframes t-pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
+
+/* River scene */
+.river{
+  background:linear-gradient(180deg,rgba(15,61,31,0.9) 0%,rgba(10,106,138,0.85) 55%,rgba(1,32,48,1) 100%);
+  border-radius:20px;padding:14px 8px 0;margin-bottom:8px;
+  position:relative;overflow:hidden;
+  height:clamp(155px,28vw,210px);
+  border:1.5px solid rgba(255,255,255,0.07);
+  box-shadow:0 6px 24px rgba(0,0,0,0.6);
+}
+/* Decorative plants */
+.river::before{
+  content:'🌿';position:absolute;bottom:28px;left:6px;font-size:1.4rem;opacity:0.5;pointer-events:none;
+}
+.river::after{
+  content:'🌾';position:absolute;bottom:28px;right:6px;font-size:1.2rem;opacity:0.4;pointer-events:none;
+}
+.lily-row{
+  display:flex;justify-content:center;align-items:flex-end;
+  gap:clamp(3px,2vw,14px);position:relative;z-index:2;
+  padding-bottom:28px;
+}
+/* Lily pad SVG-style */
+.lily-wrap{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.lily{
+  width:clamp(38px,7.5vw,64px);
+  height:clamp(38px,7.5vw,64px);
+  border-radius:50%;
+  position:relative;cursor:default;
+  transition:transform 0.2s,box-shadow 0.2s;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Boogaloo',cursive;font-size:0.8rem;
+  color:rgba(255,255,255,0.75);
+  /* Lily texture */
+  background:
+    radial-gradient(circle at 30% 28%,rgba(255,255,255,0.18) 0%,transparent 35%),
+    radial-gradient(circle at 65% 65%,rgba(0,0,0,0.15) 0%,transparent 40%),
+    linear-gradient(135deg,#4caf50 0%,#2e7d32 60%,#1b5e20 100%);
+  box-shadow:0 4px 10px rgba(0,0,0,0.4),inset 0 -3px 6px rgba(0,0,0,0.2),0 0 0 2px rgba(255,255,255,0.06);
+}
+/* Stem line */
+.lily::after{
+  content:'';position:absolute;bottom:-12px;left:50%;transform:translateX(-50%);
+  width:3px;height:10px;
+  background:linear-gradient(180deg,#33691e,transparent);
+  border-radius:2px;
+}
+/* Lily veins */
+.lily::before{
+  content:'';position:absolute;inset:4px;border-radius:50%;
+  border:1px solid rgba(255,255,255,0.12);
+}
+.lily.active{
+  background:
+    radial-gradient(circle at 30% 28%,rgba(255,255,255,0.3) 0%,transparent 35%),
+    linear-gradient(135deg,#81c784 0%,#4caf50 60%,#2e7d32 100%);
+  transform:scale(1.12);
+  box-shadow:0 0 20px rgba(129,199,132,0.5),0 4px 10px rgba(0,0,0,0.3);
+}
+.lily.ok{background:linear-gradient(135deg,#aed581,#558b2f);}
+.lily.fail{background:linear-gradient(135deg,#ef9a9a,#c62828);}
+.lily.cp{box-shadow:0 0 14px rgba(255,209,102,0.5),0 4px 10px rgba(0,0,0,0.3);border:2px solid rgba(255,209,102,0.6);}
+.lily-lbl{font-size:0.55rem;color:rgba(255,255,255,0.4);font-weight:800;letter-spacing:0.5px;}
+
+/* Water */
+.river-water{position:absolute;bottom:0;left:0;right:0;height:44px;
+  background:linear-gradient(180deg,rgba(26,154,184,0.4),rgba(1,32,48,0.9));overflow:hidden;}
+.wave{position:absolute;top:-8px;left:-100%;width:300%;height:16px;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 30'%3E%3Cpath fill='rgba(255,255,255,0.1)' d='M0,15 C360,28 720,2 1080,15 C1260,22 1380,8 1440,15 L1440,30 L0,30 Z'/%3E%3C/svg%3E") repeat-x;
+  background-size:50% 100%;animation:wave 5s linear infinite;}
+@keyframes wave{from{left:-100%;}to{left:0;}}
+/* Fish decoration */
+.fish{position:absolute;bottom:8px;font-size:0.9rem;opacity:0.4;animation:swim 8s linear infinite;}
+@keyframes swim{0%{left:-5%;transform:scaleX(1);}49%{left:105%;transform:scaleX(1);}50%{left:105%;transform:scaleX(-1);}100%{left:-5%;transform:scaleX(-1);}}
+
+/* Frog actor */
+.frog-actor{
+  position:absolute;bottom:28px;z-index:10;
+  transform:translateX(-50%);
+  transition:left 0.55s cubic-bezier(0.34,1.56,0.64,1);
+  pointer-events:none;text-align:center;
+}
+.frog-actor .fa-hat{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:0.9rem;z-index:2;}
+.frog-actor .fa-acc{position:absolute;bottom:2px;right:-8px;font-size:0.8rem;z-index:2;}
+.frog-actor .fa-scarf{position:absolute;top:30%;left:50%;transform:translateX(-50%);font-size:0.7rem;z-index:2;}
+.frog-svg-wrap{display:block;}
+.frog-svg-wrap.jump{animation:fj 0.55s cubic-bezier(0.34,1.56,0.64,1);}
+.frog-svg-wrap.fall{animation:ff 0.7s ease-in forwards;}
+.frog-svg-wrap.dance{animation:fd 0.7s ease;}
+@keyframes fj{0%{transform:scaleX(1) translateY(0);}35%{transform:scaleX(0.7) translateY(-48px) rotate(-14deg);}65%{transform:scaleX(1.2) translateY(-58px) rotate(7deg);}100%{transform:scaleX(1) translateY(0);}}
+@keyframes ff{0%{transform:translateY(0) rotate(0);opacity:1;}100%{transform:translateY(60px) rotate(100deg);opacity:0;}}
+@keyframes fd{0%,100%{transform:translateY(0) rotate(0);}25%{transform:translateY(-12px) rotate(-18deg);}75%{transform:translateY(-12px) rotate(18deg);}}
+
+/* Question */
+.q-card{
+  background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);
+  border-radius:16px;padding:13px 15px;margin-bottom:8px;backdrop-filter:blur(6px);
+}
+.q-tag{display:inline-block;font-size:0.68rem;font-weight:900;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:20px;margin-bottom:6px;}
+.q-tag.saludos{background:rgba(82,183,136,0.25);color:var(--g5);}
+.q-tag.numeros{background:rgba(255,209,102,0.2);color:var(--y);}
+.q-tag.animales{background:rgba(244,132,95,0.2);color:var(--o);}
+.q-tag.gramatica{background:rgba(180,120,255,0.2);color:#c4a0ff;}
+.q-text{font-size:clamp(0.9rem,2.8vw,1.15rem);font-weight:800;line-height:1.4;text-align:center;}
+
+/* Feedback */
+.fb{height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;gap:5px;margin-bottom:6px;opacity:0;transition:opacity 0.2s;}
+.fb.show{opacity:1;}
+.fb.ok{background:rgba(82,183,136,0.3);color:#a5d6a7;border:1px solid rgba(82,183,136,0.3);}
+.fb.fail{background:rgba(230,57,70,0.25);color:#ef9a9a;border:1px solid rgba(230,57,70,0.3);}
+
+/* Powers */
+.powers-row{display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap;}
+.pw-btn{
+  display:flex;align-items:center;gap:4px;
+  background:rgba(255,193,0,0.08);border:1.5px solid rgba(255,193,0,0.3);
+  border-radius:10px;padding:5px 10px;font-family:'Boogaloo',cursive;font-size:0.8rem;
+  color:var(--y);cursor:pointer;transition:all 0.18s;white-space:nowrap;
+}
+.pw-btn:hover:not(:disabled){background:rgba(255,193,0,0.2);transform:translateY(-1px);}
+.pw-btn:disabled{opacity:0.3;cursor:not-allowed;}
+.pw-cost{font-size:0.65rem;color:rgba(255,193,0,0.55);}
+
+/* Options */
+.opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.opt{
+  background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.12);
+  border-radius:13px;color:white;font-family:'Nunito',sans-serif;font-weight:800;
+  font-size:clamp(0.75rem,2.2vw,0.9rem);padding:11px 9px;cursor:pointer;
+  transition:all 0.17s;text-align:center;position:relative;
+}
+.opt:hover:not(:disabled){background:rgba(82,183,136,0.18);border-color:var(--g5);transform:translateY(-2px);}
+.opt:disabled{cursor:default;}
+.opt.elim{opacity:0.18;pointer-events:none;text-decoration:line-through;}
+.opt.ok{background:rgba(82,183,136,0.4);border-color:#a5d6a7;animation:pop 0.3s ease;}
+.opt.fail{background:rgba(230,57,70,0.3);border-color:#ef9a9a;}
+@keyframes pop{0%{transform:scale(1);}50%{transform:scale(1.06);}100%{transform:scale(1);}}
+.opt-l{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,0.12);font-size:0.7rem;font-weight:900;margin-right:5px;}
+
+/* Checkpoint modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.show{display:flex;animation:fadein 0.3s;}
+@keyframes fadein{from{opacity:0;}to{opacity:1;}}
+.modal-box{background:linear-gradient(135deg,#0f3d1f,#023e58);border:1.5px solid rgba(255,255,255,0.12);border-radius:24px;padding:28px 24px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.6);}
+.modal-title{font-family:'Boogaloo',cursive;font-size:2rem;color:var(--y);margin-bottom:6px;}
+.modal-sub{color:var(--g5);font-size:0.85rem;font-weight:700;margin-bottom:12px;}
+.modal-coins{font-family:'Boogaloo',cursive;font-size:1.8rem;color:var(--coin);margin-bottom:8px;}
+.modal-note{font-size:0.8rem;color:#8fbc8f;margin-bottom:18px;}
+.modal-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn-green{background:linear-gradient(135deg,var(--g4),var(--g5));border:none;border-radius:14px;padding:12px 24px;font-family:'Boogaloo',cursive;font-size:1.1rem;color:white;cursor:pointer;box-shadow:0 4px 0 var(--g1);transition:all 0.2s;}
+.btn-green:hover{transform:translateY(-2px);}
+.btn-red{background:rgba(230,57,70,0.15);border:2px solid rgba(230,57,70,0.4);color:#ef9a9a;border-radius:14px;padding:12px 24px;font-family:'Boogaloo',cursive;font-size:1.1rem;cursor:pointer;transition:all 0.2s;}
+.btn-red:hover{background:rgba(230,57,70,0.28);}
+
+/* ── PAGE: SAPITO ── */
+#page-sapito{display:none;padding:16px;}
+#page-sapito.active{display:block;}
+.sapito-page-inner{max-width:500px;margin:0 auto;}
+.sp-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:20px;margin-bottom:14px;}
+.sp-title{font-family:'Boogaloo',cursive;font-size:1.2rem;color:var(--g5);margin-bottom:14px;}
+
+.sp-frog-center{text-align:center;margin-bottom:8px;position:relative;display:inline-block;}
+.sp-frog-name{font-family:'Boogaloo',cursive;font-size:1.6rem;color:var(--y);text-align:center;margin-bottom:4px;}
+.sp-rename-row{display:flex;gap:8px;margin-bottom:14px;}
+.sp-rename-input{flex:1;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);border-radius:12px;padding:9px 12px;color:white;font-family:'Nunito',sans-serif;font-weight:700;font-size:0.9rem;outline:none;}
+.sp-rename-input:focus{border-color:var(--g5);}
+.btn-sm{background:var(--g4);border:none;border-radius:12px;padding:9px 16px;color:white;font-family:'Boogaloo',cursive;font-size:0.9rem;cursor:pointer;transition:all 0.2s;}
+.btn-sm:hover{background:var(--g5);transform:translateY(-1px);}
+
+/* Energy */
+.energy-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.e-icon{font-size:1.5rem;}
+.e-bar-wrap{flex:1;height:12px;background:rgba(255,255,255,0.08);border-radius:10px;overflow:hidden;}
+.e-bar{height:100%;border-radius:10px;background:linear-gradient(90deg,#43e97b,#38f9d7);transition:width 0.5s;}
+.e-bar.low{background:linear-gradient(90deg,var(--o),var(--r));}
+.e-val{font-family:'Boogaloo',cursive;font-size:0.9rem;color:var(--g5);min-width:40px;text-align:right;}
+.feed-btns{display:flex;gap:8px;flex-wrap:wrap;}
+.btn-feed2{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;padding:9px 14px;cursor:pointer;font-weight:800;font-size:0.85rem;color:white;transition:all 0.2s;}
+.btn-feed2:hover:not(:disabled){background:rgba(255,255,255,0.12);transform:translateY(-1px);}
+.btn-feed2:disabled{opacity:0.35;cursor:not-allowed;}
+.feed-cd{font-size:0.68rem;color:rgba(255,255,255,0.4);margin-top:4px;}
+
+/* Equipped items display */
+.equipped-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.eq-slot{background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:14px;padding:12px 8px;text-align:center;cursor:pointer;transition:all 0.2s;}
+.eq-slot:hover{border-color:var(--y);background:rgba(255,209,102,0.08);}
+.eq-slot.has-item{border-color:rgba(82,183,136,0.4);}
+.eq-slot-icon{font-size:1.8rem;display:block;margin-bottom:4px;}
+.eq-slot-label{font-size:0.65rem;font-weight:800;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px;}
+.eq-slot-name{font-size:0.75rem;font-weight:700;color:var(--g5);margin-top:2px;}
+
+/* ── PAGE: TIENDA ── */
+#page-shop{display:none;padding:12px;}
+#page-shop.active{display:block;}
+.shop-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.shop-h-title{font-family:'Boogaloo',cursive;font-size:1.5rem;color:var(--y);}
+.shop-h-coins{font-family:'Boogaloo',cursive;font-size:1.1rem;color:var(--coin);display:flex;align-items:center;gap:4px;}
+.shop-tabs2{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px;}
+.shop-tab2{padding:7px 14px;border-radius:14px;border:1.5px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:#aaa;font-weight:800;font-size:0.78rem;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.shop-tab2.active{background:rgba(255,209,102,0.18);border-color:var(--y);color:var(--y);}
+.shop-grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:14px;}
+.si{background:rgba(255,255,255,0.05);border:2px solid rgba(255,255,255,0.1);border-radius:16px;padding:14px 10px;text-align:center;cursor:pointer;transition:all 0.22s;position:relative;}
+.si:hover:not(.si-cant):not(.si-owned){transform:translateY(-4px);border-color:var(--y);background:rgba(255,209,102,0.07);box-shadow:0 8px 22px rgba(0,0,0,0.35);}
+.si.si-owned{border-color:rgba(82,183,136,0.45);background:rgba(82,183,136,0.08);}
+.si.si-equip{border-color:var(--y);box-shadow:0 0 14px rgba(255,209,102,0.25);}
+.si.si-cant{opacity:0.45;cursor:not-allowed;}
+.si-em{font-size:2rem;display:block;margin-bottom:5px;}
+.si-skin-preview{width:44px;height:44px;border-radius:50%;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
+.si-name{font-weight:800;font-size:0.8rem;margin-bottom:3px;}
+.si-desc{font-size:0.65rem;color:#8fbc8f;margin-bottom:6px;line-height:1.3;}
+.si-price{font-family:'Boogaloo',cursive;font-size:0.85rem;color:var(--y);}
+.si-badge{position:absolute;top:6px;right:6px;font-size:0.55rem;font-weight:900;letter-spacing:0.5px;padding:2px 5px;border-radius:7px;text-transform:uppercase;}
+.si-badge.owned{background:rgba(82,183,136,0.35);color:var(--g5);}
+.si-badge.equip{background:rgba(255,209,102,0.25);color:var(--y);}
+
+/* ── PAGE: DICCIONARIO ── */
+#page-dict{display:none;padding:14px;}
+#page-dict.active{display:block;}
+.dict-search{display:flex;gap:8px;margin-bottom:12px;}
+.dict-input{flex:1;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);border-radius:14px;padding:10px 14px;color:white;font-family:'Nunito',sans-serif;font-weight:700;font-size:0.9rem;outline:none;}
+.dict-input:focus{border-color:var(--g5);}
+.dict-cats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+.dict-cat{padding:6px 12px;border-radius:20px;border:1.5px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);font-weight:800;font-size:0.72rem;cursor:pointer;transition:all 0.18s;}
+.dict-cat.active{background:rgba(82,183,136,0.2);border-color:var(--g5);color:var(--g5);}
+.dict-entries{display:flex;flex-direction:column;gap:6px;}
+.dict-entry{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px 13px;display:flex;align-items:flex-start;gap:10px;transition:background 0.15s;}
+.dict-entry:hover{background:rgba(255,255,255,0.07);}
+.de-cat{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;background:rgba(255,255,255,0.08);}
+.de-body{flex:1;}
+.de-gua{font-family:'Boogaloo',cursive;font-size:1rem;color:var(--y);}
+.de-es{font-size:0.82rem;color:rgba(255,255,255,0.75);font-weight:600;}
+.de-note{font-size:0.7rem;color:var(--g5);margin-top:1px;font-style:italic;}
+
+/* ── PAGE: RESULTADO ── */
+#page-result{display:none;padding:24px 16px;text-align:center;}
+#page-result.active{display:block;}
+.res-frog{font-size:4rem;margin-bottom:10px;animation:frog-b 1.5s ease-in-out infinite;}
+@keyframes frog-b{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.res-stars{font-size:1.8rem;letter-spacing:4px;margin-bottom:6px;}
+.res-title{font-family:'Boogaloo',cursive;font-size:2.5rem;color:var(--y);text-shadow:3px 3px 0 var(--g1);margin-bottom:6px;}
+.res-score{font-family:'Boogaloo',cursive;font-size:3rem;margin-bottom:5px;}
+.res-coins{font-family:'Boogaloo',cursive;font-size:1.5rem;color:var(--coin);margin-bottom:4px;}
+.res-saved{font-size:0.85rem;color:var(--g5);font-weight:700;margin-bottom:6px;}
+.res-msg{color:#a0c4a0;font-size:0.9rem;max-width:300px;margin:0 auto 20px;font-weight:700;}
+.res-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn-res{border-radius:14px;padding:12px 22px;font-family:'Boogaloo',cursive;font-size:1.1rem;cursor:pointer;transition:all 0.2s;border:none;}
+.btn-res:hover{transform:translateY(-2px);}
+.btn-res.green{background:linear-gradient(135deg,var(--g4),var(--g5));color:white;box-shadow:0 4px 0 var(--g1);}
+.btn-res.yellow{background:rgba(255,209,102,0.15);border:2px solid rgba(255,209,102,0.4);color:var(--y);}
+.btn-res.gray{background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);color:white;}
+
+/* Coin popup */
+.cpop{position:fixed;pointer-events:none;font-family:'Boogaloo',cursive;font-size:1.2rem;color:var(--coin);z-index:999;animation:cpop-anim 1s ease-out forwards;}
+@keyframes cpop-anim{0%{transform:translateY(0) scale(1);opacity:1;}100%{transform:translateY(-55px) scale(1.3);opacity:0;}}
+
+/* Easter egg modal */
+.ee-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:300;align-items:center;justify-content:center;padding:20px;}
+.ee-overlay.show{display:flex;animation:fadein 0.3s;}
+.ee-box{background:linear-gradient(135deg,#0f3d1f,#1a2040);border:2px solid rgba(255,209,102,0.4);border-radius:24px;padding:30px 22px;max-width:340px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.7);}
+.ee-title{font-family:'Boogaloo',cursive;font-size:1.8rem;color:var(--y);margin-bottom:8px;}
+.ee-text{font-size:0.85rem;color:#a5d6a7;line-height:1.5;margin-bottom:18px;}
+.btn-ee{background:linear-gradient(135deg,var(--g4),var(--g5));border:none;border-radius:14px;padding:12px 30px;font-family:'Boogaloo',cursive;font-size:1.2rem;color:white;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 0 var(--g1);}
+.btn-ee:hover{transform:translateY(-2px);}
+
+/* BG particles */
+#bg-particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.bp{position:absolute;border-radius:50%;animation:bp-anim linear infinite;opacity:0;}
+@keyframes bp-anim{0%{transform:translateY(100vh) scale(0);opacity:0;}10%{opacity:0.5;}90%{opacity:0.2;}100%{transform:translateY(-10vh) scale(1.4);opacity:0;}}
+
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:rgba(0,0,0,0.2);}::-webkit-scrollbar-thumb{background:var(--g3);border-radius:3px;}
+/* WEATHER */
+#weather-layer{position:fixed;inset:0;pointer-events:none;z-index:5;overflow:hidden;}
+.rain-drop{position:absolute;width:1.5px;border-radius:2px;background:linear-gradient(180deg,transparent,rgba(147,210,240,0.7));animation:rain-fall linear infinite;}
+@keyframes rain-fall{0%{transform:translateY(-20px) rotate(12deg);opacity:0;}8%{opacity:1;}100%{transform:translateY(110vh) rotate(12deg);opacity:0.2;}}
+.fog-patch{position:absolute;border-radius:50%;background:rgba(200,230,215,0.07);animation:fog-drift ease-in-out infinite;}
+@keyframes fog-drift{0%,100%{transform:translateX(0);opacity:0.3;}50%{transform:translateX(3%);opacity:0.7;}}
+.star-dot{position:absolute;border-radius:50%;background:white;animation:twinkle ease-in-out infinite;}
+@keyframes twinkle{0%,100%{opacity:0.15;transform:scale(1);}50%{opacity:1;transform:scale(1.5);}}
+#moon-el{position:fixed;top:56px;right:14px;font-size:1.6rem;z-index:6;pointer-events:none;opacity:0;transition:opacity 1.5s;animation:moon-glow 4s ease-in-out infinite;}
+@keyframes moon-glow{0%,100%{filter:drop-shadow(0 0 6px rgba(255,220,120,0.4));}50%{filter:drop-shadow(0 0 16px rgba(255,220,120,0.8));}}
+body.weather-rain{--g1:#040f1a;background:radial-gradient(ellipse at top,#061a2e 0%,#03131f 100%);}
+body.weather-night{--g1:#040c18;background:radial-gradient(ellipse at top,#050e1f 0%,#030a15 100%);}
+body.weather-fog{background:radial-gradient(ellipse at top,#1a2e1a 0%,#0d1f1a 100%);}
+/* STREAK */
+.hud-streak{color:#ff8c00;font-family:'Boogaloo',cursive;font-size:0.9rem;display:flex;align-items:center;gap:4px;}
+.streak-anim{animation:streak-pop 0.4s ease;}
+@keyframes streak-pop{0%{transform:scale(1);}50%{transform:scale(1.5);}100%{transform:scale(1);}}
+/* CARD SELECTION */
+.card-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:250;align-items:center;justify-content:center;padding:16px;flex-direction:column;gap:14px;backdrop-filter:blur(4px);}
+.card-overlay.show{display:flex;animation:fadein 0.35s;}
+.card-title-big{font-family:'Boogaloo',cursive;font-size:1.8rem;color:var(--y);text-align:center;}
+.card-subtitle{color:var(--g5);font-size:0.82rem;font-weight:700;text-align:center;}
+.cards-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+.skill-card{background:linear-gradient(160deg,rgba(15,61,31,0.98),rgba(5,30,50,0.98));border:2px solid rgba(255,255,255,0.12);border-radius:20px;padding:18px 14px;width:clamp(120px,28vw,148px);text-align:center;cursor:pointer;transition:all 0.22s;box-shadow:0 8px 28px rgba(0,0,0,0.6);position:relative;overflow:hidden;}
+.skill-card:hover{transform:translateY(-10px) scale(1.05);}
+.skill-card.raro:hover{border-color:#80b0ff;box-shadow:0 20px 48px rgba(0,0,0,0.7),0 0 24px rgba(80,130,255,0.2);}
+.skill-card.epico:hover{border-color:#d080ff;box-shadow:0 20px 48px rgba(0,0,0,0.7),0 0 32px rgba(180,80,255,0.3);}
+.sc-emoji{font-size:2.2rem;display:block;margin-bottom:8px;}
+.sc-name{font-family:'Boogaloo',cursive;font-size:0.95rem;color:var(--y);margin-bottom:4px;}
+.sc-desc{font-size:0.67rem;color:#9fd8b8;line-height:1.4;}
+.sc-rarity-tag{display:inline-block;font-size:0.55rem;font-weight:900;letter-spacing:0.5px;padding:2px 6px;border-radius:6px;text-transform:uppercase;margin-bottom:6px;}
+.sc-rarity-tag.comun{background:rgba(150,150,150,0.2);color:#aaa;}
+.sc-rarity-tag.raro{background:rgba(82,130,255,0.25);color:#90b8ff;}
+.sc-rarity-tag.epico{background:rgba(160,60,220,0.25);color:#d4a0ff;}
+/* ACHIEVEMENTS */
+.ach-grid{display:flex;flex-direction:column;gap:7px;}
+.ach-item{display:flex;align-items:center;gap:11px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:13px;padding:11px 13px;transition:all 0.25s;}
+.ach-item.unlocked{background:rgba(255,209,102,0.06);border-color:rgba(255,209,102,0.2);}
+.ach-item.just-unlocked{animation:ach-pop 0.5s ease;border-color:var(--y);}
+@keyframes ach-pop{0%{transform:scale(0.92);}55%{transform:scale(1.05);}100%{transform:scale(1);}}
+.ach-icon{font-size:1.7rem;min-width:34px;text-align:center;transition:filter 0.4s;}
+.ach-item:not(.unlocked) .ach-icon{filter:grayscale(1) brightness(0.3);}
+.ach-body{flex:1;}
+.ach-name{font-weight:900;font-size:0.87rem;}
+.ach-desc{font-size:0.7rem;color:var(--g5);margin-top:1px;}
+.ach-item:not(.unlocked) .ach-name{color:rgba(255,255,255,0.2);}
+.ach-item:not(.unlocked) .ach-desc{color:rgba(255,255,255,0.12);}
+.ach-new-tag{font-size:0.58rem;font-weight:900;background:var(--y);color:var(--g1);padding:2px 6px;border-radius:7px;text-transform:uppercase;margin-left:6px;}
+.ach-toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#ffd166,#ff8c00);color:#072312;padding:10px 20px;border-radius:20px;font-weight:900;font-size:0.88rem;z-index:9999;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(255,150,0,0.5);animation:ach-toast-anim 3.2s ease-out forwards;}
+@keyframes ach-toast-anim{0%{opacity:0;transform:translateX(-50%) translateY(12px);}12%{opacity:1;transform:translateX(-50%) translateY(0);}80%{opacity:1;}100%{opacity:0;transform:translateX(-50%) translateY(-8px);}}
+/* MOOD */
+.mood-bubble{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:1.1rem;pointer-events:none;z-index:15;animation:mood-float 2.5s ease-in-out infinite;}
+@keyframes mood-float{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(-6px);}}
+.home-mood-msg{font-size:0.82rem;color:var(--g5);font-weight:700;margin-bottom:8px;min-height:20px;text-align:center;font-style:italic;transition:color 0.5s;}
+/* SUGGESTIONS */
+.name-suggestions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.name-sug{padding:4px 10px;border-radius:20px;border:1.5px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);font-size:0.75rem;font-weight:700;cursor:pointer;transition:all 0.18s;color:var(--g6);}
+.name-sug:hover{border-color:var(--y);color:var(--y);}
+
+/* ── PROGRESSION ── */
+.xp-bar-wrap{height:6px;background:rgba(255,255,255,0.08);border-radius:10px;overflow:hidden;margin:4px 0 8px;}
+.xp-bar{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--g5),var(--y));transition:width 0.6s cubic-bezier(.34,1.56,.64,1);}
+.level-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,rgba(255,209,102,0.2),rgba(255,140,0,0.15));border:1.5px solid rgba(255,209,102,0.35);border-radius:20px;padding:4px 12px;font-family:'Boogaloo',cursive;font-size:0.9rem;color:var(--y);}
+.level-up-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;align-items:center;justify-content:center;flex-direction:column;gap:12px;}
+.level-up-overlay.show{display:flex;animation:fadein 0.3s;}
+.lu-star{font-size:4rem;animation:lu-spin 1s ease;}
+@keyframes lu-spin{0%{transform:scale(0) rotate(-180deg);}100%{transform:scale(1) rotate(0);}}
+.lu-title{font-family:'Boogaloo',cursive;font-size:2.8rem;color:var(--y);text-shadow:0 0 30px rgba(255,209,102,0.6);}
+.lu-sub{color:var(--g5);font-weight:700;font-size:1rem;text-align:center;max-width:280px;}
+.lu-unlocks{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:14px 18px;max-width:300px;width:100%;}
+.lu-unlock-item{display:flex;align-items:center;gap:8px;padding:6px 0;font-weight:700;font-size:0.85rem;color:var(--g6);}
+.lu-unlock-item:not(:last-child){border-bottom:1px solid rgba(255,255,255,0.07);}
+
+/* ── TUTORIAL TOOLTIP ── */
+.tut-overlay{display:none;position:fixed;inset:0;z-index:450;align-items:flex-end;justify-content:center;padding:16px;background:rgba(0,0,0,0.75);}
+.tut-overlay.show{display:flex;animation:fadein 0.3s;}
+.tut-box{background:linear-gradient(135deg,#0f3d1f,#023e58);border:2px solid rgba(82,183,136,0.5);border-radius:22px;padding:22px 20px;max-width:360px;width:100%;position:relative;}
+.tut-emoji{font-size:2.5rem;display:block;text-align:center;margin-bottom:10px;}
+.tut-title{font-family:'Boogaloo',cursive;font-size:1.4rem;color:var(--y);text-align:center;margin-bottom:6px;}
+.tut-text{font-size:0.82rem;color:#a0d4b0;line-height:1.6;text-align:center;margin-bottom:16px;}
+.tut-steps{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+.tut-step{display:flex;align-items:flex-start;gap:8px;font-size:0.8rem;color:var(--g6);}
+.tut-step-num{width:20px;height:20px;border-radius:50%;background:var(--g4);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.7rem;flex-shrink:0;}
+.btn-tut{background:linear-gradient(135deg,var(--g4),var(--g5));border:none;border-radius:14px;padding:12px 32px;font-family:'Boogaloo',cursive;font-size:1.1rem;color:white;cursor:pointer;width:100%;box-shadow:0 4px 0 var(--g1);transition:all 0.2s;}
+.btn-tut:hover{transform:translateY(-2px);}
+
+/* ── INVENTORY ── */
+.inv-section{margin-bottom:18px;}
+.inv-section-title{font-family:'Boogaloo',cursive;font-size:1rem;color:var(--g5);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.inv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:8px;}
+.inv-slot{background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.08);border-radius:14px;padding:10px 6px;text-align:center;transition:all 0.2s;position:relative;cursor:pointer;}
+.inv-slot.owned{border-color:rgba(82,183,136,0.4);background:rgba(82,183,136,0.06);}
+.inv-slot.equipped{border-color:var(--y);background:rgba(255,209,102,0.08);box-shadow:0 0 10px rgba(255,209,102,0.15);}
+.inv-slot.locked{opacity:0.3;cursor:default;}
+.inv-slot-icon{font-size:1.8rem;display:block;margin-bottom:3px;}
+.inv-slot-name{font-size:0.58rem;font-weight:800;color:rgba(255,255,255,0.5);line-height:1.2;}
+.inv-slot.owned .inv-slot-name{color:var(--g5);}
+.inv-slot.equipped .inv-slot-name{color:var(--y);}
+.inv-count{position:absolute;top:4px;right:5px;background:var(--y);color:var(--g1);font-size:0.6rem;font-weight:900;border-radius:8px;padding:1px 5px;}
+.inv-empty{color:rgba(255,255,255,0.2);font-size:0.8rem;font-weight:700;padding:16px;text-align:center;}
+
+/* ── POSTAL ── */
+.postal-bg-chip{border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:all 0.2s;flex-shrink:0;}
+.postal-bg-chip.sel{border-color:var(--y);box-shadow:0 0 12px rgba(255,209,102,0.4);}
+.postal-bg-chip canvas{display:block;}
+
+/* Home XP bar */
+.home-progress-wrap{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.07);border-radius:30px;padding:6px 14px;margin-bottom:14px;justify-content:center;}
+.home-level-txt{font-family:'Boogaloo',cursive;font-size:0.9rem;color:var(--y);}
+
+/* ── FRASE DEL DÍA ── */
+.frase-card{background:linear-gradient(135deg,rgba(15,61,31,0.95),rgba(2,62,88,0.8));border:1.5px solid rgba(82,183,136,0.35);border-radius:18px;padding:14px 16px;margin-bottom:14px;position:relative;overflow:hidden;}
+.frase-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--g5),var(--y),var(--g5));border-radius:18px 18px 0 0;}
+.frase-label{font-size:0.65rem;font-weight:900;letter-spacing:1.5px;color:var(--g5);text-transform:uppercase;margin-bottom:6px;}
+.frase-guarani{font-family:'Boogaloo',cursive;font-size:1.35rem;color:var(--y);margin-bottom:4px;line-height:1.3;}
+.frase-pron{font-size:0.75rem;color:#9fd8b8;font-style:italic;margin-bottom:5px;}
+.frase-esp{font-size:0.82rem;color:rgba(255,255,255,0.75);font-weight:600;}
+.frase-btn-speak{background:rgba(82,183,136,0.15);border:1px solid rgba(82,183,136,0.3);border-radius:20px;padding:5px 12px;font-size:0.75rem;font-weight:800;color:var(--g5);cursor:pointer;margin-top:8px;transition:all 0.2s;display:inline-flex;align-items:center;gap:4px;}
+.frase-btn-speak:hover{background:rgba(82,183,136,0.3);}
+.frase-btn-speak.speaking{color:var(--y);border-color:var(--y);animation:pulse-speak 0.8s ease-in-out infinite;}
+@keyframes pulse-speak{0%,100%{opacity:1;}50%{opacity:0.5;}}
+
+/* ── MODO ESCUCHÁ ── */
+.listen-mode-banner{background:linear-gradient(135deg,rgba(10,106,138,0.4),rgba(5,30,50,0.5));border:1.5px solid rgba(77,208,225,0.3);border-radius:14px;padding:8px 14px;display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.listen-badge{background:linear-gradient(135deg,#0a6a8a,#1a9ab8);border-radius:20px;padding:3px 10px;font-size:0.68rem;font-weight:900;color:white;text-transform:uppercase;letter-spacing:0.5px;}
+.listen-word-card{background:linear-gradient(135deg,rgba(10,106,138,0.3),rgba(2,62,88,0.4));border:2px solid rgba(77,208,225,0.4);border-radius:20px;padding:18px;text-align:center;margin-bottom:14px;}
+.listen-guarani{font-family:'Boogaloo',cursive;font-size:2.2rem;color:var(--y);margin-bottom:6px;}
+.listen-pron{font-size:0.85rem;color:#9fd8b8;font-style:italic;margin-bottom:10px;}
+.btn-speak-big{background:linear-gradient(135deg,#0a6a8a,#1a9ab8);border:none;border-radius:50%;width:64px;height:64px;font-size:1.8rem;cursor:pointer;box-shadow:0 4px 16px rgba(26,154,184,0.4);transition:all 0.2s;display:flex;align-items:center;justify-content:center;margin:0 auto;}
+.btn-speak-big:hover{transform:scale(1.08);}
+.btn-speak-big.speaking{animation:speak-ring 1s ease-in-out infinite;background:linear-gradient(135deg,#1a9ab8,#4dd0e1);}
+@keyframes speak-ring{0%{box-shadow:0 0 0 0 rgba(77,208,225,0.6);}70%{box-shadow:0 0 0 16px rgba(77,208,225,0);}100%{box-shadow:0 0 0 0 rgba(77,208,225,0);}}
+.listen-hint{font-size:0.72rem;color:rgba(255,255,255,0.4);margin-top:6px;}
+.listen-no-support{background:rgba(255,100,100,0.1);border:1px solid rgba(255,100,100,0.3);border-radius:12px;padding:10px 14px;font-size:0.78rem;color:#ff9a9a;margin-bottom:12px;}
+@media(max-width:360px){.nav-tab{font-size:0.58rem;padding:4px 5px;}.nav-tab .nt-icon{font-size:0.85rem;}.shop-grid2{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));}}
+</style>
+</head>
+<body>
+
+<div id="bg-particles"></div>
+<div id="weather-layer"></div>
+<div id="moon-el" style="display:none">🌙</div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <div class="nav-brand">🐸 Sapito</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" data-page="home" onclick="navTo('home')"><span class="nt-icon">🏠</span>Inicio</button>
+    <button class="nav-tab" data-page="sapito" onclick="navTo('sapito')"><span class="nt-icon">🐸</span>Ranita</button>
+    <button class="nav-tab" data-page="shop" onclick="navTo('shop')"><span class="nt-icon">🛍️</span>Tienda</button>
+    <button class="nav-tab" data-page="dict" onclick="navTo('dict')"><span class="nt-icon">📖</span>Dicc.</button>
+    <button class="nav-tab" data-page="logros" onclick="navTo('logros')"><span class="nt-icon">🏅</span>Logros</button>
+    <button class="nav-tab" data-page="inventory" onclick="navTo('inventory')"><span class="nt-icon">🎒</span>Bolsa</button>
+    <button class="nav-tab" data-page="postal" onclick="navTo('postal')"><span class="nt-icon">📮</span>Postal</button>
+  </div>
+  <div class="nav-coins"><span style="font-size:0.9rem">&#x1F4B0;</span><span id="nav-coins">0</span></div>
+</nav>
+
+<!-- PAGES -->
+<div id="pages">
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div style="text-align:center;margin-bottom:10px;">
+    <div class="home-frog-wrap" id="home-frog-wrap">
+      <!-- SVG frog injected by JS -->
+      <span class="home-frog-hat" id="home-hat" style="display:none"></span>
+      <span class="home-frog-acc" id="home-acc" style="display:none"></span>
+      <span class="home-frog-scarf" id="home-scarf" style="display:none"></span>
+    </div>
+    <div class="home-title">Sapito Guaraní</div>
+    <div class="home-tagline">⚔️ Roguelike Edition ⚔️</div>
+    <div class="home-mood-msg" id="home-mood-msg">...</div>
+    <div class="home-progress-wrap"><span class="home-level-txt" id="home-level-txt">Nv.1</span><div class="xp-bar-wrap" style="width:120px;margin:0;"><div class="xp-bar" id="home-xp-bar" style="width:0%"></div></div><span style="font-size:0.72rem;color:#8fbc8f;font-weight:700;" id="home-xp-txt">0/100 XP</span></div>
+    <div class="home-energy">
+      <span class="energy-label">⚡ ENERGÍA</span>
+      <div class="energy-bar-wrap"><div class="energy-bar" id="home-ebar" style="width:100%"></div></div>
+      <span class="energy-val" id="home-eval">100/100</span>
+    </div>
+  </div>
+
+  <div id="frase-dia-wrap" style="padding:0 4px;"></div>
+  <div class="home-setup">
+    <div class="setup-title">🎯 Tema:</div>
+    <div class="tema-chips" id="tema-chips">
+      <div class="tema-chip sel" data-tema="saludos">👋 Saludos</div>
+      <div class="tema-chip" data-tema="numeros">🔢 Números</div>
+      <div class="tema-chip" data-tema="animales">🐾 Animales</div>
+      <div class="tema-chip" data-tema="gramatica">📚 Gramática</div>
+    </div>
+    <div class="setup-title">⚡ Dificultad:</div>
+    <div class="nivel-row" id="nivel-row">
+      <div class="nivel-pill sel" data-nivel="basico"><span class="np-emoji">🌱</span><div class="np-name">Básico</div><div class="np-info">15s · +3🪙</div></div>
+      <div class="nivel-pill" data-nivel="intermedio"><span class="np-emoji">🌿</span><div class="np-name">Intermedio</div><div class="np-info">12s · +5🪙</div></div>
+      <div class="nivel-pill" data-nivel="avanzado"><span class="np-emoji">🌳</span><div class="np-name">Avanzado</div><div class="np-info">9s · +8🪙</div></div>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-bottom:12px;">
+    <div class="feed-actions" style="justify-content:center;display:flex;gap:8px;margin-bottom:12px;">
+      <button class="btn-feed" id="btn-water" onclick="feedFrog('water')">💧 Agua <span id="water-cd" class="feed-cd"></span></button>
+      <button class="btn-feed" id="btn-food" onclick="feedFrog('food')">🌿 Comida <span id="food-cd" class="feed-cd"></span></button>
+    </div>
+    <button class="btn-play-big" id="btn-play" onclick="startGame()">🐸 ¡A Saltar!</button>
+  </div>
+</div>
+
+<!-- GAME -->
+<div class="page" id="page-game">
+  <div class="game-hud">
+    <span class="hud-item hud-level" id="hud-level">🌱 Básico</span>
+    <span class="hud-item hud-tema" id="hud-tema">👋 Saludos</span>
+    <span class="hud-item hud-coins">&#x1F4B0; <span id="hud-coins">0</span></span>
+    <span class="hud-item hud-streak" id="hud-streak" style="display:none">🔥<span id="streak-num">0</span> <span id="streak-mult"></span></span>
+    <span class="hud-item hud-q" id="hud-q">1/10</span>
+  </div>
+  <div class="timer-wrap"><div class="timer-bar" id="timer-bar"></div></div>
+  <div class="river" id="river">
+    <div class="lily-row" id="lily-row"></div>
+    <div class="river-water"><div class="wave"></div></div>
+    <div class="fish">🐟</div>
+    <div class="frog-actor" id="frog-actor">
+      <span class="fa-hat" id="fa-hat" style="display:none"></span>
+      <span class="frog-svg-wrap" id="frog-svg-wrap"><!-- SVG --></span>
+      <span class="fa-acc" id="fa-acc" style="display:none"></span>
+      <span class="fa-scarf" id="fa-scarf" style="display:none"></span>
+    </div>
+  </div>
+  <div class="q-card">
+    <div class="q-tag saludos" id="q-tag">Saludos</div>
+    <p class="q-text" id="q-text">Cargando...</p>
+  </div>
+  <div class="fb" id="fb"></div>
+  <div class="powers-row" id="powers-row"></div>
+  <div class="opts-grid" id="opts-grid"></div>
+</div>
+
+<!-- SAPITO PAGE -->
+<div class="page" id="page-sapito">
+  <div class="sapito-page-inner">
+    <div class="sp-card">
+      <div style="text-align:center;">
+        <div class="sp-frog-center" id="sp-frog-center"><!-- SVG frog --></div>
+        <div class="sp-frog-name" id="sp-frog-name">Kururu</div>
+      </div>
+      <div class="sp-rename-row">
+        <input class="sp-rename-input" id="sp-rename-input" placeholder="Nuevo nombre..." maxlength="20">
+        <button class="btn-sm" onclick="renameFrog()">✏️ Guardar</button>
+      </div>
+      <div class="name-suggestions" id="name-sugs"></div>
+    </div>
+
+    <div class="sp-card">
+      <div class="sp-title">⚡ Energía del Sapito</div>
+      <div class="energy-row">
+        <span class="e-icon">💧</span>
+        <div class="e-bar-wrap"><div class="e-bar" id="sp-water-bar" style="width:100%"></div></div>
+        <span class="e-val" id="sp-water-val">100/100</span>
+      </div>
+      <div class="energy-row">
+        <span class="e-icon">🌿</span>
+        <div class="e-bar-wrap"><div class="e-bar" id="sp-food-bar" style="width:100%"></div></div>
+        <span class="e-val" id="sp-food-val">100/100</span>
+      </div>
+      <div class="feed-btns" style="margin-top:10px;">
+        <button class="btn-feed2" id="sp-btn-water" onclick="feedFrog('water')">💧 Dar Agua <small id="sp-water-cd" class="feed-cd"></small></button>
+        <button class="btn-feed2" id="sp-btn-food" onclick="feedFrog('food')">🌿 Dar Comida <small id="sp-food-cd" class="feed-cd"></small></button>
+      </div>
+    </div>
+
+    <div class="sp-card">
+      <div class="sp-title">🎽 Items Equipados <span style="font-size:0.75rem;color:#8fbc8f;">(toca para equipar/desequipar)</span></div>
+      <div class="equipped-grid" id="equipped-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TIENDA -->
+<div class="page" id="page-shop">
+  <div class="shop-header">
+    <div class="shop-h-title">🛍️ Tienda</div>
+    <div class="shop-h-coins">🪙 <span id="shop-coins">0</span></div>
+  </div>
+  <div class="shop-tabs2" id="shop-tabs2">
+    <button class="shop-tab2 active" data-stab="cosmeticos" onclick="switchShopTab('cosmeticos')">🎨 Cosméticos</button>
+    <button class="shop-tab2" data-stab="skins" onclick="switchShopTab('skins')">🐸 Skins</button>
+    <button class="shop-tab2" data-stab="consumibles" onclick="switchShopTab('consumibles')">🎒 Consumibles</button>
+    <button class="shop-tab2" data-stab="ventajas" onclick="switchShopTab('ventajas')">⚡ Ventajas</button>
+  </div>
+  <div class="shop-grid2" id="shop-grid2"></div>
+</div>
+
+<!-- DICCIONARIO -->
+<div class="page" id="page-dict">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px;">
+    <div style="font-family:'Boogaloo',cursive;font-size:1.4rem;color:var(--y);">📖 Diccionario Guaraní</div>
+    <button onclick="navTo('listen')" style="background:linear-gradient(135deg,#0a6a8a,#1a9ab8);border:none;border-radius:14px;padding:8px 14px;font-family:'Boogaloo',cursive;font-size:0.9rem;color:white;cursor:pointer;white-space:nowrap;box-shadow:0 3px 0 #012030;">🔊 Modo Escuchá</button>
+  </div>
+  <div style="background:rgba(255,193,0,0.08);border:1px solid rgba(255,193,0,0.2);border-radius:12px;padding:10px 13px;margin-bottom:12px;font-size:0.75rem;color:#c8a96e;line-height:1.5;">
+    ⚠️ <strong>Nota:</strong> Este diccionario es educativo e introductorio. El guaraní paraguayo es una lengua viva y compleja. Para estudio serio, consultá el <em>Diccionario de la Academia de la Lengua Guaraní</em> o materiales del MEC Paraguay. Si encontrás errores, ¡avisanos!
+  </div>
+  <div class="dict-search">
+    <input class="dict-input" id="dict-input" placeholder="Buscar en guaraní o español..." oninput="filterDict()">
+  </div>
+  <div class="dict-cats" id="dict-cats"></div>
+  <div class="dict-entries" id="dict-entries"></div>
+</div>
+
+<!-- RESULTADO -->
+<div class="page" id="page-result">
+  <div class="res-frog" id="res-frog">🐸</div>
+  <div class="res-stars" id="res-stars">⭐⭐⭐</div>
+  <h2 class="res-title" id="res-title">¡Aguyje!</h2>
+  <div class="res-score" id="res-score">10/10</div>
+  <div class="res-coins" id="res-coins">+50 monedas</div>
+  <div class="res-saved" id="res-saved"></div>
+  <p class="res-msg" id="res-msg"></p>
+  <div class="res-btns">
+    <button class="btn-res green" onclick="retryGame()">🔄 Reintentar</button>
+    <button class="btn-res yellow" onclick="navTo('shop')">🛍️ Tienda</button>
+    <button class="btn-res gray" onclick="navTo('home')">🏠 Inicio</button>
+  </div>
+</div>
+
+<!-- INVENTARIO PAGE -->
+<div class="page" id="page-inventory" style="padding:14px;">
+  <div style="font-family:'Boogaloo',cursive;font-size:1.4rem;color:var(--y);margin-bottom:4px;">🎒 Inventario</div>
+  <div id="inv-progress" style="font-size:0.75rem;color:#8fbc8f;margin-bottom:14px;font-weight:700;"></div>
+  <div id="inv-tabs" style="display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px;"></div>
+  <div id="inv-grid"></div>
+</div>
+
+<!-- POSTAL PAGE -->
+<div class="page" id="page-postal" style="padding:14px;">
+  <div style="font-family:'Boogaloo',cursive;font-size:1.4rem;color:var(--y);margin-bottom:8px;">📮 Modo Postal</div>
+  <div style="font-size:0.78rem;color:#8fbc8f;font-weight:700;margin-bottom:12px;">Creá una postal de tu sapito y compartila con tus amigos</div>
+  <div style="font-family:'Boogaloo',cursive;font-size:0.95rem;color:var(--g5);margin-bottom:8px;">🖼️ Elegí un fondo:</div>
+  <div id="postal-bgs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;"></div>
+  <div style="font-family:'Boogaloo',cursive;font-size:0.95rem;color:var(--g5);margin-bottom:8px;">👀 Vista previa:</div>
+  <div style="display:flex;justify-content:center;margin-bottom:14px;">
+    <canvas id="postal-canvas" width="480" height="320" style="border-radius:16px;max-width:100%;box-shadow:0 8px 32px rgba(0,0,0,0.5);border:2px solid rgba(255,255,255,0.1);"></canvas>
+  </div>
+  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+    <button onclick="downloadPostal()" style="background:linear-gradient(135deg,#2e8b57,#52b788);border:none;border-radius:14px;padding:13px 28px;font-family:'Boogaloo',cursive;font-size:1.1rem;color:white;cursor:pointer;box-shadow:0 4px 0 #072312;">⬇️ Descargar Postal</button>
+  </div>
+</div>
+
+<!-- LOGROS PAGE -->
+<div class="page" id="page-logros" style="padding:14px;">
+  <div style="font-family:'Boogaloo',cursive;font-size:1.4rem;color:var(--y);margin-bottom:4px;">🏅 Logros</div>
+  <div style="font-size:0.75rem;color:#8fbc8f;margin-bottom:14px;font-weight:700;" id="ach-progress-txt">0 / 0 desbloqueados</div>
+  <div class="ach-grid" id="ach-grid"></div>
+</div>
+
+
+
+<!-- MODO ESCUCHÁ PAGE -->
+<div class="page" id="page-listen" style="padding:14px;">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+    <button onclick="navTo('dict')" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:6px 10px;color:white;cursor:pointer;font-size:0.8rem;font-weight:800;">← Dicc.</button>
+    <div style="font-family:'Boogaloo',cursive;font-size:1.3rem;color:var(--y);">🔊 Modo Escuchá y Elegí</div>
+  </div>
+  <div id="listen-no-support" class="listen-no-support" style="display:none">
+    ⚠️ Tu navegador no soporta síntesis de voz. Podés usar Chrome o Edge para esta función.
+  </div>
+  <div id="listen-game-area">
+    <div class="listen-mode-banner">
+      <span class="listen-badge">🔊 Escuchá</span>
+      <span style="font-size:0.8rem;color:var(--g5);font-weight:700;">Escuchá la palabra en guaraní y elegí su significado en español</span>
+    </div>
+    <div id="listen-score-row" style="display:flex;gap:10px;justify-content:center;margin-bottom:12px;">
+      <span style="background:rgba(255,255,255,0.06);border-radius:20px;padding:4px 14px;font-family:'Boogaloo',cursive;font-size:0.9rem;color:var(--y);">🎯 <span id="ls-correct">0</span> correctas</span>
+      <span style="background:rgba(255,255,255,0.06);border-radius:20px;padding:4px 14px;font-family:'Boogaloo',cursive;font-size:0.9rem;color:#9fd8b8;">📝 <span id="ls-total">0</span> / 10</span>
+    </div>
+    <div class="listen-word-card">
+      <div class="listen-guarani" id="lw-word">---</div>
+      <div class="listen-pron" id="lw-pron">---</div>
+      <button class="btn-speak-big" id="btn-speak-big" onclick="speakCurrent()">🔊</button>
+      <div class="listen-hint">Tocá para escuchar la pronunciación</div>
+    </div>
+    <div id="listen-opts" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"></div>
+    <div id="listen-fb" style="min-height:32px;text-align:center;font-weight:900;font-size:1rem;margin-top:10px;"></div>
+  </div>
+  <div id="listen-result" style="display:none;text-align:center;padding:20px 0;">
+    <div style="font-size:3rem;margin-bottom:10px;" id="lr-emoji">🐸</div>
+    <div style="font-family:'Boogaloo',cursive;font-size:1.8rem;color:var(--y);margin-bottom:6px;" id="lr-title">¡Resultado!</div>
+    <div style="font-size:1.1rem;color:#9fd8b8;margin-bottom:18px;" id="lr-score">0/10</div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <button onclick="startListenGame()" style="background:linear-gradient(135deg,var(--g4),var(--g5));border:none;border-radius:14px;padding:12px 22px;font-family:'Boogaloo',cursive;font-size:1.1rem;color:white;cursor:pointer;">🔄 Otro round</button>
+      <button onclick="navTo('home')" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:14px;padding:12px 22px;font-family:'Boogaloo',cursive;font-size:1.1rem;color:white;cursor:pointer;">🏠 Inicio</button>
+    </div>
+  </div>
+</div>
+</div><!-- /pages -->
+
+<!-- CARD SELECTION MODAL -->
+<div class="card-overlay" id="card-modal">
+  <div class="card-title-big">✨ Elegí una Carta</div>
+  <div class="card-subtitle">Tu habilidad especial para esta partida</div>
+  <div class="cards-row" id="cards-row"></div>
+</div>
+
+<!-- CHECKPOINT MODAL -->
+<div class="modal-overlay" id="cp-modal">
+  <div class="modal-box">
+    <div style="font-size:2.5rem">🏁</div>
+    <div class="modal-title">¡Punto de Guardado!</div>
+    <div class="modal-sub">Llegaste a la mitad — ¡bien hecho!</div>
+    <div class="modal-coins">🪙 <span id="cp-coins">0</span> monedas</div>
+    <div class="modal-note">Podés retirarte con el 50% o seguir y ganar más</div>
+    <div class="modal-btns">
+      <button class="btn-green" onclick="cpContinue()">💪 ¡Seguir!</button>
+      <button class="btn-red" onclick="cpRetire()">🏃 Retirarme (50%)</button>
+    </div>
+  </div>
+</div>
+
+<!-- EASTER EGG MODAL -->
+<div class="ee-overlay" id="ee-modal">
+  <div class="ee-box">
+    <div style="font-size:3rem">🐸🧣</div>
+    <div class="ee-title">¡Secreto Descubierto!</div>
+    <div class="ee-text">
+      ¡Nombraste a tu ranita <strong style="color:var(--y)">Daniel</strong>!<br><br>
+      Daniel es una ranita especial 💚 — verde intenso y con su bufanda roja característica.<br><br>
+      🎁 <strong>Regalo:</strong> ¡También te llevás una <span style="color:#7ec8e3">bufanda azul</span> extra!<br>
+      Ambas bufandas son equipables desde la tienda.
+    </div>
+    <button class="btn-ee" onclick="closeEE()">¡Genial! 🎉</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// SVG FROG RENDERER
+// ═══════════════════════════════════════════
+const SKIN_COLORS = {
+  default:{body:'#4caf50',belly:'#a5d6a7',eye:'#1b5e20',pupil:'#000'},
+  azul:   {body:'#1976d2',belly:'#90caf9',eye:'#0d47a1',pupil:'#000'},
+  rojo:   {body:'#d32f2f',belly:'#ef9a9a',eye:'#7f0000',pupil:'#000'},
+  dorado: {body:'#f9a825',belly:'#fff59d',eye:'#e65100',pupil:'#000'},
+  negro:  {body:'#212121',belly:'#616161',eye:'#000',pupil:'#e0e0e0'},
+  blanco: {body:'#eceff1',belly:'#fff',eye:'#90a4ae',pupil:'#37474f'},
+  morado: {body:'#7b1fa2',belly:'#ce93d8',eye:'#4a0072',pupil:'#000'},
+  rosado: {body:'#e91e63',belly:'#f48fb1',eye:'#880e4f',pupil:'#000'},
+  celeste:{body:'#00acc1',belly:'#b2ebf2',eye:'#006064',pupil:'#000'},
+  daniel: {body:'#2e7d32',belly:'#81c784',eye:'#1b5e20',pupil:'#000'},
+  arcoiris:{body:'url(#rgGrad)',belly:'#fff9c4',eye:'#6a1b9a',pupil:'#000'},
+};
+
+function makeFrogSVG(skinId, size=80, hat=null, acc=null, scarf=null){
+  const c = SKIN_COLORS[skinId] || SKIN_COLORS.default;
+  const isDaniel = skinId === 'daniel';
+  const isRainbow = skinId === 'arcoiris';
+  const w=size, h=size*1.15;
+  const scarfColor = scarf === 'scarf_red' ? '#e53935' : scarf === 'scarf_blue' ? '#1565c0' : null;
+
+  return `<svg width="${w}" height="${h}" viewBox="0 0 80 92" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    ${isRainbow ? `<linearGradient id="rgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f44336"/>
+      <stop offset="20%" stop-color="#ff9800"/>
+      <stop offset="40%" stop-color="#ffeb3b"/>
+      <stop offset="60%" stop-color="#4caf50"/>
+      <stop offset="80%" stop-color="#2196f3"/>
+      <stop offset="100%" stop-color="#9c27b0"/>
+    </linearGradient>` : ''}
+    <radialGradient id="bellyG" cx="50%" cy="60%" r="50%">
+      <stop offset="0%" stop-color="${c.belly}" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="${c.belly}" stop-opacity="0.3"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="40" cy="88" rx="22" ry="4" fill="rgba(0,0,0,0.25)"/>
+  <!-- Back legs -->
+  <ellipse cx="18" cy="72" rx="12" ry="7" fill="${c.body}" transform="rotate(-20,18,72)"/>
+  <ellipse cx="62" cy="72" rx="12" ry="7" fill="${c.body}" transform="rotate(20,62,72)"/>
+  <!-- Feet back -->
+  <ellipse cx="10" cy="78" rx="8" ry="4" fill="${c.body}"/>
+  <ellipse cx="70" cy="78" rx="8" ry="4" fill="${c.body}"/>
+  <!-- Body -->
+  <ellipse cx="40" cy="58" rx="26" ry="22" fill="${c.body}"/>
+  <!-- Belly -->
+  <ellipse cx="40" cy="62" rx="17" ry="14" fill="url(#bellyG)"/>
+  <!-- Body shine -->
+  <ellipse cx="30" cy="48" rx="8" ry="5" fill="rgba(255,255,255,0.15)" transform="rotate(-20,30,48)"/>
+  <!-- Front legs -->
+  <ellipse cx="16" cy="65" rx="7" ry="5" fill="${c.body}" transform="rotate(30,16,65)"/>
+  <ellipse cx="64" cy="65" rx="7" ry="5" fill="${c.body}" transform="rotate(-30,64,65)"/>
+  <!-- Front feet -->
+  <ellipse cx="11" cy="70" rx="6" ry="3" fill="${c.body}"/>
+  <ellipse cx="69" cy="70" rx="6" ry="3" fill="${c.body}"/>
+  <!-- Head -->
+  <ellipse cx="40" cy="36" rx="24" ry="18" fill="${c.body}"/>
+  <!-- Head shine -->
+  <ellipse cx="30" cy="28" rx="7" ry="4" fill="rgba(255,255,255,0.18)" transform="rotate(-15,30,28)"/>
+  <!-- Scarf -->
+  ${scarfColor ? `<rect x="16" y="50" width="48" height="9" rx="4" fill="${scarfColor}" opacity="0.92"/>
+  <rect x="38" y="59" width="10" height="14" rx="3" fill="${scarfColor}" opacity="0.85"/>` : ''}
+  <!-- Eye whites -->
+  <ellipse cx="28" cy="26" rx="9" ry="9" fill="white"/>
+  <ellipse cx="52" cy="26" rx="9" ry="9" fill="white"/>
+  <!-- Eye color -->
+  <circle cx="28" cy="26" r="6" fill="${c.eye}"/>
+  <circle cx="52" cy="26" r="6" fill="${c.eye}"/>
+  <!-- Pupils -->
+  <circle cx="29" cy="25" r="3.5" fill="${c.pupil}"/>
+  <circle cx="53" cy="25" r="3.5" fill="${c.pupil}"/>
+  <!-- Eye shine -->
+  <circle cx="27" cy="23" r="1.5" fill="white"/>
+  <circle cx="51" cy="23" r="1.5" fill="white"/>
+  <!-- Nostrils -->
+  <circle cx="36" cy="38" r="2" fill="rgba(0,0,0,0.2)"/>
+  <circle cx="44" cy="38" r="2" fill="rgba(0,0,0,0.2)"/>
+  <!-- Smile -->
+  <path d="M30 44 Q40 51 50 44" stroke="rgba(0,0,0,0.3)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <!-- Spots if leopard/patch pattern -->
+</svg>`;
+}
+
+// ═══════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════
+const POOL = {
+  saludos:{
+    basico:[
+      {p:"¿Cómo se dice 'buenos días' en guaraní?",ops:["Ko'ê porã","Pytû porã","Ka'aru porã","Aguyje"],c:0},
+      {p:"¿Qué significa 'Mba'éichapa'?",ops:["Hasta luego","Gracias","¿Cómo estás?","Por favor"],c:2},
+      {p:"¿Cómo se dice 'gracias' en guaraní?",ops:["Ndaipóri","Ha'e","Aguyje","Upe"],c:2},
+      {p:"¿Qué significa 'Jajoecha'?",ops:["Hasta luego / Nos vemos","Bienvenido","Por favor","Buenos días"],c:0},
+      {p:"¿Cómo se dice 'por favor' en guaraní?",ops:["Aguyje","Añeténte","Ikatúpa","Ndaipóri"],c:1},
+      {p:"¿Qué significa 'Eguahê porã'?",ops:["Jajoecha","Bienvenido","Ko'ê porã","Aguyje"],c:1},
+      {p:"¿Cómo se dice 'sí' en guaraní?",ops:["Añete / Héê","Nahániri","Avave","Upe"],c:0},
+      {p:"¿Cómo se dice 'no' en guaraní?",ops:["Héê","Nahániri","Ha'e","Ikatúpa"],c:1},
+      {p:"¿Qué significa 'Ka'aru porã'?",ops:["Buenas noches","Buenos días","Buenas tardes","Buen provecho"],c:2},
+      {p:"¿Cómo se dice 'disculpe' en guaraní?",ops:["Ikatúpa","Emboguereko","Maitei","Aguyje"],c:2},
+      {p:"¿Qué significa 'Pytû porã'?",ops:["Buenas tardes","Buenas noches","Buenos días","Buen provecho"],c:1},
+      {p:"¿Cómo se dice 'hasta mañana'?",ops:["Jajoecha ko'ẽme","Jajoecha pytûme","Ko'ê porã","Aguyje"],c:0},
+    ],
+    intermedio:[
+      {p:"¿Cómo se dice 'Me llamo...' en guaraní?",ops:["Che réra...","Ha'e réra...","Nde réra...","Ore réra..."],c:0},
+      {p:"¿Qué significa 'Rohayhu'?",ops:["Te extraño","Te odio","Te amo","Te saludo"],c:2},
+      {p:"¿Cómo preguntas '¿Cómo te llamás?' en guaraní?",ops:["Mba'éichapa nde réra?","Mba'éichapa reiko?","Mbõpa reiko?","Ha'épa nde?"],c:0},
+      {p:"¿Cómo se dice '¿De dónde sos?' en guaraní?",ops:["Mba'éichapa?","Moõgui reju?","Mba'érepa?","Ndépa ko?"],c:1},
+      {p:"¿Qué significa 'Che añoite'?",ops:["Estoy solo/a","Tengo sed","Estoy cansado","Me duele"],c:0},
+      {p:"¿Cómo se dice 'Mucho gusto' en guaraní?",ops:["Aguyje","Che py'a guasu","Iporãve","Jajoecha"],c:1},
+      {p:"¿Qué significa 'Reikuaápa guaraní'?",ops:["¿Hablás guaraní?","¿Sabés guaraní?","¿Entendés guaraní?","¿Estudiás guaraní?"],c:1},
+      {p:"¿Cómo se dice 'Perdón / Lo siento' en guaraní?",ops:["Ikatúpa","Emongeta","Che mba'ete","Emboguereko"],c:0},
+      {p:"¿Qué significa 'Ereraha'?",ops:["Llevalo","Traelo","Miralo","Escuchalo"],c:0},
+      {p:"¿Cómo se dice 'Te voy a extrañar'?",ops:["Rohayhu","Che añomi nderehe","Jajoecha","Rohechase"],c:1},
+    ],
+    avanzado:[
+      {p:"¿Cómo se forma el imperativo en guaraní?",ops:["Prefijo 're-'","Solo el verbo sin prefijo","Prefijo 'o-'","Sufijo '-va'"],c:1},
+      {p:"'Rohayhu' usa 'ro-' que indica...",ops:["Yo te (1ra→2da)","Él te","Nosotros os","Vos me"],c:0},
+      {p:"¿Qué indica '-pa' en la pregunta guaraní?",ops:["Negación","Marcador interrogativo","Futuro","Plural"],c:1},
+      {p:"¿Qué función tiene '-rã'?",ops:["Pasado remoto","Futuro o intención","Plural","Aspecto habitual"],c:1},
+      {p:"¿Cómo se forma el plural con 'kuéra'?",ops:["Prefijo al verbo","Sufijo al sustantivo","Partícula independiente","Se prefija al adjetivo"],c:2},
+    ]
+  },
+  numeros:{
+    basico:[
+      {p:"¿Cómo se dice 'uno' en guaraní?",ops:["Mokõi","Peteĩ","Mbohapy","Irundy"],c:1},
+      {p:"¿Qué número es 'Mokõi'?",ops:["1","3","2","4"],c:2},
+      {p:"¿Cómo se dice 'tres' en guaraní?",ops:["Peteĩ","Irundy","Po","Mbohapy"],c:3},
+      {p:"¿Qué número es 'Irundy'?",ops:["3","5","4","6"],c:2},
+      {p:"¿Cómo se dice 'cinco' en guaraní?",ops:["Mbohapy","Po","Mokõi","Poteĩ"],c:1},
+      {p:"¿Qué color es 'Pytã'?",ops:["Azul","Verde","Amarillo","Rojo"],c:3},
+      {p:"¿Cómo se dice 'verde' en guaraní?",ops:["Hovy","Sa'yju","Pytã","Hũ"],c:0},
+      {p:"¿Qué color es 'Sa'yju'?",ops:["Rojo","Blanco","Azul","Amarillo"],c:3},
+      {p:"¿Cómo se dice 'blanco' en guaraní?",ops:["Morotĩ","Hũ","Pytã","Hovy"],c:0},
+      {p:"¿Qué color es 'Hũ'?",ops:["Blanco","Verde","Negro","Azul"],c:2},
+      {p:"¿Cómo se dice 'seis' en guaraní?",ops:["Po","Poteĩ","Pokõi","Mbohapy"],c:1},
+      {p:"¿Qué número es 'Po'?",ops:["4","5","6","8"],c:1},
+    ],
+    intermedio:[
+      {p:"¿Cómo se dice 'diez' en guaraní?",ops:["Po","Poapy","Pa","Pokõi"],c:2},
+      {p:"¿Qué significa 'Poapy'?",ops:["15","20","12","8"],c:0},
+      {p:"¿Cómo se dice 'veinte' en guaraní?",ops:["Pa","Mokõipa","Pokõi","Peteĩpa"],c:1},
+      {p:"¿Qué número es 'Mokõipa'?",ops:["20","12","200","22"],c:0},
+      {p:"¿Cómo se dice 'color anaranjado'?",ops:["Pytã","Narã pytã","Pyta hovy","Sa'yju pytã"],c:1},
+      {p:"¿Qué significa 'Hovy pytã'?",ops:["Verde oscuro","Azul oscuro","Violeta/Morado","Celeste"],c:2},
+      {p:"¿Cómo se dice 'primero'?",ops:["Peteĩha","Mokoĩha","Mbohapyha","Irundyha"],c:0},
+      {p:"¿Cuánto es 'Irundy pa'?",ops:["14","40","44","400"],c:1},
+      {p:"¿Cómo se dice 'color rosado'?",ops:["Pytã morotĩ","Morotĩ pytã","Pytã hovy","Sa'yju hũ"],c:1},
+      {p:"¿Qué color es 'Hovy hũ'?",ops:["Azul claro","Verde oscuro","Azul oscuro","Gris"],c:2},
+    ],
+    avanzado:[
+      {p:"¿Cómo se forman los números mayores en guaraní?",ops:["Solo multiplicando","Solo sumando con 'ha'","Ambos: multiplicación y suma","Con prefijos especiales"],c:2},
+      {p:"'Sa' en guaraní equivale a...",ops:["10","100","1000","50"],c:1},
+      {p:"El sistema numérico guaraní tradicional es base...",ops:["Base 10","Base 5","Base 20","Base 12"],c:1},
+      {p:"¿Cómo se dice 'el tercer día'?",ops:["Mbohapy ára","Ára mbohapy","Mbohapyha ára","Ára mbohapyha"],c:2},
+      {p:"¿Cómo se dice 'mil' en guaraní?",ops:["Sa guasu","Pá guasu","Miĩ","Sa pa"],c:2},
+    ]
+  },
+  animales:{
+    basico:[
+      {p:"¿Cómo se dice 'perro' en guaraní?",ops:["Mbói","Jagua","Kavaju","Mymba"],c:1},
+      {p:"¿Qué animal es 'Mbói'?",ops:["Pájaro","Pez","Serpiente","Ratón"],c:2},
+      {p:"¿Cómo se dice 'pájaro' en guaraní?",ops:["Jagua","Ype","Guyra","Karumbé"],c:2},
+      {p:"¿Qué animal es 'Karumbé'?",ops:["Serpiente","Tortuga","Lagarto","Rana"],c:1},
+      {p:"¿Cómo se dice 'caballo'?",ops:["Kavaju","Vaka","Kamby","Jagua"],c:0},
+      {p:"¿Qué animal es 'Vaka'?",ops:["Cabra","Oveja","Vaca","Cerdo"],c:2},
+      {p:"¿Cómo se dice 'rana' en guaraní?",ops:["Kururu","Mbói","Karumbé","Ryapu"],c:0},
+      {p:"¿Cómo se llama el jaguar en guaraní?",ops:["Jagua","Jaguarete","Karaya","Puma"],c:1},
+      {p:"¿Qué animal es 'Ype'?",ops:["Ganso","Pato","Gallina","Paloma"],c:1},
+      {p:"¿Cómo se dice 'gato' en guaraní?",ops:["Mbarakaja","Jagua","Mbói","Guyra"],c:0},
+      {p:"¿Qué animal es 'Mbói chini'?",ops:["Lombriz","Víbora de cascabel","Salamandra","Lagartija"],c:1},
+      {p:"¿Cómo se dice 'mono' en guaraní?",ops:["Karaya","Jaguarete","Guyra","Tapiti"],c:0},
+    ],
+    intermedio:[
+      {p:"¿Cómo se dice 'mariposa'?",ops:["Paranã","Panambi","Yvyja","Mberu"],c:1},
+      {p:"¿Qué significa 'Mberu'?",ops:["Mariposa","Mosquito/mosca","Abeja","Hormiga"],c:1},
+      {p:"¿Cómo se dice 'árbol'?",ops:["Ka'a","Yvyra","Yvoty","Ñana"],c:1},
+      {p:"¿Qué significa 'Ka'a'?",ops:["Árbol","Hierba/monte/yerba","Flor","Hoja"],c:1},
+      {p:"¿Cómo se dice 'pez'?",ops:["Mbói","Pirã","Ryapu","Karumbé"],c:1},
+      {p:"¿Qué significa 'Yvoty'?",ops:["Hoja","Árbol","Flor","Raíz"],c:2},
+      {p:"¿Cómo se llama el colibrí?",ops:["Mainumby","Guyra","Ñakurutû","Mbatovi"],c:0},
+      {p:"¿Qué significa 'Ñakurutû'?",ops:["Halcón","Lechuza/búho","Loro","Tucán"],c:1},
+      {p:"¿Cómo se dice 'hormiga'?",ops:["Ysapy","Tuju","Tajy","Yvyja"],c:1},
+      {p:"¿Qué planta paraguaya viene del guaraní?",ops:["Ka'a he'ẽ (yerba mate)","Ruda","Tilo","Lavanda"],c:0},
+    ],
+    avanzado:[
+      {p:"'Jaguarete' literalmente significa...",ops:["Jaguar verdadero/auténtico","Jaguar grande","Jaguar negro","Tigre del monte"],c:0},
+      {p:"El sufijo '-ete' indica...",ops:["Tamaño grande","Autenticidad","Color negro","Peligro"],c:1},
+      {p:"¿Qué significa 'Mymba' como categoría?",ops:["Solo domésticos","Animal en general","Solo salvajes","Insectos"],c:1},
+      {p:"'Paranã' se refiere a...",ops:["Lago","Río grande/mar","Laguna","Arroyo"],c:1},
+      {p:"¿Cuál es el origen del nombre 'Paraguay'?",ops:["'Río de papagayos'","'Tierra grande'","'Río coronado' o 'río que viene del mar'","Sin traducción"],c:2},
+    ]
+  },
+  gramatica:{
+    basico:[
+      {p:"¿Cuál es el prefijo de 1ª persona singular?",ops:["Re-","O-","A-","Pe-"],c:2},
+      {p:"¿Cuál es el prefijo de 2ª persona singular?",ops:["A-","Re-","O-","Che-"],c:1},
+      {p:"¿Cuál es el prefijo de 3ª persona singular?",ops:["A-","Re-","O-","Che-"],c:2},
+      {p:"¿Cómo se dice 'yo' en guaraní?",ops:["Nde","Ha'e","Che","Ore"],c:2},
+      {p:"¿Cómo se dice 'vos/tú'?",ops:["Che","Nde","Ha'e","Ñande"],c:1},
+      {p:"¿Qué significa 'Ha'e'?",ops:["Yo","Vos","Él/Ella","Nosotros"],c:2},
+      {p:"¿Cómo se dice 'nosotros (sin incluirte)'?",ops:["Ñande","Ore","Pende","Ha'ekuéra"],c:1},
+      {p:"¿Qué pronombre es 'Ñande'?",ops:["Nosotros exclusivo","Nosotros inclusivo","Ustedes","Ellos"],c:1},
+      {p:"¿Cuál es la negación básica?",ops:["No-...-i","Nd-...-i","Na-...-a","Ni-...-i"],c:1},
+      {p:"¿El guaraní es lengua...?",ops:["Aislante","Aglutinante","Fusional","Tonal"],c:1},
+      {p:"¿Cómo se dice 'ellos/ellas'?",ops:["Ore","Ñande","Ha'ekuéra","Pende"],c:2},
+      {p:"¿Cuál es el prefijo de plural 2ª persona?",ops:["A-","Re-","O-","Pe-"],c:3},
+    ],
+    intermedio:[
+      {p:"¿Qué indica '-kue'?",ops:["Futuro","Pasado/ya no es","Plural","Posesión ajena"],c:1},
+      {p:"¿Qué función tiene '-rã'?",ops:["Pasado remoto","Futuro o intención","Plural","Habitual"],c:1},
+      {p:"'mbo-' sirve para...",ops:["Negación","Causativos","Plural","Pasado"],c:1},
+      {p:"¿Cómo se forma el plural?",ops:["Sufijo '-s'","Reduplicación","Con 'kuéra'","No se marca"],c:2},
+      {p:"¿Qué indica '-va'?",ops:["Futuro","Forma relativa (que/el que)","Negación","Posesión"],c:1},
+      {p:"Orden básico de la oración guaraní:",ops:["SVO","SOV","VSO","Libre"],c:0},
+      {p:"¿Qué indica 'jo-'?",ops:["Recíproco","Causativo","Reflexivo","Pasivo"],c:0},
+      {p:"¿Qué son los verbos 'che'?",ops:["Acción","Estativos (estados)","Movimiento","Causativos"],c:1},
+      {p:"'-mi' en guaraní indica...",ops:["Diminutivo/tierno","Aumentativo","Plural","Progresivo"],c:0},
+      {p:"¿Qué indica 'ete' en adjetivos?",ops:["Comparativo","Superlativo/intensificador","Negación","Posesión"],c:1},
+    ],
+    avanzado:[
+      {p:"Diferencia entre 'ore' y 'ñande':",ops:["Ore formal, ñande informal","Ore excluye al oyente, ñande lo incluye","Ore es plural","No hay diferencia"],c:1},
+      {p:"Verbos guaraníes se clasifican según...",ops:["El tiempo","La persona","Inicial vocálica o consonántica","Las sílabas"],c:2},
+      {p:"¿Qué es el 'jopara'?",ops:["Dialecto puro","Mezcla guaraní-español cotidiana","Texto sagrado","Dialecto del Chaco"],c:1},
+      {p:"El guaraní es oficial en Paraguay desde...",ops:["1967","1992","1811","2010"],c:1},
+      {p:"Fenómeno fonológico clave del guaraní:",ops:["Tonos léxicos","Nasalidad","Consonantes retroflejas","Longitud vocálica"],c:1},
+    ]
+  }
+};
+
+const DICT_DATA = [
+  // Saludos — well-attested forms
+  {gua:"Ko'ê porã",es:"Buenos días",cat:"saludos",note:"Lit. 'amanecer bueno'. Usado ampliamente."},
+  {gua:"Ka'aru porã",es:"Buenas tardes",cat:"saludos",note:"Lit. 'tarde buena'."},
+  {gua:"Pytû porã",es:"Buenas noches",cat:"saludos",note:"Lit. 'noche buena'."},
+  {gua:"Mba'éichapa reiko?",es:"¿Cómo estás?",cat:"saludos",note:"Forma completa. Abreviado: Mba'éichapa."},
+  {gua:"Iporãite",es:"Estoy bien (respuesta)",cat:"saludos",note:"Respuesta común al saludo."},
+  {gua:"Aguyje",es:"Gracias / ¡Bien hecho!",cat:"saludos",note:"Expresa gratitud y admiración."},
+  {gua:"Jajoecha",es:"Hasta luego / Nos vemos",cat:"saludos",note:"Lit. 'nos vemos mutuamente'."},
+  {gua:"Eguahê porã",es:"Bienvenido/a",cat:"saludos",note:"Lit. 'llegaste bien'."},
+  {gua:"Rohayhu",es:"Te quiero / Te amo",cat:"saludos",note:"Ro- = yo→vos. Hayhu = amar."},
+  {gua:"Héê",es:"Sí",cat:"saludos"},
+  {gua:"Nahániri",es:"No",cat:"saludos"},
+  {gua:"Mba'érepa?",es:"¿Por qué?",cat:"saludos"},
+  {gua:"Moõpa?",es:"¿Dónde?",cat:"saludos"},
+  {gua:"Mba'épa?",es:"¿Qué?",cat:"saludos"},
+  // Números y colores
+  {gua:"Peteĩ",es:"Uno (1)",cat:"numeros"},
+  {gua:"Mokõi",es:"Dos (2)",cat:"numeros"},
+  {gua:"Mbohapy",es:"Tres (3)",cat:"numeros"},
+  {gua:"Irundy",es:"Cuatro (4)",cat:"numeros"},
+  {gua:"Po",es:"Cinco (5)",cat:"numeros",note:"Lit. 'mano'. Base del sistema numérico."},
+  {gua:"Poteĩ",es:"Seis (6)",cat:"numeros",note:"Lit. 'cinco y uno'."},
+  {gua:"Pokõi",es:"Siete (7)",cat:"numeros",note:"Lit. 'cinco y dos'."},
+  {gua:"Poapy",es:"Quince (15)",cat:"numeros"},
+  {gua:"Pa",es:"Diez (10)",cat:"numeros"},
+  {gua:"Sa",es:"Cien (100)",cat:"numeros"},
+  {gua:"Miĩ",es:"Mil (1000)",cat:"numeros"},
+  {gua:"Pytã",es:"Rojo",cat:"numeros"},
+  {gua:"Hovy",es:"Verde / Azul",cat:"numeros",note:"El guaraní usa una sola palabra para verde y azul."},
+  {gua:"Sa'yju",es:"Amarillo",cat:"numeros"},
+  {gua:"Morotĩ",es:"Blanco",cat:"numeros"},
+  {gua:"Hũ",es:"Negro",cat:"numeros"},
+  // Animales y naturaleza
+  {gua:"Jagua",es:"Perro",cat:"animales"},
+  {gua:"Jaguarete",es:"Jaguar",cat:"animales",note:"Lit. 'perro/jaguar verdadero'. -ete = auténtico."},
+  {gua:"Mbarakaja",es:"Gato",cat:"animales"},
+  {gua:"Kavaju",es:"Caballo",cat:"animales",note:"Del español 'caballo', adaptado."},
+  {gua:"Vaka",es:"Vaca",cat:"animales",note:"Del español 'vaca', adaptado."},
+  {gua:"Guyra",es:"Pájaro",cat:"animales"},
+  {gua:"Mainumby",es:"Colibrí",cat:"animales"},
+  {gua:"Ñakurutû",es:"Lechuza / Búho",cat:"animales"},
+  {gua:"Karumbé",es:"Tortuga",cat:"animales"},
+  {gua:"Kururu",es:"Sapo",cat:"animales",note:"Kururu = sapo específicamente; rana = rana'i."},
+  {gua:"Mbói",es:"Serpiente",cat:"animales"},
+  {gua:"Pirã",es:"Pez",cat:"animales"},
+  {gua:"Panambi",es:"Mariposa",cat:"animales"},
+  {gua:"Karaya",es:"Mono (aullador)",cat:"animales"},
+  {gua:"Yvyra",es:"Árbol",cat:"animales"},
+  {gua:"Ka'a",es:"Hierba / Yerba / Monte",cat:"animales",note:"Raíz de palabras como Ka'a he'ẽ."},
+  {gua:"Yvoty",es:"Flor",cat:"animales"},
+  {gua:"Ka'a he'ẽ",es:"Stevia / Yerba dulce",cat:"animales",note:"Lit. 'hierba dulce'. La yerba mate en guaraní es Kaʼa."},
+  {gua:"Y",es:"Agua",cat:"animales",note:"Palabra corta pero fundamental."},
+  {gua:"Yvytu",es:"Viento",cat:"animales"},
+  // Gramática
+  {gua:"Che",es:"Yo",cat:"gramatica"},
+  {gua:"Nde",es:"Vos / Tú",cat:"gramatica"},
+  {gua:"Ha'e",es:"Él / Ella",cat:"gramatica"},
+  {gua:"Ore",es:"Nosotros (exclusivo)",cat:"gramatica",note:"No incluye al oyente. Ej: 'nosotros los que estamos aquí, sin vos'."},
+  {gua:"Ñande",es:"Nosotros (inclusivo)",cat:"gramatica",note:"Incluye al oyente. Ej: 'vos y yo juntos'."},
+  {gua:"Pende",es:"Ustedes",cat:"gramatica"},
+  {gua:"Ha'ekuéra",es:"Ellos / Ellas",cat:"gramatica"},
+  {gua:"-kue",es:"Sufijo de pasado relativo",cat:"gramatica",note:"Indica algo que ya fue o ya no es. Ej: tenda-kue = lugar que fue."},
+  {gua:"-rã",es:"Sufijo de futuro",cat:"gramatica",note:"Indica algo que será. Ej: tenda-rã = futuro lugar."},
+  {gua:"mbo-",es:"Prefijo causativo",cat:"gramatica",note:"Convierte un estado en acción. Ej: porã (bueno) → mboporã (mejorar)."},
+  {gua:"nd-...-i",es:"Negación verbal",cat:"gramatica",note:"Rodea al verbo. Ej: nd-aiko-i = no estoy."},
+  {gua:"-pa",es:"Marcador interrogativo",cat:"gramatica",note:"Se agrega al elemento preguntado. Ej: reiko-pa = ¿estás?"},
+  {gua:"-mi",es:"Sufijo diminutivo / afectivo",cat:"gramatica",note:"Expresa pequeñez o afecto. Ej: mitã-mi = niñito."},
+  {gua:"Jopara",es:"Mezcla guaraní-español",cat:"gramatica",note:"Habla cotidiana del Paraguay, mezcla de ambos idiomas."},
+];
+
+const COSMETICOS = [
+  {id:"hat_corona",tipo:"hat",emoji:"👑",name:"Corona Real",desc:"Para la ranita reina",precio:30},
+  {id:"hat_sombrero",tipo:"hat",emoji:"🎩",name:"Sombrero Mago",desc:"Magia guaraní",precio:25},
+  {id:"hat_flor",tipo:"hat",emoji:"🌸",name:"Flor de Yvoty",desc:"Elegancia natural",precio:20},
+  {id:"hat_arco",tipo:"hat",emoji:"🌈",name:"Arco Iris",desc:"Colores del cielo",precio:35},
+  {id:"acc_espada",tipo:"acc",emoji:"⚔️",name:"Espada Mítica",desc:"Guerrero guaraní",precio:40},
+  {id:"acc_corazon",tipo:"acc",emoji:"❤️",name:"Corazón",desc:"Amor guaraní",precio:15},
+  {id:"acc_estrella",tipo:"acc",emoji:"⭐",name:"Estrella",desc:"Brilla en el río",precio:20},
+  {id:"acc_fuego",tipo:"acc",emoji:"🔥",name:"Llama Sagrada",desc:"Poder del fuego",precio:45},
+  {id:"part_burbuja",tipo:"part",emoji:"&#x1FAE7;",name:"Burbujas",desc:"Partículas de agua",precio:50},
+  {id:"part_hojas",tipo:"part",emoji:"🍃",name:"Hojas del Monte",desc:"La selva te acompaña",precio:55},
+  {id:"part_estrellas",tipo:"part",emoji:"✨",name:"Destellos",desc:"Magia al saltar",precio:60},
+  {id:"scarf_red",tipo:"scarf",emoji:"🧣",name:"Bufanda Roja",desc:"¿Conocés el secreto?",precio:0,secret:true},
+  {id:"scarf_blue",tipo:"scarf",emoji:"🧣",name:"Bufanda Azul",desc:"Regalo del secreto",precio:0,secret:true},
+];
+
+const SKINS = [
+  {id:"default",name:"Verde Clásico",desc:"El original del río",precio:0,preview:"#4caf50"},
+  {id:"azul",name:"Azul Profundo",desc:"Como el agua guaraní",precio:40,preview:"#1976d2"},
+  {id:"rojo",name:"Rojo Fuego",desc:"Ardiente y poderoso",precio:40,preview:"#d32f2f"},
+  {id:"dorado",name:"Dorado",desc:"Ranita de leyenda",precio:60,preview:"#f9a825"},
+  {id:"negro",name:"Oscuro",desc:"Misterioso del pantano",precio:50,preview:"#212121"},
+  {id:"blanco",name:"Albino",desc:"Rarísimo y especial",precio:70,preview:"#eceff1"},
+  {id:"morado",name:"Amatista",desc:"De la realeza",precio:55,preview:"#7b1fa2"},
+  {id:"rosado",name:"Rosado",desc:"Dulce y encantador",precio:45,preview:"#e91e63"},
+  {id:"celeste",name:"Celeste",desc:"Del río cristalino",precio:45,preview:"#00acc1"},
+  {id:"arcoiris",name:"Arcoíris",desc:"¡El más raro de todos!",precio:120,preview:"rainbow"},
+  {id:"daniel",name:"Daniel 🧣",desc:"Secreto especial",precio:0,secret:true,preview:"#2e7d32"},
+];
+
+const VENTAJAS = [
+  {id:"perk_time",emoji:"⏰",name:"+3 segundos",desc:"Tiempo extra permanente",precio:80},
+  {id:"perk_coins",emoji:"💰",name:"+1 moneda extra",desc:"Cada respuesta da +1",precio:70},
+  {id:"perk_lives",emoji:"❤️",name:"Segunda vida",desc:"Una falla no penaliza en checkpoint",precio:100},
+];
+
+const CONSUMIBLES = [
+  {id:"buy_water",emoji:"💧",name:"Agua fresca",desc:"Restaura +40 de hidratación al sapito",precio:15,gives:'water'},
+  {id:"buy_food",emoji:"🌿",name:"Hoja de Ka'a",desc:"Restaura +40 de energía alimentaria",precio:15,gives:'food'},
+  {id:"buy_bundle",emoji:"🎒",name:"Mochila de viaje",desc:"x2 Agua + x2 Comida — ¡oferta!",precio:50,gives:'bundle'},
+];
+
+const NOMBRES_GUARANI = ["Kururu","Yvoty","Ka'a","Mainumby","Panambi","Pytaguasu","Mbói","Guyra","Ñande","Arasy"];
+
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+let S = loadS();
+
+function loadS(){
+  try{const r=localStorage.getItem('sapito_v5');if(r){
+    const d=JSON.parse(r);
+    if(!d.achievements)d.achievements=[];
+    if(!d.mood)d.mood=70;
+    if(!d.lastPlayed)d.lastPlayed=0;
+    if(!d.stats)d.stats={totalPlayed:0,perfectRuns:0,maxStreak:0};
+    if(!d.progress)d.progress={level:1,xp:0,seenTutorials:[]};
+    if(!d.inventory)d.inventory={water:2,food:2};
+    if(!d.postalBg)d.postalBg=0;
+    return d;
+  }}catch(e){}
+  return{
+    monedas:0,
+    frogName:'Kururu',
+    skin:'default',
+    owned:[],
+    equipped:{hat:null,acc:null,part:null,scarf:null},
+    perks:[],
+    energy:{water:100,food:100,lastUpdate:Date.now()},
+    inventory:{water:2,food:2},
+    easterEgg:false,
+    achievements:[],
+    mood:70,
+    lastPlayed:0,
+    stats:{totalPlayed:0,perfectRuns:0,maxStreak:0},
+    progress:{level:1,xp:0,seenTutorials:[]},
+    activeCards:[],
+    postalBg:0,
+  };
+}
+
+function saveS(){localStorage.setItem('sapito_v5',JSON.stringify(S));}
+
+// ═══════════════════════════════════════════
+// ENERGY SYSTEM (item-based)
+// ═══════════════════════════════════════════
+const ENERGY_DECAY_PER_HOUR = 8;
+const FEED_RESTORE = 40;
+
+function updateEnergyDecay(){
+  const now = Date.now();
+  const hoursElapsed = (now - S.energy.lastUpdate) / 3600000;
+  const decay = Math.floor(hoursElapsed * ENERGY_DECAY_PER_HOUR);
+  if(decay > 0){
+    S.energy.water = Math.max(0, S.energy.water - decay);
+    S.energy.food  = Math.max(0, S.energy.food  - decay);
+    S.energy.lastUpdate = now;
+    saveS();
+  }
+}
+
+function getTotalEnergy(){ return Math.floor((S.energy.water + S.energy.food) / 2); }
+function canPlay(){ return getTotalEnergy() >= 20; }
+
+function feedFrog(type){
+  if(!S.inventory) S.inventory={water:0,food:0};
+  if(type==='water'){
+    if(S.inventory.water<=0){ showToast('¡No tenés agua! Comprá en la tienda 💧'); return; }
+    S.inventory.water--;
+    S.energy.water = Math.min(100, S.energy.water + FEED_RESTORE);
+  } else {
+    if(S.inventory.food<=0){ showToast('¡No tenés comida! Comprá en la tienda 🌿'); return; }
+    S.inventory.food--;
+    S.energy.food = Math.min(100, S.energy.food + FEED_RESTORE);
+  }
+  S.energy.lastUpdate = Date.now();
+  if(!S.stats) S.stats={};
+  S.stats.feedCount=(S.stats.feedCount||0)+1;
+  boostMood(8);
+  saveS();
+  checkAchievements();
+  renderEnergy();
+  renderHomeEnergy();
+  showToast(type==='water'?'💧 +'+FEED_RESTORE+' hidratación':'🌿 +'+FEED_RESTORE+' energía');
+}
+
+function renderEnergy(){
+  const w=S.energy.water, f=S.energy.food;
+  const inv=S.inventory||{water:0,food:0};
+  const wbar=document.getElementById('sp-water-bar');
+  const fbar=document.getElementById('sp-food-bar');
+  if(wbar){wbar.style.width=w+'%';wbar.className='e-bar'+(w<30?' low':'');}
+  const wv=document.getElementById('sp-water-val');if(wv)wv.textContent=w+'/100';
+  if(fbar){fbar.style.width=f+'%';fbar.className='e-bar'+(f<30?' low':'');}
+  const fv=document.getElementById('sp-food-val');if(fv)fv.textContent=f+'/100';
+
+  const wBtn=document.getElementById('sp-btn-water');
+  const fBtn=document.getElementById('sp-btn-food');
+  const wcd=document.getElementById('sp-water-cd');
+  const fcd=document.getElementById('sp-food-cd');
+  if(wBtn){ wBtn.disabled=inv.water<=0; if(wcd)wcd.textContent='x'+inv.water; }
+  if(fBtn){ fBtn.disabled=inv.food<=0;  if(fcd)fcd.textContent='x'+inv.food; }
+}
+
+function renderHomeEnergy(){
+  const e=getTotalEnergy();
+  const inv=S.inventory||{water:0,food:0};
+  const bar=document.getElementById('home-ebar');
+  const val=document.getElementById('home-eval');
+  if(bar) bar.style.width=e+'%';
+  if(val) val.textContent=e+'/100';
+
+  const wBtn=document.getElementById('btn-water');
+  const fBtn=document.getElementById('btn-food');
+  const wcd=document.getElementById('water-cd');
+  const fcd=document.getElementById('food-cd');
+  if(wBtn){ wBtn.disabled=inv.water<=0; if(wcd)wcd.textContent=inv.water>0?'(x'+inv.water+')':'(0)'; }
+  if(fBtn){ fBtn.disabled=inv.food<=0;  if(fcd)fcd.textContent=inv.food>0?'(x'+inv.food+')':'(0)'; }
+
+  const playBtn=document.getElementById('btn-play');
+  if(playBtn) playBtn.disabled=!canPlay();
+}
+
+function fmtCd(ms){
+  const h=Math.floor(ms/3600000), m=Math.floor((ms%3600000)/60000);
+  return h>0?h+'h '+m+'m':m+'m';
+}
+
+// ── Toast notification ──
+function showToast(msg){
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.8);color:white;padding:10px 20px;border-radius:20px;font-weight:800;font-size:0.9rem;z-index:9999;pointer-events:none;animation:cpop-anim 2s ease-out forwards;white-space:nowrap;border:1px solid rgba(255,255,255,0.15);';
+  t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),2000);
+}
+
+// ═══════════════════════════════════════════
+// FROG RENDER
+// ═══════════════════════════════════════════
+function renderFrogInEl(el, size=90, showAccessories=true){
+  if(!el)return;
+  const skin = S.skin||'default';
+  const scarf = showAccessories ? S.equipped.scarf : null;
+  el.innerHTML = makeFrogSVG(skin, size, null, null, scarf);
+
+  // Apply accessories as overlays
+  if(showAccessories){
+    const hatId=S.equipped.hat;
+    const accId=S.equipped.acc;
+    const hatItem=hatId?COSMETICOS.find(i=>i.id===hatId):null;
+    const accItem=accId?COSMETICOS.find(i=>i.id===accId):null;
+
+    if(hatItem){
+      const sp=document.createElement('span');
+      sp.style.cssText='position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:'+(size*0.28)+'px;pointer-events:none;';
+      sp.textContent=hatItem.emoji;
+      el.appendChild(sp);
+    }
+    if(accItem){
+      const sp=document.createElement('span');
+      sp.style.cssText='position:absolute;bottom:8px;right:-8px;font-size:'+(size*0.22)+'px;pointer-events:none;';
+      sp.textContent=accItem.emoji;
+      el.appendChild(sp);
+    }
+  }
+}
+
+function renderHomeFrog(){
+  const wrap=document.getElementById('home-frog-wrap');
+  if(!wrap)return;
+  // Clear extra children except spans
+  wrap.querySelectorAll('svg').forEach(s=>s.remove());
+  const existing=wrap.innerHTML;
+  const svgStr=makeFrogSVG(S.skin||'default',90,null,null,S.equipped.scarf);
+  wrap.insertAdjacentHTML('afterbegin',svgStr);
+
+  const hatEl=document.getElementById('home-hat');
+  const accEl=document.getElementById('home-acc');
+  const hatItem=S.equipped.hat?COSMETICOS.find(i=>i.id===S.equipped.hat):null;
+  const accItem=S.equipped.acc?COSMETICOS.find(i=>i.id===S.equipped.acc):null;
+  if(hatEl){hatEl.textContent=hatItem?hatItem.emoji:'';hatEl.style.display=hatItem?'block':'none';}
+  if(accEl){accEl.textContent=accItem?accItem.emoji:'';accEl.style.display=accItem?'block':'none';}
+}
+
+function renderGameFrog(){
+  const wrap=document.getElementById('frog-svg-wrap');
+  if(!wrap)return;
+  const scarf=S.equipped.scarf;
+  wrap.innerHTML=makeFrogSVG(S.skin||'default',52,null,null,scarf);
+
+  const hatEl=document.getElementById('fa-hat');
+  const accEl=document.getElementById('fa-acc');
+  const hatItem=S.equipped.hat?COSMETICOS.find(i=>i.id===S.equipped.hat):null;
+  const accItem=S.equipped.acc?COSMETICOS.find(i=>i.id===S.equipped.acc):null;
+  if(hatEl){hatEl.textContent=hatItem?hatItem.emoji:'';hatEl.style.display=hatItem?'block':'none';}
+  if(accEl){accEl.textContent=accItem?accItem.emoji:'';accEl.style.display=accItem?'block':'none';}
+}
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+function navTo(id){
+  // Check if feature is unlocked
+  const locks={inventory:2,postal:3,dict:1,logros:1,shop:1,sapito:1};
+  const req=locks[id]||1;
+  const lvl=(S.progress&&S.progress.level)||1;
+  if(lvl<req){showToast('Desbloqueás esto en nivel '+req+' 🔒');return;}
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelector('[data-page="'+id+'"]')?.classList.add('active');
+  document.getElementById('pages').scrollTop=0;
+
+  if(id==='home'){renderHomeFrog();renderHomeEnergy();renderMoodHome();renderHomeXP();renderFraseDia();}
+  if(id==='sapito'){renderSapitoPage();}
+  if(id==='shop'){renderShop();}
+  if(id==='dict'){renderDict();}
+  if(id==='logros'){renderLogros();}
+  if(id==='inventory'){renderInventory();}
+  if(id==='postal'){renderPostal();}
+  if(id==='listen'){startListenGame();}
+}
+
+// ═══════════════════════════════════════════
+// HOME SETUP
+// ═══════════════════════════════════════════
+let selTema='saludos';
+let selNivel='basico';
+
+document.querySelectorAll('.tema-chip').forEach(c=>{
+  c.addEventListener('click',()=>{
+    document.querySelectorAll('.tema-chip').forEach(x=>x.classList.remove('sel'));
+    c.classList.add('sel');
+    selTema=c.dataset.tema;
+  });
+});
+document.querySelectorAll('.nivel-pill').forEach(p=>{
+  p.addEventListener('click',()=>{
+    document.querySelectorAll('.nivel-pill').forEach(x=>x.classList.remove('sel'));
+    p.classList.add('sel');
+    selNivel=p.dataset.nivel;
+  });
+});
+
+// ═══════════════════════════════════════════
+// GAME
+// ═══════════════════════════════════════════
+const NIVEL_CFG={basico:{tiempo:15,coins:3},intermedio:{tiempo:12,coins:5},avanzado:{tiempo:9,coins:8}};
+let G={};
+let timerIv=null;
+
+function startGame(){
+  if(!canPlay())return;
+  const pool=[...POOL[selTema][selNivel]].sort(()=>Math.random()-0.5).slice(0,10);
+  G={nivel:selNivel,tema:selTema,preguntas:pool,qi:0,coins:0,correct:0,history:[],cp:false,answered:false,streak:0,activeCards:[],bonusTime:0,coinMult:1,shieldUsed:false,doubleLeft:0};
+
+  // Stats
+  if(!S.stats) S.stats={totalPlayed:0,perfectRuns:0,maxStreak:0};
+  S.stats.totalPlayed=(S.stats.totalPlayed||0)+1;
+  S.lastPlayed=Date.now();
+  if(!S.stats.themesSeen) S.stats.themesSeen={};
+  S.stats.themesSeen[selTema]=true;
+
+  // Energy cost
+  S.energy.water=Math.max(0,S.energy.water-10);
+  S.energy.food=Math.max(0,S.energy.food-8);
+  // Mood boost for playing
+  boostMood(5);
+  saveS();
+
+  navToGame();
+  buildLilies();
+  renderGameFrog();
+  moveFrogTo(0,false);
+
+  // Show card selection after brief delay
+  const cards=pickRandomCards();
+  setTimeout(()=>showCardModal(cards),400);
+}
+
+function navToGame(){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-game').classList.add('active');
+}
+
+function buildLilies(){
+  const row=document.getElementById('lily-row');
+  row.innerHTML='';
+  for(let i=0;i<=10;i++){
+    const wrap=document.createElement('div');
+    wrap.className='lily-wrap';
+    wrap.id='lw'+i;
+    const l=document.createElement('div');
+    l.className='lily'+(i===5?' cp':'');
+    l.id='l'+i;
+    l.textContent=i===0?'🏁':i===5?'🚩':i===10?'🏆':i;
+    const lb=document.createElement('div');
+    lb.className='lily-lbl';
+    lb.textContent=i===5?'CP':i===10?'FIN':'';
+    wrap.appendChild(l);wrap.appendChild(lb);
+    row.appendChild(wrap);
+  }
+}
+
+function moveFrogTo(idx,anim){
+  const actor=document.getElementById('frog-actor');
+  const river=document.getElementById('river');
+  const lw=document.getElementById('lw'+idx);
+  if(!lw||!river)return;
+  const rr=river.getBoundingClientRect();
+  const lr=lw.getBoundingClientRect();
+  const cx=lr.left-rr.left+lr.width/2;
+  actor.style.left=cx+'px';
+  if(anim){
+    const sw=document.getElementById('frog-svg-wrap');
+    sw.classList.remove('jump');void sw.offsetWidth;sw.classList.add('jump');
+    setTimeout(()=>sw.classList.remove('jump'),600);
+  }
+}
+
+function showQ(){
+  G.answered=false;
+  const q=G.preguntas[G.qi];
+  const ti={saludos:{l:'Saludos',c:'saludos'},numeros:{l:'Números',c:'numeros'},animales:{l:'Animales',c:'animales'},gramatica:{l:'Gramática',c:'gramatica'}}[G.tema];
+
+  document.getElementById('hud-level').textContent={basico:'🌱 Básico',intermedio:'🌿 Intermedio',avanzado:'🌳 Avanzado'}[G.nivel];
+  document.getElementById('hud-tema').textContent={saludos:'👋 Saludos',numeros:'🔢 Números',animales:'🐾 Animales',gramatica:'📚 Gramática'}[G.tema];
+  document.getElementById('hud-coins').textContent=G.coins;
+  document.getElementById('hud-q').textContent=(G.qi+1)+'/10';
+  updateStreakHUD();
+
+  const tag=document.getElementById('q-tag');
+  tag.textContent={saludos:'👋 Saludos',numeros:'🔢 Números',animales:'🐾 Animales',gramatica:'📚 Gramática'}[G.tema];
+  tag.className='q-tag '+ti.c;
+  document.getElementById('q-text').textContent=q.p;
+
+  const fb=document.getElementById('fb');fb.className='fb';
+
+  // Card: reveal hint in tag
+  if(hasCard('c_reveal')){
+    tag.textContent+=' — Respuesta en: '+ti.c.toUpperCase();
+    useCard('c_reveal');
+  }
+
+  // lily highlights
+  for(let i=0;i<=10;i++){
+    const l=document.getElementById('l'+i);
+    if(!l)continue;
+    l.className='lily'+(i===5?' cp':'');
+    if(i===G.qi)l.classList.add('active');
+    else if(i<G.qi)l.classList.add(G.history[i]?'ok':'fail');
+  }
+
+  renderOpts(q);
+  renderPowers();
+
+  // Card: auto-eliminate 1 wrong option
+  if(hasCard('c_elim')){ elimOpts(1); useCard('c_elim'); }
+
+  // Card: no-timer
+  if(hasCard('c_notime')){
+    document.getElementById('timer-bar').style.width='100%';
+    document.getElementById('timer-bar').className='timer-bar';
+    useCard('c_notime');
+    // Don't start timer
+  } else {
+    startTimer();
+  }
+}
+
+function renderOpts(q){
+  const grid=document.getElementById('opts-grid');
+  grid.innerHTML='';
+  const L=['A','B','C','D'];
+  q.ops.forEach((op,i)=>{
+    const btn=document.createElement('button');
+    btn.className='opt';
+    btn.dataset.i=i;
+    btn.innerHTML=`<span class="opt-l">${L[i]}</span>${op}`;
+    btn.onclick=()=>answer(i,btn);
+    grid.appendChild(btn);
+  });
+}
+
+function renderPowers(){
+  const row=document.getElementById('powers-row');
+  row.innerHTML='';
+  const add=(lbl,cost,count,fn)=>{
+    const b=document.createElement('button');
+    b.className='pw-btn';
+    b.disabled=count<=0||G.coins<cost;
+    b.innerHTML=lbl+` <span class="pw-cost">${cost}🪙 ×${count}</span>`;
+    b.onclick=fn;
+    row.appendChild(b);
+  };
+  add('🎯 Eliminar 1',8,G.powers?.e1??2,usePow1);
+  add('💥 Eliminar 2',15,G.powers?.e50??1,usePow50);
+  if(!G.powers){G.powers={e1:2,e50:1};}
+}
+
+function usePow1(){if(!G.powers||G.powers.e1<=0||G.coins<8)return;G.coins-=8;G.powers.e1--;document.getElementById('hud-coins').textContent=G.coins;elimOpts(1);renderPowers();}
+function usePow50(){if(!G.powers||G.powers.e50<=0||G.coins<15)return;G.coins-=15;G.powers.e50--;document.getElementById('hud-coins').textContent=G.coins;elimOpts(2);renderPowers();}
+
+function elimOpts(n){
+  const q=G.preguntas[G.qi];
+  const btns=[...document.querySelectorAll('.opt:not(.elim)')].filter(b=>parseInt(b.dataset.i)!==q.c);
+  btns.sort(()=>Math.random()-0.5).slice(0,n).forEach(b=>b.classList.add('elim'));
+}
+
+function startTimer(){
+  clearInterval(timerIv);
+  const total=NIVEL_CFG[G.nivel].tiempo+(S.perks.includes('perk_time')?3:0)+(G.bonusTime||0);
+  let left=total;
+  const bar=document.getElementById('timer-bar');
+  bar.style.width='100%';bar.className='timer-bar';
+  timerIv=setInterval(()=>{
+    left-=0.1;
+    const pct=Math.max(0,left/total*100);
+    bar.style.width=pct+'%';
+    if(pct<30)bar.classList.add('warn');
+    if(pct<15)bar.classList.add('crit');
+    if(left<=0){clearInterval(timerIv);timeout();}
+  },100);
+}
+
+function stopTimer(){clearInterval(timerIv);}
+
+function timeout(){
+  if(G.answered)return;
+  G.answered=true;
+  stopTimer();
+  const q=G.preguntas[G.qi];
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  document.querySelectorAll('.opt')[q.c]?.classList.add('ok');
+  const fb=document.getElementById('fb');fb.textContent='⏰ ¡Tiempo! Era: '+q.ops[q.c];fb.className='fb show fail';
+  G.history[G.qi]=false;
+  const sw=document.getElementById('frog-svg-wrap');
+  setTimeout(()=>{sw.classList.add('fall');setTimeout(()=>{sw.classList.remove('fall');nextQ();},800);},400);
+}
+
+function answer(idx,btn){
+  if(G.answered)return;
+  G.answered=true;
+  stopTimer();
+  const q=G.preguntas[G.qi];
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  const fb=document.getElementById('fb');
+
+  if(idx===q.c){
+    btn.classList.add('ok');
+    G.correct++;
+    // Streak
+    G.streak=(G.streak||0)+1;
+    if(G.streak>(S.stats.maxStreak||0)){S.stats.maxStreak=G.streak;saveS();}
+    const mult=getStreakMult();
+    // Card: double coins
+    let baseCoins=NIVEL_CFG[G.nivel].coins+(S.perks.includes('perk_coins')?1:0);
+    if(hasCard('c_double')&&G.doubleLeft>0){baseCoins*=2;G.doubleLeft--;}
+    const earned=Math.round(baseCoins*mult*(G.coinMult||1));
+    G.coins+=earned;
+    document.getElementById('hud-coins').textContent=G.coins;
+    const streakTxt=mult>1?' x'+mult+'🔥':'';
+    fb.textContent='✅ ¡Aguyje! +'+earned+(streakTxt?streakTxt:'');fb.className='fb show ok';
+    G.history[G.qi]=true;
+    updateStreakHUD();
+    spawnPops(earned);
+    boostMood(3);
+    checkAchievements();
+    setTimeout(()=>{moveFrogTo(G.qi+1,true);setTimeout(nextQ,700);},500);
+  } else {
+    // Shield card
+    if(hasCard('c_shield')&&!G.shieldUsed){
+      G.shieldUsed=true;
+      useCard('c_shield');
+      btn.classList.add('fail');
+      document.querySelectorAll('.opt')[q.c]?.classList.add('ok');
+      fb.textContent='🛡️ ¡Escudo activado! Seguís...';fb.className='fb show ok';
+      G.history[G.qi]=true;
+      G.streak=(G.streak||0)+1;
+      updateStreakHUD();
+      setTimeout(()=>{moveFrogTo(G.qi+1,true);setTimeout(nextQ,700);},700);
+      return;
+    }
+    btn.classList.add('fail');
+    document.querySelectorAll('.opt')[q.c]?.classList.add('ok');
+    fb.textContent='❌ Era: '+q.ops[q.c];fb.className='fb show fail';
+    G.history[G.qi]=false;
+    G.streak=0;
+    updateStreakHUD();
+    S.mood=Math.max(0,(S.mood||50)-2);
+    saveS();
+    const sw=document.getElementById('frog-svg-wrap');
+    setTimeout(()=>{sw.classList.add('fall');setTimeout(()=>{sw.classList.remove('fall');nextQ();},800);},500);
+  }
+}
+
+function nextQ(){
+  G.qi++;
+  if(G.qi===5&&!G.cp){G.cp=true;showCP();return;}
+  if(G.qi>=10){endGame();}else{showQ();}
+}
+
+function showCP(){
+  document.getElementById('cp-coins').textContent=G.coins;
+  document.getElementById('cp-modal').classList.add('show');
+}
+function cpContinue(){document.getElementById('cp-modal').classList.remove('show');showQ();}
+function cpRetire(){
+  document.getElementById('cp-modal').classList.remove('show');
+  const kept=Math.floor(G.coins*0.5);
+  S.monedas+=kept;saveS();
+  showResult(true,kept,{water:0,food:0});
+}
+
+function endGame(){
+  const pct=G.correct/10;
+  const kp=pct>=0.8?0.7:0.5;
+  let kept=Math.floor(G.coins*kp);
+  S.monedas+=kept;
+
+  if(pct===1){if(!S.stats)S.stats={};S.stats.perfectRuns=(S.stats.perfectRuns||0)+1;}
+  if(G.activeCards&&G.activeCards.some(id=>ALL_CARDS.find(c=>c.id===id&&c.rarity==='epico'))) unlockAchievement('card_epic');
+  boostMood(pct>=0.7?10:2);
+
+  // Track cards obtained
+  if(G.activeCards&&G.activeCards.length){
+    if(!S.stats.cardsObtained) S.stats.cardsObtained=[];
+    G.activeCards.forEach(id=>{if(!S.stats.cardsObtained.includes(id))S.stats.cardsObtained.push(id);});
+  }
+
+  // Award XP: base by difficulty + bonus for correct
+  const xpBase={basico:20,intermedio:35,avanzado:55}[G.nivel]||20;
+  const xpBonus=Math.round(pct*xpBase);
+  addXP(xpBase+xpBonus);
+
+  // Reward consumables if >70% correct
+  let reward={water:0,food:0};
+  if(pct>0.7){
+    if(!S.inventory) S.inventory={water:0,food:0};
+    const bonus=G.nivel==='avanzado'?2:1;
+    S.inventory.water+=bonus; S.inventory.food+=bonus;
+    reward={water:bonus,food:bonus};
+  }
+  saveS();
+  checkAchievements();
+  // Show card tutorial first time
+  if(!S.progress.seenTutorials.includes('cartas')) setTimeout(()=>showTutorial('cartas'),800);
+  showResult(false,kept,reward);
+}
+
+function showResult(retired,kept,reward){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-result').classList.add('active');
+  const s=G.correct;
+  const pct=s/10;
+  let emoji,title,msg,stars;
+  if(retired){emoji='🏃';title='¡Te retiraste!';msg='Decisión sabia. ¡Volvé más fuerte!';stars='⭐⭐';}
+  else if(pct===1){emoji='🏆';title='¡Perfecto!';msg='¡Sos un gurí guaraní de verdad!';stars='⭐⭐⭐⭐⭐';}
+  else if(pct>=0.8){emoji='🐸';title='¡Aguyje!';msg='Muy bien, casi perfecto.';stars='⭐⭐⭐⭐';}
+  else if(pct>=0.6){emoji='😊';title='¡Porã!';msg='Buen trabajo, seguí practicando.';stars='⭐⭐⭐';}
+  else if(pct>=0.4){emoji='🤔';title='Casi...';msg='El guaraní es un camino, ¡seguí!';stars='⭐⭐';}
+  else{emoji='💪';title='¡A practicar!';msg='Cada intento te hace más fuerte.';stars='⭐';}
+  document.getElementById('res-frog').textContent=emoji;
+  document.getElementById('res-stars').textContent=stars;
+  document.getElementById('res-title').textContent=title;
+  document.getElementById('res-score').textContent=s+'/10';
+  document.getElementById('res-coins').textContent='+'+G.coins+' monedas ganadas';
+  const inv=S.inventory||{water:0,food:0};
+  let savedTxt='Guardaste '+kept+' monedas (total: '+S.monedas+')';
+  if(reward&&(reward.water>0||reward.food>0)){
+    savedTxt+=' | Premio: '+(reward.water>0?'x'+reward.water+' Agua ':'')+(reward.food>0?'x'+reward.food+' Comida':'');
+  }
+  document.getElementById('res-saved').textContent=savedTxt;
+  document.getElementById('res-msg').textContent=msg;
+  updateNavCoins();
+}
+
+function retryGame(){startGame();}
+
+function spawnPops(n){
+  const part=S.equipped.part;
+  const ems=part==='part_burbuja'?['🫧','💧']:part==='part_hojas'?['🍃','🌿']:part==='part_estrellas'?['✨','⭐']:['✨','🪙'];
+  const actor=document.getElementById('frog-actor');
+  const r=actor.getBoundingClientRect();
+  for(let i=0;i<4;i++){
+    const p=document.createElement('div');
+    p.className='cpop';
+    p.textContent=i<2?ems[0]:ems[1];
+    p.style.left=(r.left+Math.random()*40-10)+'px';
+    p.style.top=(r.top-10)+'px';
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),1100);
+  }
+}
+
+// ═══════════════════════════════════════════
+// SAPITO PAGE
+// ═══════════════════════════════════════════
+function renderSapitoPage(){
+  document.getElementById('sp-frog-name').textContent=S.frogName||'Kururu';
+  const center=document.getElementById('sp-frog-center');
+  center.style.position='relative';
+  center.style.display='inline-block';
+  renderFrogInEl(center,100,true);
+
+  // Mood bubble
+  let mb=document.getElementById('mood-bubble');
+  if(!mb){
+    mb=document.createElement('div');
+    mb.id='mood-bubble';
+    mb.className='mood-bubble';
+    center.appendChild(mb);
+  }
+  mb.textContent=getMoodFace();
+
+  // Mood bar (inject after frog name if not present)
+  let moodBar=document.getElementById('sp-mood-row');
+  if(!moodBar){
+    moodBar=document.createElement('div');
+    moodBar.id='sp-mood-row';
+    moodBar.style.cssText='margin-bottom:12px;';
+    const nameEl=document.getElementById('sp-frog-name');
+    nameEl.parentNode.insertBefore(moodBar,nameEl.nextSibling);
+  }
+  const m=S.mood||50;
+  const mColor=m>=65?'linear-gradient(90deg,#a8e063,#56ab2f)':m>=35?'linear-gradient(90deg,#f7971e,#ffd200)':'linear-gradient(90deg,#f44336,#ff7043)';
+  moodBar.innerHTML=`<div style="display:flex;align-items:center;gap:8px;justify-content:center;"><span style="font-size:1rem">${getMoodFace()}</span><div style="width:120px;height:8px;background:rgba(255,255,255,0.1);border-radius:10px;overflow:hidden;"><div style="width:${m}%;height:100%;border-radius:10px;background:${mColor};transition:width 0.5s;"></div></div><span style="font-family:'Boogaloo',cursive;font-size:0.85rem;color:#8fbc8f;">${m}/100</span></div>`;
+
+  // Name suggestions
+  const sugs=document.getElementById('name-sugs');
+  sugs.innerHTML='';
+  NOMBRES_GUARANI.forEach(n=>{
+    const s=document.createElement('span');
+    s.className='name-sug';s.textContent=n;
+    s.onclick=()=>{document.getElementById('sp-rename-input').value=n;};
+    sugs.appendChild(s);
+  });
+
+  renderEnergy();
+  renderEquippedGrid();
+}
+
+function renameFrog(){
+  const val=document.getElementById('sp-rename-input').value.trim();
+  if(!val)return;
+  S.frogName=val;
+  document.getElementById('sp-frog-name').textContent=val;
+
+  // Easter egg
+  if(val.toLowerCase()==='daniel'&&!S.easterEgg){
+    S.easterEgg=true;
+    S.skin='daniel';
+    if(!S.owned.includes('scarf_red'))S.owned.push('scarf_red');
+    if(!S.owned.includes('scarf_blue'))S.owned.push('scarf_blue');
+    S.equipped.scarf='scarf_red';
+    saveS();
+    document.getElementById('ee-modal').classList.add('show');
+    renderFrogInEl(document.getElementById('sp-frog-center'),100,true);
+  }
+  saveS();
+}
+
+function closeEE(){
+  document.getElementById('ee-modal').classList.remove('show');
+  renderSapitoPage();
+  renderHomeFrog();
+}
+
+function renderEquippedGrid(){
+  const grid=document.getElementById('equipped-grid');
+  if(!grid)return;
+  grid.innerHTML='';
+  const slots=[
+    {tipo:'hat',label:'Sombrero',empty:'🪖'},
+    {tipo:'acc',label:'Accesorio',empty:'🎽'},
+    {tipo:'scarf',label:'Bufanda',empty:'🧣'},
+    {tipo:'part',label:'Partículas',empty:'✨'},
+    {tipo:'skin',label:'Skin',empty:'🎨'},
+  ];
+  slots.forEach(sl=>{
+    const div=document.createElement('div');
+    let itemId=sl.tipo==='skin'?S.skin:S.equipped[sl.tipo];
+    let item=null;
+    if(sl.tipo==='skin'){item=SKINS.find(s=>s.id===itemId);}
+    else{item=COSMETICOS.find(c=>c.id===itemId);}
+    div.className='eq-slot'+(item?' has-item':'');
+    const icon=document.createElement('span');
+    icon.className='eq-slot-icon';
+    if(sl.tipo==='skin'&&item){
+      // mini skin preview
+      const c=SKIN_COLORS[item.id]||SKIN_COLORS.default;
+      icon.innerHTML=`<svg width="32" height="32" viewBox="0 0 80 80"><circle cx="40" cy="40" r="36" fill="${c.body}"/><circle cx="28" cy="32" r="8" fill="white"/><circle cx="52" cy="32" r="8" fill="white"/><circle cx="28" cy="32" r="5" fill="${c.eye}"/><circle cx="52" cy="32" r="5" fill="${c.eye}"/></svg>`;
+    } else {
+      icon.textContent=item?item.emoji:sl.empty;
+    }
+    const lbl=document.createElement('div');lbl.className='eq-slot-label';lbl.textContent=sl.label;
+    const nm=document.createElement('div');nm.className='eq-slot-name';nm.textContent=item?item.name:'Vacío';
+    div.appendChild(icon);div.appendChild(lbl);div.appendChild(nm);
+    div.onclick=()=>navTo('shop');
+    grid.appendChild(div);
+  });
+}
+
+// ═══════════════════════════════════════════
+// TIENDA
+// ═══════════════════════════════════════════
+let curShopTab='cosmeticos';
+
+function renderShop(){
+  document.getElementById('shop-coins').textContent=S.monedas;
+  renderShopGrid(curShopTab);
+}
+
+function switchShopTab(tab){
+  curShopTab=tab;
+  document.querySelectorAll('.shop-tab2').forEach(t=>t.classList.toggle('active',t.dataset.stab===tab));
+  renderShopGrid(tab);
+}
+
+function renderShopGrid(tab){
+  const grid=document.getElementById('shop-grid2');
+  grid.innerHTML='';
+  const inv=S.inventory||{water:0,food:0};
+
+  if(tab==='consumibles'){
+    // Special layout for consumibles — show inventory first
+    const invDiv=document.createElement('div');
+    invDiv.style.cssText='grid-column:1/-1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:12px 14px;margin-bottom:4px;';
+    invDiv.innerHTML=`<div style="font-family:'Boogaloo',cursive;font-size:1rem;color:var(--g5);margin-bottom:8px;">🎒 Tu inventario</div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:6px;font-weight:800;font-size:1rem;">💧 Agua: <span style="color:var(--y);font-family:'Boogaloo',cursive;font-size:1.3rem;">${inv.water}</span></div>
+      <div style="display:flex;align-items:center;gap:6px;font-weight:800;font-size:1rem;">🌿 Comida: <span style="color:var(--y);font-family:'Boogaloo',cursive;font-size:1.3rem;">${inv.food}</span></div>
+    </div>`;
+    grid.appendChild(invDiv);
+
+    CONSUMIBLES.forEach(item=>{
+      const canAfford=S.monedas>=item.precio;
+      const div=document.createElement('div');
+      div.className='si'+((!canAfford)?' si-cant':'');
+      div.innerHTML=`<span class="si-em">${item.emoji}</span>
+        <div class="si-name">${item.name}</div>
+        <div class="si-desc">${item.desc}</div>
+        <div class="si-price">💰 ${item.precio} monedas</div>`;
+      div.onclick=()=>shopAction(item,tab);
+      grid.appendChild(div);
+    });
+    return;
+  }
+
+  let items=[];
+  if(tab==='cosmeticos')items=COSMETICOS.filter(i=>!i.secret||S.owned.includes(i.id));
+  else if(tab==='skins')items=SKINS.filter(s=>!s.secret||S.owned.includes(s.id)||S.skin===s.id);
+  else items=VENTAJAS;
+
+  items.forEach(item=>{
+    const isSkin=tab==='skins';
+    const isPerk=tab==='ventajas';
+    const owned=isSkin?(S.owned.includes(item.id)||item.id==='default'):S.owned.includes(item.id);
+    const perkOwned=isPerk&&S.perks.includes(item.id);
+    const equipped=isSkin?(S.skin===item.id):(S.equipped[item.tipo]===item.id);
+    const canAfford=S.monedas>=item.precio;
+
+    const div=document.createElement('div');
+    div.className='si'+(owned||perkOwned?' si-owned':'')+(equipped?' si-equip':'')+((!owned&&!perkOwned&&!canAfford)?' si-cant':'');
+
+    let badge='';
+    if(equipped)badge='<div class="si-badge equip">Equipado</div>';
+    else if(owned||perkOwned)badge='<div class="si-badge owned">Obtenido</div>';
+
+    let iconHtml='';
+    if(isSkin){
+      const c=SKIN_COLORS[item.id]||SKIN_COLORS.default;
+      if(item.preview==='rainbow'){
+        iconHtml=`<div class="si-skin-preview" style="background:linear-gradient(135deg,#f44336,#ff9800,#ffeb3b,#4caf50,#2196f3,#9c27b0)">🐸</div>`;
+      } else {
+        iconHtml=`<div class="si-skin-preview" style="background:${item.preview}"><svg width="28" height="28" viewBox="0 0 80 80"><circle cx="40" cy="40" r="36" fill="${c.body}"/><circle cx="27" cy="30" r="10" fill="white"/><circle cx="53" cy="30" r="10" fill="white"/><circle cx="27" cy="30" r="6" fill="${c.eye}"/><circle cx="53" cy="30" r="6" fill="${c.eye}"/><path d="M26 52 Q40 62 54 52" stroke="${c.eye}" stroke-width="3" fill="none" stroke-linecap="round"/></svg></div>`;
+      }
+    } else {
+      iconHtml=`<span class="si-em">${item.emoji}</span>`;
+    }
+
+    const priceStr=owned||perkOwned?(equipped?'✓ En uso':'Equipar'):(item.precio===0?'Gratis':'💰 '+item.precio);
+    div.innerHTML=`${badge}${iconHtml}<div class="si-name">${item.name}</div><div class="si-desc">${item.desc}</div><div class="si-price">${priceStr}</div>`;
+    div.onclick=()=>shopAction(item,tab);
+    grid.appendChild(div);
+  });
+}
+
+function shopAction(item,tab){
+  const isPerk=tab==='ventajas';
+  const isSkin=tab==='skins';
+  const isConsumible=tab==='consumibles';
+
+  if(isConsumible){
+    if(S.monedas<item.precio){ showToast('No tenés suficientes monedas'); return; }
+    S.monedas-=item.precio;
+    if(!S.inventory) S.inventory={water:0,food:0};
+    if(item.gives==='water'){ S.inventory.water++; showToast('💧 x1 Agua agregada al inventario'); }
+    else if(item.gives==='food'){ S.inventory.food++; showToast('🌿 x1 Comida agregada al inventario'); }
+    else if(item.gives==='bundle'){ S.inventory.water+=2; S.inventory.food+=2; showToast('🎒 x2 Agua y x2 Comida agregadas!'); }
+    saveS(); updateNavCoins(); renderShopGrid(tab);
+    renderHomeEnergy(); renderEnergy();
+    return;
+  }
+
+  if(isPerk){
+    if(S.perks.includes(item.id))return;
+    if(S.monedas<item.precio)return;
+    S.monedas-=item.precio;S.perks.push(item.id);
+    saveS();updateNavCoins();renderShop();return;
+  }
+
+  if(isSkin){
+    const owned=S.owned.includes(item.id)||item.id==='default';
+    if(owned){S.skin=item.id;saveS();renderShop();renderHomeFrog();renderSapitoPage();return;}
+    if(S.monedas<item.precio)return;
+    S.monedas-=item.precio;S.owned.push(item.id);S.skin=item.id;
+    saveS();updateNavCoins();renderShop();renderHomeFrog();return;
+  }
+
+  // Cosméticos
+  const owned=S.owned.includes(item.id);
+  if(owned){
+    if(S.equipped[item.tipo]===item.id)S.equipped[item.tipo]=null;
+    else S.equipped[item.tipo]=item.id;
+    saveS();renderShop();renderHomeFrog();
+    if(document.getElementById('page-sapito').classList.contains('active'))renderSapitoPage();
+    return;
+  }
+  if(S.monedas<item.precio)return;
+  S.monedas-=item.precio;S.owned.push(item.id);S.equipped[item.tipo]=item.id;
+  saveS();updateNavCoins();renderShop();renderHomeFrog();
+}
+
+function updateNavCoins(){
+  document.getElementById('nav-coins').textContent=S.monedas;
+}
+
+// ═══════════════════════════════════════════
+// DICCIONARIO
+// ═══════════════════════════════════════════
+let dictCat='all';
+let dictSearch='';
+
+function renderDict(){
+  const cats=['all','saludos','numeros','animales','gramatica'];
+  const catLabels={all:'🌐 Todos',saludos:'👋 Saludos',numeros:'🔢 Números',animales:'🐾 Animales',gramatica:'📚 Gramática'};
+  const catDiv=document.getElementById('dict-cats');
+  catDiv.innerHTML='';
+  cats.forEach(c=>{
+    const btn=document.createElement('div');
+    btn.className='dict-cat'+(dictCat===c?' active':'');
+    btn.textContent=catLabels[c];
+    btn.onclick=()=>{dictCat=c;renderDictEntries();catDiv.querySelectorAll('.dict-cat').forEach(x=>x.classList.remove('active'));btn.classList.add('active');};
+    catDiv.appendChild(btn);
+  });
+  renderDictEntries();
+}
+
+function filterDict(){
+  dictSearch=document.getElementById('dict-input').value.toLowerCase();
+  renderDictEntries();
+}
+
+function renderDictEntries(){
+  const catEmoji={saludos:'👋',numeros:'🔢',animales:'🐾',gramatica:'📚'};
+  const container=document.getElementById('dict-entries');
+  let entries=DICT_DATA;
+  if(dictCat!=='all')entries=entries.filter(e=>e.cat===dictCat);
+  if(dictSearch)entries=entries.filter(e=>e.gua.toLowerCase().includes(dictSearch)||e.es.toLowerCase().includes(dictSearch));
+  container.innerHTML='';
+  if(!entries.length){container.innerHTML='<div style="color:#8fbc8f;text-align:center;padding:20px;font-weight:700;">No se encontraron resultados</div>';return;}
+  entries.forEach(e=>{
+    const div=document.createElement('div');
+    div.className='dict-entry';
+    div.innerHTML=`<div class="de-cat">${catEmoji[e.cat]||'📖'}</div>
+    <div class="de-body">
+      <div class="de-gua">${e.gua}</div>
+      <div class="de-es">${e.es}</div>
+      ${e.note?`<div class="de-note">${e.note}</div>`:''}
+    </div>`;
+    container.appendChild(div);
+  });
+}
+
+// ═══════════════════════════════════════════
+// BG PARTICLES
+// ═══════════════════════════════════════════
+function initBGParticles(){
+  const bg=document.getElementById('bg-particles');
+  const colors=['rgba(82,183,136,0.3)','rgba(255,209,102,0.2)','rgba(26,154,184,0.25)','rgba(255,255,255,0.1)'];
+  for(let i=0;i<14;i++){
+    const p=document.createElement('div');
+    p.className='bp';
+    const sz=Math.random()*5+2;
+    p.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*colors.length)]};animation-duration:${Math.random()*12+8}s;animation-delay:${Math.random()*10}s;`;
+    bg.appendChild(p);
+  }
+}
+
+// ═══════════════════════════════════════════
+// WEATHER SYSTEM
+// ═══════════════════════════════════════════
+let currentWeather = 'clear';
+
+function detectWeather(){
+  const h = new Date().getHours();
+  // Night: 20:00 - 06:00
+  if(h >= 20 || h < 6){ return 'night'; }
+  // Random weather during day, biased to clear
+  const r = Math.random();
+  if(r < 0.25) return 'rain';
+  if(r < 0.40) return 'fog';
+  return 'clear';
+}
+
+function applyWeather(w){
+  currentWeather = w;
+  const layer = document.getElementById('weather-layer');
+  const moon = document.getElementById('moon-el');
+  const body = document.body;
+  layer.innerHTML = '';
+  body.className = body.className.replace(/weather-\w+/g,'').trim();
+  moon.style.opacity = '0';
+  moon.style.display = 'none';
+
+  if(w === 'night'){
+    body.classList.add('weather-night');
+    moon.style.display = 'block';
+    setTimeout(()=>moon.style.opacity='1', 100);
+    // Stars
+    for(let i=0;i<60;i++){
+      const s=document.createElement('div');
+      s.className='star-dot';
+      const sz=Math.random()*2.5+1;
+      s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*60}%;left:${Math.random()*100}%;animation-duration:${Math.random()*3+2}s;animation-delay:${Math.random()*4}s;`;
+      layer.appendChild(s);
+    }
+  } else if(w === 'rain'){
+    body.classList.add('weather-rain');
+    for(let i=0;i<55;i++){
+      const d=document.createElement('div');
+      d.className='rain-drop';
+      const h2=Math.random()*60+20;
+      d.style.cssText=`left:${Math.random()*110-5}%;height:${h2}px;animation-duration:${Math.random()*0.5+0.55}s;animation-delay:${Math.random()*2}s;`;
+      layer.appendChild(d);
+    }
+  } else if(w === 'fog'){
+    body.classList.add('weather-fog');
+    for(let i=0;i<8;i++){
+      const f=document.createElement('div');
+      f.className='fog-patch';
+      const sz=Math.random()*200+150;
+      f.style.cssText=`width:${sz}px;height:${sz*0.4}px;top:${Math.random()*80}%;left:${Math.random()*100}%;animation-duration:${Math.random()*6+6}s;animation-delay:${Math.random()*4}s;`;
+      layer.appendChild(f);
+    }
+  }
+}
+
+// ═══════════════════════════════════════════
+// MOOD SYSTEM
+// ═══════════════════════════════════════════
+const MOOD_MSGS = {
+  high:["¡Estoy feliz! ¡A saltar! 🐸","¡Lista para aprender guaraní! ✨","¡Aguyje por estar aquí! 💚","¡El río me llama! 🌊"],
+  mid: ["Dame agüita y jugamos... 💧","Lista para saltar 🐸","Che aiko porã","Un poco de comida y vamos..."],
+  low: ["Che roka... tengo hambre 😔","Ndaipóri comida... 😢","Estoy muy cansada... por favor cuídame","Che añoite... ven a jugar 🥺"],
+};
+
+function getMoodLevel(){ const m=S.mood||50; return m>=65?'high':m>=35?'mid':'low'; }
+
+function getMoodFace(){
+  const m=S.mood||50;
+  if(m>=80) return '😄'; if(m>=65) return '🙂'; if(m>=45) return '😐'; if(m>=25) return '😟'; return '😢';
+}
+
+function updateMoodDecay(){
+  const now=Date.now();
+  const hoursSince=(now-(S.lastPlayed||now))/3600000;
+  if(hoursSince>4){
+    const decay=Math.min(30,Math.floor(hoursSince/4)*5);
+    S.mood=Math.max(0,(S.mood||70)-decay);
+    saveS();
+  }
+}
+
+function boostMood(amount){
+  S.mood=Math.min(100,(S.mood||50)+amount);
+  saveS();
+  renderMoodHome();
+}
+
+function renderMoodHome(){
+  const msg=document.getElementById('home-mood-msg');
+  if(!msg) return;
+  const lvl=getMoodLevel();
+  const msgs=MOOD_MSGS[lvl];
+  msg.textContent='"'+msgs[Math.floor(Math.random()*msgs.length)]+'"';
+  msg.className='home-mood-msg '+(lvl==='high'?'happy':lvl==='low'?'sad':'');
+  // Update mood bubble on frog in sapito page
+  const mb=document.getElementById('mood-bubble');
+  if(mb) mb.textContent=getMoodFace();
+}
+
+// ═══════════════════════════════════════════
+// STREAK SYSTEM
+// ═══════════════════════════════════════════
+function getStreakMult(){
+  const s=G.streak||0;
+  if(s>=5) return 3;
+  if(s>=3) return 2;
+  return 1;
+}
+
+function updateStreakHUD(){
+  const s=G.streak||0;
+  const el=document.getElementById('hud-streak');
+  const sn=document.getElementById('streak-num');
+  const sm=document.getElementById('streak-mult');
+  if(!el) return;
+  if(s>=2){
+    el.style.display='flex';
+    sn.textContent=s;
+    const mult=getStreakMult();
+    sm.textContent=mult>1?'x'+mult+'!':'';
+    el.classList.add('streak-anim');
+    setTimeout(()=>el.classList.remove('streak-anim'),400);
+  } else {
+    el.style.display='none';
+  }
+}
+
+// ═══════════════════════════════════════════
+// SKILL CARDS
+// ═══════════════════════════════════════════
+const ALL_CARDS = [
+  {id:'c_notime',emoji:'⏸️',name:'Sin Límite',desc:'La siguiente pregunta no tiene cronómetro',rarity:'raro'},
+  {id:'c_double',emoji:'💰',name:'Doble Botín',desc:'Las próximas 3 respuestas correctas dan x2 monedas',rarity:'epico'},
+  {id:'c_reveal',emoji:'🔍',name:'Pista del Sabio',desc:'Ver la categoría de la respuesta antes de elegir',rarity:'comun'},
+  {id:'c_elim',emoji:'✂️',name:'Navaja',desc:'Elimina automáticamente 1 opción incorrecta',rarity:'comun'},
+  {id:'c_shield',emoji:'🛡️',name:'Escudo',desc:'La próxima respuesta incorrecta no cuenta',rarity:'raro'},
+  {id:'c_time2',emoji:'⏰',name:'Tiempo Extra',desc:'+6 segundos en todas las preguntas restantes',rarity:'comun'},
+  {id:'c_coins2',emoji:'🌟',name:'Monedas x1.5',desc:'Multiplica todas las monedas del run x1.5',rarity:'epico'},
+  {id:'c_instinct',emoji:'🐸',name:'Instinto',desc:'El sapito "vibra" cerca de la respuesta correcta',rarity:'raro'},
+];
+
+function pickRandomCards(){
+  const shuffled=[...ALL_CARDS].sort(()=>Math.random()-0.5);
+  // Weighted: always include 1 epic/raro chance
+  const epics=shuffled.filter(c=>c.rarity==='epico'||c.rarity==='raro');
+  const comuns=shuffled.filter(c=>c.rarity==='comun');
+  const pool=[];
+  if(epics.length>0) pool.push(epics[0]);
+  pool.push(...comuns.slice(0,4));
+  return pool.sort(()=>Math.random()-0.5).slice(0,3);
+}
+
+function showCardModal(cards){
+  const modal=document.getElementById('card-modal');
+  const row=document.getElementById('cards-row');
+  row.innerHTML='';
+  cards.forEach(card=>{
+    const div=document.createElement('div');
+    div.className=`skill-card ${card.rarity}`;
+    div.innerHTML=`<span class="sc-rarity-tag ${card.rarity}">${card.rarity==='epico'?'✦ Épico':card.rarity==='raro'?'◆ Raro':'● Común'}</span><span class="sc-emoji">${card.emoji}</span><div class="sc-name">${card.name}</div><div class="sc-desc">${card.desc}</div>`;
+    div.onclick=()=>selectCard(card);
+    row.appendChild(div);
+  });
+  modal.classList.add('show');
+}
+
+function selectCard(card){
+  document.getElementById('card-modal').classList.remove('show');
+  if(!G.activeCards) G.activeCards=[];
+  G.activeCards.push(card.id);
+  // Apply immediate effects
+  if(card.id==='c_time2') G.bonusTime=(G.bonusTime||0)+6;
+  if(card.id==='c_coins2') G.coinMult=(G.coinMult||1)*1.5;
+  if(card.id==='c_double') G.doubleLeft=3;
+  if(card.rarity==='epico') unlockAchievement('card_epic');
+  showToast(card.emoji+' '+card.name+' activado!');
+  showQ();
+}
+
+function hasCard(id){ return G.activeCards&&G.activeCards.includes(id); }
+function useCard(id){ if(G.activeCards){const i=G.activeCards.indexOf(id);if(i>-1)G.activeCards.splice(i,1);}}
+
+// ═══════════════════════════════════════════
+// ACHIEVEMENTS
+// ═══════════════════════════════════════════
+const ACHIEVEMENTS_DEF = [
+  {id:'first_jump',emoji:'🐸',name:'Primer Salto',desc:'Completá tu primera partida'},
+  {id:'perfect_run',emoji:'🏆',name:'¡Perfecto!',desc:'Respondé las 10 preguntas correctamente'},
+  {id:'streak_3',emoji:'🔥',name:'En Llamas',desc:'Lográ una racha de 3 respuestas seguidas'},
+  {id:'streak_5',emoji:'🌋',name:'Imparable',desc:'Lográ una racha de 5 respuestas seguidas'},
+  {id:'spend_100',emoji:'💸',name:'Gran Comprador',desc:'Gastá 100 monedas en la tienda'},
+  {id:'buy_skin',emoji:'🎨',name:'Estiloso',desc:'Comprá una skin nueva'},
+  {id:'energy_0',emoji:'😴',name:'Sin Energía',desc:'Quedarte sin energía (¡ups!)'},
+  {id:'daniel_secret',emoji:'🧣',name:'El Secreto de Daniel',desc:'Descubrí el Easter Egg'},
+  {id:'play_night',emoji:'🌙',name:'Ranita Nocturna',desc:'Jugá durante la noche (20:00-06:00)'},
+  {id:'play_rain',emoji:'🌧️',name:'Bajo la Lluvia',desc:'Jugá mientras llueve en el río'},
+  {id:'master_guarani',emoji:'🌿',name:'Maestro Guaraní',desc:'Completá 10 partidas en total'},
+  {id:'card_epic',emoji:'✦',name:'Carta Épica',desc:'Obtené una carta épica en el modo roguelike'},
+  {id:'feed_10',emoji:'💧',name:'Sapito Feliz',desc:'Usá agua o comida 10 veces'},
+  {id:'all_themes',emoji:'📚',name:'Explorador',desc:'Jugá todos los temas al menos una vez'},
+  {id:'collect_all_cos',emoji:'🎨',name:'Coleccionista de Cosméticos',desc:'Obtené todos los cosméticos disponibles'},
+  {id:'collect_all_skins',emoji:'🐸',name:'Todas las Formas',desc:'Desbloquéá todas las skins'},
+  {id:'collect_all_perks',emoji:'⚡',name:'Poder Total',desc:'Comprá todas las ventajas permanentes'},
+  {id:'postal_sent',emoji:'📮',name:'¡Correo Enviado!',desc:'Descargá una postal'},
+  {id:'level_5',emoji:'🌟',name:'A Mitad de Camino',desc:'Alcanzá el nivel 5'},
+  {id:'level_10',emoji:'💎',name:'¡Leyenda!',desc:'Alcanzá el nivel máximo 10'},
+  {id:'cards_all',emoji:'✨',name:'Coleccionista de Cartas',desc:'Obtené todas las cartas al menos una vez'},
+  {id:'listen_ace',emoji:'🔊',name:'Buen Oído',desc:'Pasá el modo Escuchá con 80%+ de aciertos'},
+  {id:'listen_perfect',emoji:'🎧',name:'Oído Perfecto',desc:'10/10 en el modo Escuchá y Elegí'},
+];
+
+function unlockAchievement(id){
+  if(!S.achievements) S.achievements=[];
+  if(S.achievements.includes(id)) return false;
+  S.achievements.push(id);
+  const def=ACHIEVEMENTS_DEF.find(a=>a.id===id);
+  if(def){
+    showAchToast(def.emoji+' Logro: '+def.name);
+    if(document.getElementById('page-logros').classList.contains('active')) renderLogros();
+  }
+  saveS();
+  return true;
+}
+
+function checkAchievements(){
+  if(!S.stats) S.stats={totalPlayed:0,perfectRuns:0,maxStreak:0};
+  if(S.stats.totalPlayed>=1) unlockAchievement('first_jump');
+  if(S.stats.perfectRuns>=1) unlockAchievement('perfect_run');
+  if((S.stats.maxStreak||0)>=3) unlockAchievement('streak_3');
+  if((S.stats.maxStreak||0)>=5) unlockAchievement('streak_5');
+  if(S.stats.totalPlayed>=10) unlockAchievement('master_guarani');
+  if(S.easterEgg) unlockAchievement('daniel_secret');
+  if(currentWeather==='night') unlockAchievement('play_night');
+  if(currentWeather==='rain') unlockAchievement('play_rain');
+  if(S.stats.themesSeen&&Object.keys(S.stats.themesSeen).length>=4) unlockAchievement('all_themes');
+  if((S.stats.feedCount||0)>=10) unlockAchievement('feed_10');
+  const lvl=getLevel();
+  if(lvl>=5) unlockAchievement('level_5');
+  if(lvl>=10) unlockAchievement('level_10');
+  if(S.stats.cardsObtained&&S.stats.cardsObtained.length>=ALL_CARDS.length) unlockAchievement('cards_all');
+  if(S.monedas>=100) unlockAchievement('spend_100');
+}
+
+function showAchToast(msg){
+  const t=document.createElement('div');
+  t.className='ach-toast';
+  t.textContent='🏅 '+msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),3400);
+}
+
+function renderLogros(){
+  const grid=document.getElementById('ach-grid');
+  const prog=document.getElementById('ach-progress-txt');
+  if(!grid) return;
+  if(!S.achievements) S.achievements=[];
+  const unlocked=S.achievements.length;
+  const total=ACHIEVEMENTS_DEF.length;
+  if(prog) prog.textContent=unlocked+' / '+total+' desbloqueados';
+  grid.innerHTML='';
+  // Sort: unlocked first
+  const sorted=[...ACHIEVEMENTS_DEF].sort((a,b)=>{
+    const ua=S.achievements.includes(a.id);
+    const ub=S.achievements.includes(b.id);
+    return ub-ua;
+  });
+  sorted.forEach(def=>{
+    const isUnlocked=S.achievements.includes(def.id);
+    const div=document.createElement('div');
+    div.className='ach-item'+(isUnlocked?' unlocked':'');
+    div.innerHTML=`<div class="ach-icon">${def.emoji}</div><div class="ach-body"><div class="ach-name">${isUnlocked?def.name:'???'}</div><div class="ach-desc">${isUnlocked?def.desc:'Sigue jugando para descubrir este logro'}</div></div>`;
+    grid.appendChild(div);
+  });
+}
+
+// Resize handler
+window.addEventListener('resize',()=>{
+  if(document.getElementById('page-game').classList.contains('active'))
+    moveFrogTo(G.qi||0,false);
+});
+
+
+// ═══════════════════════════════════════════
+// PROGRESSION & XP SYSTEM
+// ═══════════════════════════════════════════
+const XP_PER_LEVEL = [0,100,200,350,500,700,900,1200,1600,2000,2500];
+// What unlocks at each level
+const LEVEL_UNLOCKS = {
+  1:  [{emoji:'🐸',text:'¡Comienza la aventura!'}],
+  2:  [{emoji:'🌦️',text:'Clima dinámico desbloqueado'},{emoji:'📖',text:'Diccionario desbloqueado'}],
+  3:  [{emoji:'📮',text:'Modo Postal desbloqueado'},{emoji:'🛍️',text:'Tienda de consumibles disponible'}],
+  4:  [{emoji:'✨',text:'Cartas épicas con más frecuencia'},{emoji:'🎒',text:'Inventario desbloqueado'}],
+  5:  [{emoji:'🏆',text:'Modo Avanzado sin restricciones'},{emoji:'🔥',text:'Rachas x3 desbloqueadas'}],
+  6:  [{emoji:'🎨',text:'Skins de patrones especiales'}],
+  7:  [{emoji:'💫',text:'Multiplicador de monedas mejorado'}],
+  8:  [{emoji:'🌟',text:'Título: Maestro del Guaraní'}],
+  9:  [{emoji:'🏅',text:'Marco dorado en postal'}],
+ 10:  [{emoji:'🐸💎',text:'Skin Diamante desbloqueada — ¡Leyenda!'}],
+};
+
+function getLevel(){ return (S.progress&&S.progress.level)||1; }
+function getXP(){ return (S.progress&&S.progress.xp)||0; }
+function getXPForNext(lvl){ return XP_PER_LEVEL[Math.min(lvl,XP_PER_LEVEL.length-1)]; }
+
+function addXP(amount){
+  if(!S.progress) S.progress={level:1,xp:0,seenTutorials:[]};
+  S.progress.xp=(S.progress.xp||0)+amount;
+  const cur=S.progress.level||1;
+  const needed=getXPForNext(cur);
+  if(S.progress.xp>=needed&&cur<10){
+    S.progress.level=cur+1;
+    S.progress.xp=S.progress.xp-needed;
+    saveS();
+    showLevelUp(S.progress.level);
+  } else {
+    saveS();
+  }
+  renderHomeXP();
+}
+
+function renderHomeXP(){
+  if(!S.progress) return;
+  const lvl=S.progress.level||1;
+  const xp=S.progress.xp||0;
+  const needed=getXPForNext(lvl);
+  const pct=Math.min(100,Math.round(xp/needed*100));
+  const ltxt=document.getElementById('home-level-txt');
+  const xbar=document.getElementById('home-xp-bar');
+  const xtxt=document.getElementById('home-xp-txt');
+  if(ltxt) ltxt.textContent='Nv.'+lvl;
+  if(xbar) xbar.style.width=pct+'%';
+  if(xtxt) xtxt.textContent=xp+'/'+needed+' XP';
+  // Update nav tab locks
+  updateNavLocks();
+}
+
+function updateNavLocks(){
+  const lvl=getLevel();
+  const locks={inventory:4,postal:3,dict:2};
+  document.querySelectorAll('.nav-tab').forEach(t=>{
+    const pg=t.dataset.page;
+    if(locks[pg]&&lvl<locks[pg]){
+      t.style.opacity='0.35';
+      t.title='Nivel '+locks[pg]+' requerido';
+    } else {
+      t.style.opacity='1';
+      t.title='';
+    }
+  });
+}
+
+function showLevelUp(lvl){
+  const modal=document.getElementById('lu-modal');
+  document.getElementById('lu-level').textContent=lvl;
+  const unlocks=LEVEL_UNLOCKS[lvl]||[];
+  const ul=document.getElementById('lu-unlocks');
+  ul.innerHTML=unlocks.length
+    ? unlocks.map(u=>`<div class="lu-unlock-item"><span style="font-size:1.3rem">${u.emoji}</span>${u.text}</div>`).join('')
+    : '<div class="lu-unlock-item">✨ Seguís siendo más poderoso</div>';
+  modal.classList.add('show');
+  // Trigger tutorial for newly unlocked features
+  if(lvl===2) setTimeout(()=>showTutorial('clima'),500);
+  if(lvl===3) setTimeout(()=>showTutorial('postal'),500);
+  if(lvl===4) setTimeout(()=>showTutorial('inventario'),500);
+}
+function closeLevelUp(){ document.getElementById('lu-modal').classList.remove('show'); }
+
+// ═══════════════════════════════════════════
+// TUTORIAL SYSTEM
+// ═══════════════════════════════════════════
+const TUTORIALS = {
+  bienvenida:{
+    emoji:'🐸',title:'¡Bienvenido a Sapito Guaraní!',
+    text:'Tu ranita está lista para aprender guaraní saltando nenúfares. ¡Elegí un tema, una dificultad y a jugar!',
+    steps:['Elegí un tema: Saludos, Números, Animales o Gramática','Elegí la dificultad que se adapte a vos','Tocá ¡A Saltar! y respondé las preguntas','Ganás monedas por cada respuesta correcta'],
+  },
+  energia:{
+    emoji:'⚡',title:'Sistema de Energía',
+    text:'Tu sapito necesita agua y comida para jugar. Cada partida consume un poco de energía.',
+    steps:['Usá ítems de agua 💧 y comida 🌿 para recargar','Comprá más ítems en la Tienda → Consumibles','Si lográs +70% de aciertos, ¡ganás ítems de regalo!','Sin energía, el sapito no puede jugar'],
+  },
+  cartas:{
+    emoji:'✨',title:'Cartas de Habilidad',
+    text:'Al comenzar cada partida elegís 1 carta especial que cambia las reglas del run. ¡Estrategia pura!',
+    steps:['Común: bonos pequeños pero seguros','Raro: poderes únicos que cambian el juego','Épico: efectos masivos y rarísimos','Cada run es diferente — ¡experimentá!'],
+  },
+  racha:{
+    emoji:'🔥',title:'Sistema de Rachas',
+    text:'Respondé seguido sin equivocarte para activar multiplicadores de monedas.',
+    steps:['3 seguidas = x2 monedas 🔥','5 seguidas = x3 monedas 🌋','Errar una respuesta reinicia la racha','Las cartas pueden protegerte (Escudo)'],
+  },
+  clima:{
+    emoji:'🌦️',title:'Clima Dinámico',
+    text:'El río cambia según la hora real. ¡Jugá de noche para ver las estrellas y desbloquear logros especiales!',
+    steps:['Noche (20-6h): cielo estrellado con luna 🌙','Lluvia aleatoria: ambiente dramático 🌧️','Niebla: misteriosa y tranquila 🌫️','Jugá bajo distintos climas para logros únicos'],
+  },
+  postal:{
+    emoji:'📮',title:'Modo Postal',
+    text:'¡Compartí tu progreso con amigos! Creá una postal con tu sapito, nivel y puntaje para descargar o enviar.',
+    steps:['Elegí un fondo temático del Paraguay','Tu sapito aparece con todos sus accesorios','Se muestra tu nivel y puntaje más alto','Descargá la imagen y compartila'],
+  },
+  inventario:{
+    emoji:'🎒',title:'Inventario',
+    text:'Acá podés ver todo lo que tenés: cosméticos, skins, consumibles y más. ¡Completá colecciones para logros!',
+    steps:['Filtrá por categoría con las pestañas','Los ítems equipados se muestran resaltados','Los que no tenés aparecen en gris','¡Completar sets desbloquea logros especiales!'],
+  },
+};
+
+function showTutorial(id){
+  if(!S.progress) S.progress={level:1,xp:0,seenTutorials:[]};
+  if(S.progress.seenTutorials.includes(id)) return;
+  const tut=TUTORIALS[id];
+  if(!tut) return;
+  document.getElementById('tut-emoji').textContent=tut.emoji;
+  document.getElementById('tut-title').textContent=tut.title;
+  document.getElementById('tut-text').textContent=tut.text;
+  const stepsEl=document.getElementById('tut-steps');
+  stepsEl.innerHTML=tut.steps.map((s,i)=>`<div class="tut-step"><div class="tut-step-num">${i+1}</div><div>${s}</div></div>`).join('');
+  document.getElementById('tut-modal').classList.add('show');
+}
+function closeTutorial(){
+  const modal=document.getElementById('tut-modal');
+  modal.classList.remove('show');
+  const title=document.getElementById('tut-title').textContent;
+  const id=Object.keys(TUTORIALS).find(k=>TUTORIALS[k].title===title);
+  if(id&&S.progress&&!S.progress.seenTutorials.includes(id)){
+    S.progress.seenTutorials.push(id);
+    saveS();
+  }
+}
+
+// ═══════════════════════════════════════════
+// INVENTORY PAGE
+// ═══════════════════════════════════════════
+const INV_TABS=[
+  {id:'consumibles',label:'💧 Consumibles'},
+  {id:'cosmeticos',label:'🎨 Cosméticos'},
+  {id:'skins',label:'🐸 Skins'},
+  {id:'ventajas',label:'⚡ Ventajas'},
+  {id:'cartas',label:'✨ Cartas'},
+];
+let invTab='consumibles';
+
+function renderInventory(){
+  const grid=document.getElementById('inv-grid');
+  const tabsEl=document.getElementById('inv-tabs');
+  const progEl=document.getElementById('inv-progress');
+  if(!grid||!tabsEl) return;
+
+  // Count owned items
+  const totalItems=COSMETICOS.filter(i=>!i.secret).length+SKINS.filter(s=>!s.secret).length+VENTAJAS.length;
+  const ownedItems=(S.owned||[]).filter(id=>!COSMETICOS.find(c=>c.id===id&&c.secret)||S.easterEgg).length+S.perks.length;
+  if(progEl) progEl.textContent=ownedItems+' / '+totalItems+' ítems coleccionados';
+
+  // Tabs
+  tabsEl.innerHTML='';
+  INV_TABS.forEach(t=>{
+    const btn=document.createElement('button');
+    btn.className='shop-tab2'+(invTab===t.id?' active':'');
+    btn.textContent=t.label;
+    btn.style.cssText='padding:6px 12px;border-radius:14px;border:1.5px solid rgba(255,255,255,0.12);background:'+(invTab===t.id?'rgba(255,209,102,0.18)':'rgba(255,255,255,0.04)')+';color:'+(invTab===t.id?'var(--y)':'#aaa')+';font-weight:800;font-size:0.75rem;cursor:pointer;white-space:nowrap;';
+    btn.onclick=()=>{invTab=t.id;renderInventory();};
+    tabsEl.appendChild(btn);
+  });
+
+  grid.innerHTML='';
+
+  if(invTab==='consumibles'){
+    const inv=S.inventory||{water:0,food:0};
+    const items=[
+      {icon:'💧',name:'Agua',count:inv.water},
+      {icon:'🌿',name:'Comida',count:inv.food},
+    ];
+    const wrap=document.createElement('div');
+    wrap.style.cssText='display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;';
+    items.forEach(item=>{
+      const d=document.createElement('div');
+      d.className='inv-slot owned';
+      d.style.cssText='width:90px;';
+      d.innerHTML=`<span class="inv-slot-icon">${item.icon}</span><span class="inv-slot-name">${item.name}</span><span class="inv-count">x${item.count}</span>`;
+      wrap.appendChild(d);
+    });
+    // Consumibles in shop
+    const shopItems=[
+      {icon:'💧',name:'Agua (+40)',price:15},
+      {icon:'🌿',name:'Comida (+40)',price:15},
+      {icon:'🎒',name:'Mochila x2',price:50},
+    ];
+    const note=document.createElement('div');
+    note.style.cssText='font-size:0.78rem;color:#8fbc8f;margin-bottom:10px;font-weight:700;';
+    note.textContent='Comprá más en Tienda → Consumibles';
+    grid.appendChild(wrap);
+    grid.appendChild(note);
+    return;
+  }
+
+  if(invTab==='cartas'){
+    const allCards=ALL_CARDS;
+    const obtained=S.stats&&S.stats.cardsObtained||[];
+    const ig=document.createElement('div');
+    ig.className='inv-grid';
+    allCards.forEach(card=>{
+      const has=obtained.includes(card.id);
+      const d=document.createElement('div');
+      d.className='inv-slot'+(has?' owned':'');
+      d.innerHTML=`<span class="inv-slot-icon">${has?card.emoji:'❓'}</span><span class="inv-slot-name">${has?card.name:'???'}</span>`;
+      if(has) d.title=card.desc;
+      ig.appendChild(d);
+    });
+    grid.appendChild(ig);
+    return;
+  }
+
+  // Cosméticos, skins, ventajas
+  let items=[];
+  if(invTab==='cosmeticos') items=COSMETICOS.filter(i=>!i.secret||S.owned.includes(i.id));
+  else if(invTab==='skins') items=SKINS.filter(s=>!s.secret||S.owned.includes(s.id)||S.skin===s.id);
+  else if(invTab==='ventajas') items=VENTAJAS;
+
+  const ig=document.createElement('div');
+  ig.className='inv-grid';
+  items.forEach(item=>{
+    const owned=invTab==='skins'?(S.owned.includes(item.id)||item.id==='default'):
+                invTab==='ventajas'?S.perks.includes(item.id):S.owned.includes(item.id);
+    const equipped=invTab==='skins'?(S.skin===item.id):(S.equipped&&S.equipped[item.tipo]===item.id);
+    const d=document.createElement('div');
+    d.className='inv-slot'+(owned?' owned':'')+(equipped?' equipped':'')+(owned?'':' locked');
+    let icon=item.emoji||'🎨';
+    if(invTab==='skins'&&owned){
+      const sc=SKIN_COLORS[item.id]||SKIN_COLORS.default;
+      icon=`<svg width="28" height="28" viewBox="0 0 80 80"><circle cx="40" cy="40" r="36" fill="${sc.body}"/><circle cx="27" cy="30" r="10" fill="white"/><circle cx="53" cy="30" r="10" fill="white"/><circle cx="27" cy="30" r="6" fill="${sc.eye}"/><circle cx="53" cy="30" r="6" fill="${sc.eye}"/></svg>`;
+    }
+    d.innerHTML=`<span class="inv-slot-icon">${owned?icon:'🔒'}</span><span class="inv-slot-name">${owned?item.name:'???'}</span>`;
+    if(owned&&invTab!=='ventajas') d.onclick=()=>navTo('shop');
+    ig.appendChild(d);
+  });
+  grid.appendChild(ig);
+  // Collector achievements check
+  checkCollectorAchievements();
+}
+
+function checkCollectorAchievements(){
+  const cosOwned=COSMETICOS.filter(i=>!i.secret&&S.owned.includes(i.id)).length;
+  const cosTotal=COSMETICOS.filter(i=>!i.secret).length;
+  if(cosOwned>=cosTotal) unlockAchievement('collect_all_cos');
+  const skinsOwned=SKINS.filter(s=>!s.secret&&(S.owned.includes(s.id)||s.id==='default')).length;
+  if(skinsOwned>=SKINS.filter(s=>!s.secret).length) unlockAchievement('collect_all_skins');
+  if(S.perks.length>=VENTAJAS.length) unlockAchievement('collect_all_perks');
+}
+
+// ═══════════════════════════════════════════
+// POSTAL SYSTEM
+// ═══════════════════════════════════════════
+const POSTAL_BACKGROUNDS = [
+  {
+    name:'Río Guaraní',
+    draw:(ctx,w,h)=>{
+      // Sky gradient
+      const sky=ctx.createLinearGradient(0,0,0,h*0.6);
+      sky.addColorStop(0,'#0a1628'); sky.addColorStop(1,'#0d3b2e');
+      ctx.fillStyle=sky; ctx.fillRect(0,0,w,h);
+      // Stars
+      ctx.fillStyle='rgba(255,255,255,0.7)';
+      for(let i=0;i<40;i++){ctx.beginPath();ctx.arc(Math.sin(i*137)*w/2+w/2,Math.cos(i*97)*h*0.3+h*0.15,Math.random()+0.5,0,Math.PI*2);ctx.fill();}
+      // River
+      const river=ctx.createLinearGradient(0,h*0.55,0,h);
+      river.addColorStop(0,'#0a4a6e'); river.addColorStop(1,'#021828');
+      ctx.fillStyle=river; ctx.fillRect(0,h*0.55,w,h*0.45);
+      // River shimmer
+      ctx.strokeStyle='rgba(100,200,255,0.15)'; ctx.lineWidth=1;
+      for(let i=0;i<8;i++){ctx.beginPath();ctx.moveTo(0,h*0.6+i*12);ctx.bezierCurveTo(w/4,h*0.58+i*12,w*3/4,h*0.62+i*12,w,h*0.6+i*12);ctx.stroke();}
+      // Jungle silhouette
+      ctx.fillStyle='#071a0f';
+      for(let i=0;i<18;i++){const tx=i*(w/16);const th=60+Math.sin(i*2.3)*25+Math.cos(i*1.7)*20;ctx.beginPath();ctx.moveTo(tx,h*0.55);ctx.lineTo(tx+8,h*0.55-th);ctx.lineTo(tx+16,h*0.55);ctx.fill();}
+      // Lily pads
+      ctx.fillStyle='#2e7d32';
+      [[w*0.2,h*0.7],[w*0.5,h*0.75],[w*0.8,h*0.68]].forEach(([x,y])=>{ctx.beginPath();ctx.ellipse(x,y,18,10,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ff6b6b';ctx.beginPath();ctx.arc(x,y-8,4,0,Math.PI*2);ctx.fill();ctx.fillStyle='#2e7d32';});
+    }
+  },
+  {
+    name:'Selva Paraguaya',
+    draw:(ctx,w,h)=>{
+      // Dense jungle
+      const bg=ctx.createLinearGradient(0,0,0,h);
+      bg.addColorStop(0,'#0a2e0a'); bg.addColorStop(1,'#051205');
+      ctx.fillStyle=bg; ctx.fillRect(0,0,w,h);
+      // Light rays
+      ctx.save(); ctx.globalAlpha=0.08;
+      for(let i=0;i<6;i++){const x=w*(i/5);ctx.fillStyle='rgba(200,255,150,1)';ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x-30,h);ctx.lineTo(x+30,h);ctx.fill();}
+      ctx.restore();
+      // Leaves
+      const drawLeaf=(x,y,sz,ang)=>{ctx.save();ctx.translate(x,y);ctx.rotate(ang);ctx.fillStyle='#'+['1a5c1a','2e8b57','3cb371','228b22'][Math.floor(Math.random()*4)];ctx.beginPath();ctx.ellipse(0,0,sz,sz/2.5,0,0,Math.PI*2);ctx.fill();ctx.restore();};
+      for(let i=0;i<30;i++) drawLeaf(Math.random()*w,Math.random()*h,15+Math.random()*25,Math.random()*Math.PI);
+      // Fireflies
+      ctx.fillStyle='rgba(200,255,100,0.8)';
+      for(let i=0;i<15;i++){ctx.beginPath();ctx.arc(Math.random()*w,Math.random()*h,2,0,Math.PI*2);ctx.fill();}
+      // Ground
+      ctx.fillStyle='#0a1a08'; ctx.fillRect(0,h*0.8,w,h*0.2);
+    }
+  },
+  {
+    name:'Itaipu de Noche',
+    draw:(ctx,w,h)=>{
+      // Night sky
+      const sky=ctx.createLinearGradient(0,0,0,h*0.65);
+      sky.addColorStop(0,'#020818'); sky.addColorStop(1,'#0a1a38');
+      ctx.fillStyle=sky; ctx.fillRect(0,0,w,h);
+      // Moon
+      ctx.fillStyle='rgba(255,230,150,0.9)'; ctx.beginPath(); ctx.arc(w*0.82,h*0.15,22,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='rgba(255,210,80,0.3)'; ctx.beginPath(); ctx.arc(w*0.82,h*0.15,32,0,Math.PI*2); ctx.fill();
+      // Stars
+      for(let i=0;i<50;i++){ctx.fillStyle=`rgba(255,255,255,${0.3+Math.random()*0.7})`;ctx.beginPath();ctx.arc(Math.random()*w,Math.random()*h*0.6,Math.random()*1.5,0,Math.PI*2);ctx.fill();}
+      // Dam silhouette
+      ctx.fillStyle='#111b2e';
+      ctx.fillRect(0,h*0.55,w,h*0.05);
+      for(let i=0;i<8;i++){ctx.fillRect(i*(w/8)+2,h*0.45,w/8-4,h*0.1);}
+      // Water glow
+      const wat=ctx.createLinearGradient(0,h*0.6,0,h);
+      wat.addColorStop(0,'#0a2a5e'); wat.addColorStop(1,'#020c1a');
+      ctx.fillStyle=wat; ctx.fillRect(0,h*0.6,w,h*0.4);
+      // Reflections
+      ctx.strokeStyle='rgba(100,150,255,0.2)'; ctx.lineWidth=2;
+      for(let i=0;i<5;i++){ctx.beginPath();ctx.moveTo(0,h*0.65+i*14);ctx.lineTo(w,h*0.65+i*14);ctx.stroke();}
+    }
+  },
+  {
+    name:'Bandera del Paraguay',
+    draw:(ctx,w,h)=>{
+      // PY flag stripes
+      ctx.fillStyle='#D52B1E'; ctx.fillRect(0,0,w,h/3);
+      ctx.fillStyle='#FFFFFF'; ctx.fillRect(0,h/3,w,h/3);
+      ctx.fillStyle='#0038A8'; ctx.fillRect(0,h*2/3,w,h/3);
+      // Coat of arms (simplified star)
+      ctx.save(); ctx.translate(w/2,h/2);
+      ctx.fillStyle='rgba(0,0,0,0.15)';
+      for(let i=0;i<8;i++){ctx.save();ctx.rotate(i*Math.PI/4);ctx.fillRect(-3,-30,6,30);ctx.restore();}
+      ctx.fillStyle='#007a3d'; ctx.beginPath(); ctx.arc(0,0,18,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='white'; ctx.font='bold 14px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('PY',0,0);
+      ctx.restore();
+      // Subtle vignette
+      const vig=ctx.createRadialGradient(w/2,h/2,0,w/2,h/2,w/1.5);
+      vig.addColorStop(0,'transparent'); vig.addColorStop(1,'rgba(0,0,0,0.4)');
+      ctx.fillStyle=vig; ctx.fillRect(0,0,w,h);
+    }
+  },
+  {
+    name:'Misiones de Noche',
+    draw:(ctx,w,h)=>{
+      const bg=ctx.createLinearGradient(0,0,0,h);
+      bg.addColorStop(0,'#1a0a2e'); bg.addColorStop(1,'#2a1205');
+      ctx.fillStyle=bg; ctx.fillRect(0,0,w,h);
+      // Stars
+      for(let i=0;i<60;i++){ctx.fillStyle=`rgba(255,255,200,${0.2+Math.random()*0.8})`;ctx.beginPath();ctx.arc(Math.random()*w,Math.random()*h*0.6,Math.random()*1.5,0,Math.PI*2);ctx.fill();}
+      // Ruins silhouette
+      ctx.fillStyle='#1a0a05';
+      const arch=(x,y,aw,ah)=>{ctx.fillRect(x,y+ah*0.3,aw,ah*0.7);ctx.beginPath();ctx.arc(x+aw/2,y+ah*0.3,aw/2,Math.PI,0);ctx.fill();};
+      arch(w*0.1,h*0.3,60,100); arch(w*0.35,h*0.25,80,120); arch(w*0.62,h*0.3,60,100); arch(w*0.82,h*0.35,50,90);
+      // Cross
+      ctx.fillStyle='#2a1205'; ctx.fillRect(w*0.5-4,h*0.1,8,50); ctx.fillRect(w*0.5-20,h*0.2,40,8);
+      // Ground glow
+      const gl=ctx.createLinearGradient(0,h*0.7,0,h);
+      gl.addColorStop(0,'rgba(80,30,0,0.5)'); gl.addColorStop(1,'rgba(20,8,0,0.8)');
+      ctx.fillStyle=gl; ctx.fillRect(0,h*0.7,w,h*0.3);
+    }
+  },
+];
+
+let selectedPostalBg=0;
+
+function renderPostal(){
+  selectedPostalBg=S.postalBg||0;
+  // Render background chips
+  const bgsEl=document.getElementById('postal-bgs');
+  bgsEl.innerHTML='';
+  POSTAL_BACKGROUNDS.forEach((bg,i)=>{
+    const wrap=document.createElement('div');
+    wrap.className='postal-bg-chip'+(i===selectedPostalBg?' sel':'');
+    const mc=document.createElement('canvas');
+    mc.width=80; mc.height=50;
+    const mx=mc.getContext('2d');
+    bg.draw(mx,80,50);
+    // Label
+    const lbl=document.createElement('div');
+    lbl.style.cssText='font-size:0.6rem;font-weight:800;color:'+(i===selectedPostalBg?'var(--y)':'#888')+';text-align:center;padding:3px 4px;background:#0a1a10;';
+    lbl.textContent=bg.name;
+    wrap.appendChild(mc);
+    wrap.appendChild(lbl);
+    wrap.onclick=()=>{selectedPostalBg=i;S.postalBg=i;saveS();renderPostal();};
+    bgsEl.appendChild(wrap);
+  });
+  drawPostalCanvas();
+}
+
+function drawPostalCanvas(){
+  const canvas=document.getElementById('postal-canvas');
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  const W=480,H=320;
+  canvas.width=W; canvas.height=H;
+
+  // Background
+  POSTAL_BACKGROUNDS[selectedPostalBg].draw(ctx,W,H);
+
+  // Semi-transparent overlay panel
+  ctx.fillStyle='rgba(0,0,0,0.4)';
+  const pr=16;
+  roundRect(ctx,W*0.08,H*0.06,W*0.84,H*0.88,pr);
+  ctx.fill();
+
+  // Border glow based on player level
+  const lvl=getLevel();
+  const borderCol=lvl>=9?'#ffd700':lvl>=6?'#c084fc':lvl>=3?'#52b788':'rgba(255,255,255,0.3)';
+  ctx.strokeStyle=borderCol; ctx.lineWidth=2;
+  roundRect(ctx,W*0.08,H*0.06,W*0.84,H*0.88,pr);
+  ctx.stroke();
+
+  // Draw frog SVG on canvas
+  const svgStr=makeFrogSVG(S.skin||'default',90,null,null,S.equipped&&S.equipped.scarf);
+  const svgBlob=new Blob([svgStr],{type:'image/svg+xml'});
+  const url=URL.createObjectURL(svgBlob);
+  const img=new Image();
+  img.onload=()=>{
+    // Frog
+    ctx.drawImage(img,W*0.08+16,H/2-50,90,103);
+    URL.revokeObjectURL(url);
+    // Hat on canvas
+    if(S.equipped&&S.equipped.hat){
+      const hatItem=COSMETICOS.find(c=>c.id===S.equipped.hat);
+      if(hatItem){ctx.font='28px serif';ctx.fillText(hatItem.emoji,W*0.08+16+28,H/2-42);}
+    }
+    // Right side text
+    const tx=W*0.08+120, ty=H*0.18;
+    // Name
+    ctx.font='bold 28px Boogaloo, cursive';
+    ctx.fillStyle='#ffd166';
+    ctx.shadowColor='rgba(0,0,0,0.8)'; ctx.shadowBlur=8;
+    ctx.fillText(S.frogName||'Kururu',tx,ty+20);
+    // Level badge
+    ctx.font='bold 16px Nunito, sans-serif';
+    ctx.fillStyle='rgba(255,255,255,0.9)';
+    ctx.fillText('Nivel '+lvl+' · Sapito Guaraní',tx,ty+46);
+    // XP / score
+    const xp=getXP();
+    const needed=getXPForNext(lvl);
+    ctx.font='14px Nunito, sans-serif';
+    ctx.fillStyle='#95d5b2';
+    ctx.fillText(xp+' / '+needed+' XP  |  '+((S.stats&&S.stats.maxStreak)||0)+' racha máx.',tx,ty+68);
+    // Achievements count
+    const achCount=(S.achievements||[]).length;
+    ctx.fillText(achCount+' logros  |  '+(S.monedas||0)+' monedas',tx,ty+88);
+    // Guaraní level title
+    const titles=['Principiante','Aprendiz','Estudiante','Conocedor','Experto','Maestro','Gran Maestro','Sabio','Gurú','¡Leyenda!'];
+    ctx.font='bold 15px Boogaloo, cursive';
+    ctx.fillStyle=borderCol;
+    ctx.fillText('"'+(titles[Math.min(lvl-1,9)])+'"',tx,ty+112);
+    // Watermark
+    ctx.font='12px Nunito, sans-serif';
+    ctx.fillStyle='rgba(255,255,255,0.35)';
+    ctx.shadowBlur=0;
+    ctx.fillText('Sapito Guaraní · Roguelike Edition',W*0.08+14,H*0.94+10);
+  };
+  img.src=url;
+}
+
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.lineTo(x+w-r,y);
+  ctx.arcTo(x+w,y,x+w,y+r,r);
+  ctx.lineTo(x+w,y+h-r);
+  ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
+  ctx.lineTo(x+r,y+h);
+  ctx.arcTo(x,y+h,x,y+h-r,r);
+  ctx.lineTo(x,y+r);
+  ctx.arcTo(x,y,x+r,y,r);
+  ctx.closePath();
+}
+
+function downloadPostal(){
+  drawPostalCanvas();
+  setTimeout(()=>{
+    const canvas=document.getElementById('postal-canvas');
+    const link=document.createElement('a');
+    link.download='sapito-guarani-'+((S.frogName||'kururu').toLowerCase())+'.png';
+    link.href=canvas.toDataURL('image/png');
+    link.click();
+    unlockAchievement('postal_sent');
+    showToast('📮 ¡Postal descargada!');
+  },600);
+}
+
+
+// ═══════════════════════════════════════════
+// FRASES DEL DÍA
+// ═══════════════════════════════════════════
+const FRASES_GUARANI = [
+  {gua:"Mba'éichapa reiko?", pron:"mba-EI-cha-pa REI-ko", esp:"¿Cómo estás?", extra:"Saludo cotidiano, muy usado"},
+  {gua:"Iporã", pron:"i-po-RÃ", esp:"Está bien / Es bueno", extra:"Puede responder un saludo"},
+  {gua:"Aguyje", pron:"a-gu-YJE", esp:"Gracias", extra:"Del verbo 'guyjea', estar listo/perfecto"},
+  {gua:"Nde réra mba'épa?", pron:"nde RE-ra mba-E-pa", esp:"¿Cómo te llamás?", extra:"Pregunta el nombre"},
+  {gua:"Che réra...", pron:"che RE-ra", esp:"Mi nombre es...", extra:"Presentarse"},
+  {gua:"Rohayhu", pron:"ro-ha-YHU", esp:"Te quiero", extra:"Ore (nosotros exclusivo) + hayhu (amor)"},
+  {gua:"Jajoechapeve", pron:"ya-yo-echa-PE-ve", esp:"Hasta la vista / Hasta que nos veamos", extra:"Despedida afectuosa"},
+  {gua:"Mba'épa nde rera?", pron:"mba-E-pa nde RE-ra", esp:"¿Cuál es tu nombre?", extra:"Más formal que Nde réra mba'épa"},
+  {gua:"Ko'ãga", pron:"ko-Ã-ga", esp:"Ahora / Hoy en día", extra:"Indica tiempo presente"},
+  {gua:"Pyhareve", pron:"pi-ya-RE-ve", esp:"Buenos días / Por la mañana", extra:"Saludo matutino"},
+  {gua:"Ka'aru porã", pron:"ka-A-ru po-RÃ", esp:"Buenas tardes", extra:"Saludo vespertino"},
+  {gua:"Pyhare porã", pron:"pi-ya-RE po-RÃ", esp:"Buenas noches", extra:"Saludo nocturno"},
+  {gua:"Ndaipóri mba'eve", pron:"nda-i-PO-ri mba-E-ve", esp:"No hay nada / De nada", extra:"Respuesta amable a 'gracias'"},
+  {gua:"Eju", pron:"E-yu", esp:"Vení", extra:"Imperativo de 'venir'"},
+  {gua:"Eha'ã", pron:"e-ha-Ã", esp:"Intentalo / Probá", extra:"Imperativo de 'intentar'"},
+  {gua:"Che angirũ", pron:"che an-gi-RŨ", esp:"Mi amigo/a", extra:"Literalmente 'mi compañero'"},
+  {gua:"Yvytu", pron:"yi-vi-TU", esp:"Viento", extra:"Elemento de la naturaleza"},
+  {gua:"Ñande rete", pron:"ÑAN-de RE-te", esp:"Nuestro cuerpo", extra:"Ñande = nosotros inclusivo"},
+  {gua:"Arasa", pron:"a-RA-sa", esp:"Guayaba", extra:"Fruta típica paraguaya"},
+  {gua:"Tatá", pron:"ta-TÁ", esp:"Fuego", extra:"Elemento fundamental"},
+  {gua:"Y", pron:"y (como ü)", esp:"Agua", extra:"Vocal única del guaraní, sonido gutural"},
+  {gua:"Ka'aguy", pron:"ka-a-GUI", esp:"Bosque / Monte", extra:"Ka'a = yerba + guy = debajo"},
+  {gua:"Che mombyry", pron:"che mom-bi-RY", esp:"Lejos de mí / Extraño", extra:"Sentimiento de nostalgia"},
+  {gua:"Tupã", pron:"tu-PÃ", esp:"Dios / Trueno divino", extra:"Figura espiritual del guaraní"},
+  {gua:"Ñe'ẽ", pron:"ñe-Ẽ", esp:"Palabra / Idioma / Alma", extra:"El guaraní llama 'ñe'ẽ' al alma: palabra = alma"},
+  {gua:"Oñondive", pron:"o-ñon-DI-ve", esp:"Juntos / Con otros", extra:"Valor cultural de comunidad"},
+  {gua:"Mba'e reikuaapa?", pron:"mba-e rei-kua-A-pa", esp:"¿Qué sabés hacer?", extra:"Pregunta de habilidades"},
+  {gua:"Aikuaa", pron:"ai-KUA-a", esp:"Yo sé / Entiendo", extra:"Del verbo kuaa = saber"},
+  {gua:"Ndaikuaái", pron:"nda-i-kua-Á-i", esp:"No sé / No entiendo", extra:"Negación con nda...i"},
+  {gua:"Eñe'ẽ porãite", pron:"e-ñe-ẽ po-rã-I-te", esp:"¡Habla bien!", extra:"Elogio al buen hablar"},
+];
+
+// Pick frase del día determinística por fecha
+function getFraseDia(){
+  const d=new Date();
+  const dayIdx=Math.floor((d.getFullYear()*10000+d.getMonth()*100+d.getDate())*7919)%FRASES_GUARANI.length;
+  return FRASES_GUARANI[dayIdx];
+}
+
+let fraseSpeaking=false;
+
+function renderFraseDia(){
+  const wrap=document.getElementById('frase-dia-wrap');
+  if(!wrap) return;
+  const f=getFraseDia();
+  const supported='speechSynthesis' in window;
+  wrap.innerHTML=`
+    <div class="frase-card">
+      <div class="frase-label">📅 Frase del día</div>
+      <div class="frase-guarani">${f.gua}</div>
+      <div class="frase-pron">[ ${f.pron} ]</div>
+      <div class="frase-esp">${f.esp}</div>
+      ${f.extra?`<div style="font-size:0.68rem;color:rgba(255,255,255,0.35);margin-top:3px;">💡 ${f.extra}</div>`:''}
+      ${supported
+        ?`<div style="display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap;">
+            <button class="frase-btn-speak" id="frase-speak-btn" onclick="speakFraseDia()">🔊 Escuchar pronunciación</button>
+            <span id="frase-tts-badge">${getTTSStatusBadge()}</span>
+          </div>`
+        :`<div style="font-size:0.68rem;color:rgba(255,255,255,0.25);margin-top:6px;">🔇 Audio no disponible en este navegador</div>`
+      }
+    </div>`;
+  // Wake Space in background, then refresh badge
+  wakeHFSpace().then(()=>{
+    const badge=document.getElementById('frase-tts-badge');
+    if(badge) badge.innerHTML=getTTSStatusBadge();
+  });
+  setTimeout(()=>{ const b=document.getElementById('frase-tts-badge'); if(b) b.innerHTML=getTTSStatusBadge(); }, 5000);
+  setTimeout(()=>{ const b=document.getElementById('frase-tts-badge'); if(b) b.innerHTML=getTTSStatusBadge(); }, 12000);
+}
+
+// ═══════════════════════════════════════════
+// TTS GUARANÍ — HuggingFace Space + fallback
+// ═══════════════════════════════════════════
+const HF_SPACE = 'https://bigproof2010-guarani.hf.space';
+let hfSpaceStatus = 'unknown'; // 'unknown' | 'ok' | 'dead'
+let hfWaking = false;
+
+// Try to wake the Space (HF sleeps inactive Spaces)
+async function wakeHFSpace(){
+  if(hfWaking || hfSpaceStatus === 'ok') return;
+  hfWaking = true;
+  try {
+    const controller = new AbortController();
+    const tid = setTimeout(()=>controller.abort(), 8000);
+    const r = await fetch(HF_SPACE + '/', {method:'GET', signal: controller.signal});
+    clearTimeout(tid);
+    if(r.ok) hfSpaceStatus = 'ok';
+  } catch(e) {
+    // Space sleeping or unreachable — will try on first speak
+  }
+  hfWaking = false;
+}
+
+// Core: try HF Space first, fall back to browser TTS
+async function speakGuarani(text, onend){
+  // Always try HF Space (it produces real guaraní audio)
+  const hfOk = await speakViaHF(text, onend);
+  if(!hfOk){
+    // Fallback: browser TTS with Spanish voice
+    speakViaBrowser(text, onend);
+  }
+}
+
+async function speakViaHF(text, onend){
+  try {
+    // Gradio uses a queue system. Step 1: join the queue
+    const joinRes = await fetch(HF_SPACE + '/queue/join', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        data: [text],
+        fn_index: 0,
+        session_hash: Math.random().toString(36).slice(2),
+      }),
+    });
+    if(!joinRes.ok) throw new Error('Queue join failed: ' + joinRes.status);
+    const {event_id} = await joinRes.json();
+    if(!event_id) throw new Error('No event_id from queue');
+
+    // Step 2: listen on SSE stream for result
+    const audioSrc = await new Promise((resolve, reject)=>{
+      const es = new EventSource(HF_SPACE + '/queue/data?session_hash=' + event_id);
+      const timeout = setTimeout(()=>{ es.close(); reject(new Error('Timeout')); }, 20000);
+
+      es.onmessage = (e)=>{
+        try {
+          const msg = JSON.parse(e.data);
+          if(msg.msg === 'process_completed'){
+            clearTimeout(timeout);
+            es.close();
+            const d = msg.output && msg.output.data && msg.output.data[0];
+            if(!d) { reject(new Error('No audio data')); return; }
+            let src;
+            if(typeof d === 'string' && d.startsWith('data:')) src = d;
+            else if(typeof d === 'string') src = HF_SPACE + '/file=' + d;
+            else if(d && d.url) src = d.url.startsWith('http') ? d.url : HF_SPACE + d.url;
+            else if(d && d.path) src = HF_SPACE + '/file=' + d.path;
+            else if(d && d.name) src = HF_SPACE + '/file=' + d.name;
+            else { reject(new Error('Unknown format: ' + JSON.stringify(d).slice(0,80))); return; }
+            resolve(src);
+          } else if(msg.msg === 'process_errored'){
+            clearTimeout(timeout); es.close();
+            reject(new Error('Process errored'));
+          }
+        } catch(err){ /* ignore parse errors on heartbeat messages */ }
+      };
+      es.onerror = ()=>{ clearTimeout(timeout); es.close(); reject(new Error('SSE error')); };
+    });
+
+    hfSpaceStatus = 'ok';
+    const audio = new Audio(audioSrc);
+    window._hfAudio = audio;
+    audio.onended = ()=>{ window._hfAudio=null; if(onend) onend(); };
+    audio.onerror = (e)=>{ window._hfAudio=null; console.warn('HF audio error',e); if(onend) onend(); };
+    await audio.play();
+    return true;
+
+  } catch(e) {
+    console.warn('HF TTS failed:', e.message);
+    if(hfSpaceStatus !== 'ok') hfSpaceStatus = 'dead';
+    return false;
+  }
+}
+
+function speakViaBrowser(text, onend){
+  if(!('speechSynthesis' in window)){ if(onend) onend(); return; }
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  const voices = window.speechSynthesis.getVoices();
+  const preferred =
+    voices.find(v=>v.lang==='es-PY') ||
+    voices.find(v=>v.lang==='es-AR') ||
+    voices.find(v=>v.lang.startsWith('es')) ||
+    voices[0];
+  if(preferred) utt.voice = preferred;
+  utt.lang = 'es-PY';
+  utt.rate = 0.78;
+  utt.pitch = 1.0;
+  if(onend) utt.onend = onend;
+  window.speechSynthesis.speak(utt);
+}
+
+// Show which TTS engine is active in the UI
+function getTTSStatusBadge(){
+  if(hfSpaceStatus === 'ok')
+    return '<span style="font-size:0.6rem;background:rgba(82,183,136,0.2);border:1px solid rgba(82,183,136,0.4);border-radius:8px;padding:2px 7px;color:#52b788;font-weight:800;">🤖 Voz guaraní real</span>';
+  if(hfSpaceStatus === 'dead')
+    return '<span style="font-size:0.6rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:2px 7px;color:#666;font-weight:800;">🔊 Voz español (fallback)</span>';
+  return '<span style="font-size:0.6rem;background:rgba(255,209,102,0.1);border:1px solid rgba(255,209,102,0.2);border-radius:8px;padding:2px 7px;color:#aaa;font-weight:800;">🔄 Conectando...</span>';
+}
+
+function speakFraseDia(){
+  const btn=document.getElementById('frase-speak-btn');
+  if(!btn) return;
+  const f=getFraseDia();
+  if(fraseSpeaking){
+    window.speechSynthesis.cancel();
+    fraseSpeaking=false;
+    btn.classList.remove('speaking');
+    btn.innerHTML='🔊 Escuchar pronunciación &nbsp;'+getTTSStatusBadge();
+    return;
+  }
+  fraseSpeaking=true;
+  btn.classList.add('speaking');
+  btn.textContent='⏹ Detener';
+  speakGuarani(f.gua,()=>{
+    fraseSpeaking=false;
+    if(btn){
+      btn.classList.remove('speaking');
+      btn.innerHTML='🔊 Escuchar pronunciación &nbsp;'+getTTSStatusBadge();
+    }
+  });
+}
+
+// ═══════════════════════════════════════════
+// MODO ESCUCHÁ Y ELEGÍ
+// ═══════════════════════════════════════════
+// Pool of words for listen mode — guaraní word + correct Spanish + distractors
+const LISTEN_POOL = [
+  {gua:"Kururu",pron:"ku-RU-ru",esp:"Sapo",opts:["Sapo","Pájaro","Árbol","Río"]},
+  {gua:"Guyra",pron:"gui-RA",esp:"Pájaro",opts:["Pájaro","Pez","Perro","Flor"]},
+  {gua:"Mbói",pron:"m-BOI",esp:"Serpiente",opts:["Serpiente","Caballo","Puma","Insecto"]},
+  {gua:"Jagua",pron:"ya-GUA",esp:"Perro",opts:["Perro","Gato","Vaca","León"]},
+  {gua:"Yaguareté",pron:"ya-gua-re-TÉ",esp:"Jaguar",opts:["Jaguar","Zorro","Oso","Lobo"]},
+  {gua:"Tatú",pron:"ta-TÚ",esp:"Armadillo",opts:["Armadillo","Tortuga","Conejo","Rata"]},
+  {gua:"Mainumby",pron:"mai-nu-MBI",esp:"Colibrí",opts:["Colibrí","Mariposa","Abeja","Cigarra"]},
+  {gua:"Pety",pron:"PE-ti",esp:"Tabaco",opts:["Tabaco","Maíz","Papa","Zapallo"]},
+  {gua:"Avati",pron:"a-va-TI",esp:"Maíz",opts:["Maíz","Arroz","Trigo","Yuca"]},
+  {gua:"Tatá",pron:"ta-TÁ",esp:"Fuego",opts:["Fuego","Agua","Tierra","Aire"]},
+  {gua:"Yvytu",pron:"yi-vi-TU",esp:"Viento",opts:["Viento","Lluvia","Sol","Noche"]},
+  {gua:"Arasa",pron:"a-RA-sa",esp:"Guayaba",opts:["Guayaba","Mango","Naranja","Banana"]},
+  {gua:"Ka'a",pron:"ka-A",esp:"Yerba / Planta",opts:["Yerba / Planta","Piedra","Arena","Humo"]},
+  {gua:"Yvoty",pron:"yi-vo-TI",esp:"Flor",opts:["Flor","Fruto","Raíz","Semilla"]},
+  {gua:"Ka'aguy",pron:"ka-a-GUI",esp:"Bosque",opts:["Bosque","Desierto","Montaña","Llanura"]},
+  {gua:"Yvy",pron:"yi-VI",esp:"Tierra / Suelo",opts:["Tierra / Suelo","Cielo","Mar","Piedra"]},
+  {gua:"Ára",pron:"Á-ra",esp:"Día / Tiempo",opts:["Día / Tiempo","Noche","Semana","Año"]},
+  {gua:"Pyhare",pron:"pi-ya-RE",esp:"Noche",opts:["Noche","Tarde","Mañana","Mediodía"]},
+  {gua:"Pyhareve",pron:"pi-ya-RE-ve",esp:"Mañana / Madrugada",opts:["Mañana / Madrugada","Atardecer","Mediodía","Noche"]},
+  {gua:"Che",pron:"che",esp:"Yo / Mi",opts:["Yo / Mi","Tú / Tu","Él / Su","Nosotros"]},
+  {gua:"Nde",pron:"nde",esp:"Tú / Tu",opts:["Tú / Tu","Yo / Mi","Él / Su","Ellos"]},
+  {gua:"Ñande",pron:"ÑAN-de",esp:"Nosotros (inclusivo)",opts:["Nosotros (inclusivo)","Nosotros (exclusivo)","Ellos","Ustedes"]},
+  {gua:"Ore",pron:"O-re",esp:"Nosotros (exclusivo)",opts:["Nosotros (exclusivo)","Nosotros (inclusivo)","Ellos","Yo"]},
+  {gua:"Mba'e",pron:"mba-E",esp:"Cosa / ¿Qué?",opts:["Cosa / ¿Qué?","Persona","Lugar","Tiempo"]},
+  {gua:"Moõ",pron:"mo-Õ",esp:"¿Dónde?",opts:["¿Dónde?","¿Cuándo?","¿Por qué?","¿Cómo?"]},
+  {gua:"Mba'érepa",pron:"mba-e-RE-pa",esp:"¿Por qué?",opts:["¿Por qué?","¿Cómo?","¿Cuánto?","¿Quién?"]},
+  {gua:"Aguyje",pron:"a-gu-YJE",esp:"Gracias",opts:["Gracias","Perdón","Por favor","Hola"]},
+  {gua:"Iporã",pron:"i-po-RÃ",esp:"Está bien / Es lindo",opts:["Está bien / Es lindo","Está mal","Es feo","Es difícil"]},
+  {gua:"Rohayhu",pron:"ro-ha-YHU",esp:"Te quiero",opts:["Te quiero","Te odio","Te extraño","Te saludo"]},
+  {gua:"Tupã",pron:"tu-PÃ",esp:"Dios / Trueno",opts:["Dios / Trueno","Cielo","Tierra","Espíritu"]},
+];
+
+let LG={pool:[],qi:0,correct:0,currentWord:null,answered:false};
+
+function startListenGame(){
+  // Wake HF Space in background while user reads the UI
+  wakeHFSpace();
+
+  document.getElementById('listen-game-area').style.display='block';
+  document.getElementById('listen-result').style.display='none';
+
+  // Show TTS status badge
+  const banner = document.querySelector('.listen-mode-banner');
+  if(banner){
+    let badge = document.getElementById('listen-tts-badge');
+    if(!badge){
+      badge = document.createElement('span');
+      badge.id = 'listen-tts-badge';
+      badge.style.marginLeft='auto';
+      banner.appendChild(badge);
+    }
+    badge.innerHTML = getTTSStatusBadge();
+    // Refresh badge after Space has time to respond
+    setTimeout(()=>{ badge.innerHTML = getTTSStatusBadge(); }, 3000);
+    setTimeout(()=>{ badge.innerHTML = getTTSStatusBadge(); }, 8000);
+  }
+
+  LG={pool:[...LISTEN_POOL].sort(()=>Math.random()-0.5).slice(0,10),qi:0,correct:0,answered:false};
+  showListenQ();
+}
+
+function showListenQ(){
+  LG.answered=false;
+  const q=LG.pool[LG.qi];
+  LG.currentWord=q;
+  document.getElementById('lw-word').textContent=q.gua;
+  document.getElementById('lw-pron').textContent='[ '+q.pron+' ]';
+  document.getElementById('ls-correct').textContent=LG.correct;
+  document.getElementById('ls-total').textContent=LG.qi+'/10';
+  document.getElementById('listen-fb').textContent='';
+  document.getElementById('btn-speak-big').className='btn-speak-big';
+
+  // Shuffle options
+  const opts=[...q.opts].sort(()=>Math.random()-0.5);
+  const grid=document.getElementById('listen-opts');
+  grid.innerHTML='';
+  opts.forEach(opt=>{
+    const btn=document.createElement('button');
+    btn.style.cssText='background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.12);border-radius:14px;padding:13px 10px;color:white;font-weight:800;font-size:0.85rem;cursor:pointer;transition:all 0.2s;text-align:center;line-height:1.3;';
+    btn.textContent=opt;
+    btn.onclick=()=>answerListen(opt,btn,opts);
+    grid.appendChild(btn);
+  });
+
+  // Auto-speak after brief delay
+  setTimeout(()=>speakCurrent(),400);
+}
+
+function speakCurrent(){
+  const q=LG.currentWord;
+  if(!q) return;
+  const btn=document.getElementById('btn-speak-big');
+  if(btn) btn.classList.add('speaking');
+  speakGuarani(q.gua,()=>{
+    if(btn) btn.classList.remove('speaking');
+    // Update badge after first successful call
+    const badge=document.getElementById('listen-tts-badge');
+    if(badge) badge.innerHTML=getTTSStatusBadge();
+  });
+}
+
+function answerListen(chosen,btn,allOpts){
+  if(LG.answered) return;
+  LG.answered=true;
+  // Stop any playing audio
+  window.speechSynthesis.cancel();
+  if(window._hfAudio){ window._hfAudio.pause(); window._hfAudio=null; }
+  const q=LG.currentWord;
+  const correct=q.esp;
+  const grid=document.getElementById('listen-opts');
+  grid.querySelectorAll('button').forEach(b=>b.disabled=true);
+
+  const fb=document.getElementById('listen-fb');
+  if(chosen===correct){
+    LG.correct++;
+    btn.style.background='rgba(46,139,87,0.5)';
+    btn.style.borderColor='#52b788';
+    fb.style.color='#52b788';
+    fb.textContent='✅ ¡Correcto! — '+correct;
+    // Speak confirmation
+    setTimeout(()=>speakGuarani(q.gua),300);
+  } else {
+    btn.style.background='rgba(230,57,70,0.3)';
+    btn.style.borderColor='#e63946';
+    // Show correct
+    grid.querySelectorAll('button').forEach(b=>{
+      if(b.textContent===correct){b.style.background='rgba(46,139,87,0.4)';b.style.borderColor='#52b788';}
+    });
+    fb.style.color='#e63946';
+    fb.textContent='❌ Era: '+correct;
+  }
+  document.getElementById('ls-correct').textContent=LG.correct;
+
+  LG.qi++;
+  if(LG.qi>=10){
+    setTimeout(showListenResult,1200);
+  } else {
+    setTimeout(showListenQ,1400);
+  }
+}
+
+function showListenResult(){
+  document.getElementById('listen-game-area').style.display='none';
+  const res=document.getElementById('listen-result');
+  res.style.display='block';
+  const pct=LG.correct/10;
+  const emojis=['😢','😟','🤔','😊','🐸','🌟'];
+  const ei=Math.floor(pct*5);
+  const titles=['¡A practicar más!','Vas mejorando','¡Casi!','¡Bien hecho!','¡Excelente!','¡Perfecto!'];
+  document.getElementById('lr-emoji').textContent=emojis[ei]||'🐸';
+  document.getElementById('lr-title').textContent=titles[ei]||'¡Bien!';
+  document.getElementById('lr-score').textContent=LG.correct+'/10 correctas';
+  // XP reward
+  addXP(Math.round(pct*30)+5);
+  if(pct>=0.8) unlockAchievement('listen_ace');
+  if(pct===1) unlockAchievement('listen_perfect');
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+updateEnergyDecay();
+updateMoodDecay();
+initBGParticles();
+updateNavCoins();
+renderHomeFrog();
+renderHomeEnergy();
+renderMoodHome();
+renderHomeXP();
+updateNavLocks();
+renderFraseDia();
+
+// Init weather based on time
+applyWeather(detectWeather());
+
+// Try to wake HF TTS Space in background
+wakeHFSpace();
+
+// First time welcome tutorial
+if(!S.progress||!S.progress.seenTutorials||!S.progress.seenTutorials.includes('bienvenida')){
+  setTimeout(()=>showTutorial('bienvenida'),700);
+}
+// Energy tutorial after 2nd play
+if((S.stats&&S.stats.totalPlayed>=2)&&S.progress&&!S.progress.seenTutorials.includes('energia')){
+  setTimeout(()=>showTutorial('energia'),1200);
+}
+
+// Refresh every minute
+setInterval(()=>{
+  updateEnergyDecay();
+  if(document.getElementById('page-home').classList.contains('active')){renderHomeEnergy();renderHomeXP();}
+  if(document.getElementById('page-sapito').classList.contains('active'))renderEnergy();
+},60000);
+</script>
+
+<!-- TUTORIAL MODAL -->
+<div class="tut-overlay" id="tut-modal">
+  <div class="tut-box">
+    <span class="tut-emoji" id="tut-emoji">🐸</span>
+    <div class="tut-title" id="tut-title">¡Bienvenido!</div>
+    <div class="tut-text" id="tut-text"></div>
+    <div class="tut-steps" id="tut-steps"></div>
+    <button class="btn-tut" onclick="closeTutorial()">¡Entendido! 👍</button>
+  </div>
+</div>
+
+<!-- LEVEL UP MODAL -->
+<div class="level-up-overlay" id="lu-modal">
+  <div class="lu-star">⭐</div>
+  <div class="lu-title">¡Subiste de Nivel!</div>
+  <div class="lu-sub" id="lu-sub">Nivel <span id="lu-level">2</span></div>
+  <div class="lu-unlocks" id="lu-unlocks"></div>
+  <button onclick="closeLevelUp()" style="background:linear-gradient(135deg,#2e8b57,#52b788);border:none;border-radius:14px;padding:13px 32px;font-family:'Boogaloo',cursive;font-size:1.2rem;color:white;cursor:pointer;box-shadow:0 4px 0 #072312;margin-top:4px;">¡Genial! 🎉</button>
+</div>
+
+<!-- FOOTER -->
+<footer id="app-footer" style="
+  text-align:center;
+  padding:10px 16px 14px;
+  font-size:0.62rem;
+  color:rgba(255,255,255,0.2);
+  letter-spacing:0.03em;
+  line-height:1.8;
+  font-family:'Nunito',sans-serif;
+">
+  <div>
+    🐸 <strong style="color:rgba(255,255,255,0.3)">Sapito Guaraní</strong> &nbsp;·&nbsp;
+    Pronunciación guaraní real via <a href="https://huggingface.co/spaces/bigproof2010/guarani" target="_blank" style="color:rgba(100,200,160,0.4);text-decoration:none;">HuggingFace TTS</a>
+  </div>
+  <div>
+    © <span id="footer-year"></span>
+    <a href="https://github.com/LeandroACasco" target="_blank" style="color:rgba(255,255,255,0.3);text-decoration:none;font-weight:700;">LeandroACasco</a>
+    &nbsp;·&nbsp; Hecho con 💚 en Paraguay
+  </div>
+</footer>
+<script>document.getElementById('footer-year').textContent=new Date().getFullYear();</script>
+</body>
+</html>
