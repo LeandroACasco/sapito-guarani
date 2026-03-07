@@ -19,11 +19,13 @@ Un juego de preguntas y respuestas sobre la lengua guaraní, pensado para aprend
 | | |
 |---|---|
 | 🧠 | **3 niveles de dificultad** — Básico, Intermedio y Avanzado |
-| 📚 | **4 temas** — Saludos, Números y Colores, Animales y Naturaleza, Gramática |
+| 📚 | **6 temas** — Saludos, Números y Colores, Animales y Naturaleza, Gramática, Comidas paraguayas, Familia y cuerpo humano |
 | 🃏 | **Sistema de cartas roguelike** — Elegí entre cartas únicas cada partida |
 | 🔊 | **Pronunciación guaraní real** — TTS entrenado específicamente en guaraní (Meta MMS) |
-| 📅 | **Frase del día** — Una expresión guaraní nueva cada día |
+| 📅 | **Frase del día** — Una expresión guaraní nueva cada día (pool ampliado con frases culturales) |
 | 👂 | **Modo Escuchá y Elegí** — Reconocé palabras al oído |
+| 🔤 | **Modo Conjugación** — Practicá los prefijos verbales (a-, re-, o-, ro-, ja-, pe-) con 8 verbos |
+| 🎵 | **Sección Cultura Guaraní** — Poesía oral, refranes tradicionales y conceptos filosóficos |
 | 🏆 | **22 logros desbloqueables** |
 | ⭐ | **Sistema de XP y niveles** (1–10) con desbloqueos progresivos |
 | 🎨 | **Cosméticos y skins** para tu sapito (11 variantes) |
@@ -36,7 +38,41 @@ Un juego de preguntas y respuestas sobre la lengua guaraní, pensado para aprend
 
 ---
 
-## 🌐 Funciones Online (Firebase)
+## 📚 Contenido del juego
+
+### Temas de preguntas (6 temas, ~150 preguntas en total)
+
+- **👋 Saludos** — Formas de saludar, despedirse y presentarse en guaraní paraguayo auténtico.
+- **🔢 Números y colores** — Del 1 al 100 y colores básicos.
+- **🐾 Animales y naturaleza** — Fauna y flora local con vocabulario guaraní.
+- **📚 Gramática** — Prefijos, sufijos, estructura de la lengua, clases de verbos y fenómenos fonológicos.
+- **🌿 Comidas paraguayas** — Chipa, mbejú, sopa paraguaya, tereré, mandi'o, ka'a he'ẽ, so'o josopy y más. Con contexto cultural.
+- **👨‍👩‍👧 Familia y cuerpo humano** — Sy, túva, reindy, mitã, angirũ; akã, hesa, po, py'a. Incluye el significado filosófico de py'a y ñemoñare.
+
+### Modo Conjugación 🔤
+
+Practicá los 6 prefijos verbales del guaraní con 8 verbos comunes:
+
+| Prefijo | Persona |
+|---|---|
+| a- | Yo |
+| re- | Vos / Tú |
+| o- | Él / Ella |
+| ro- | Yo y vos |
+| ja- | Nosotros (todos) |
+| pe- | Ustedes |
+
+Verbos incluidos: *karu* (comer), *ho* (ir), *japo* (hacer), *moñe'ẽ* (hablar/leer), *hai* (escribir), *porandu* (preguntar), *'u* (comer/beber), *ky'a* (ensuciarse).
+
+### Sección Cultura Guaraní 🎵
+
+Contenido organizado en tres pestañas:
+
+- **🌿 Poesía** — 6 fragmentos de tradición oral guaraní con traducción y contexto. Con audio TTS.
+- **💬 Dichos** — 7 refranes populares sobre la comunidad, la naturaleza y la sabiduría guaraní.
+- **🌍 Cosmovisión** — 6 conceptos filosóficos: *teko* (modo de ser), *ñe'ẽ* (palabra/alma), *py'a* (corazón/ánimo), *yvy marane'ỹ* (la tierra sin mal), *jopara* (la mezcla viva), *ava* (persona guaraní).
+
+---
 
 | | |
 |---|---|
