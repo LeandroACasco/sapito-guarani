@@ -580,6 +580,8 @@ body.weather-fog{background:radial-gradient(ellipse at top,#1a2e1a 0%,#0d1f1a 10
     <button class="nav-tab" data-page="logros" onclick="navTo('logros')"><span class="nt-icon">🏅</span>Logros</button>
     <button class="nav-tab" data-page="inventory" onclick="navTo('inventory')"><span class="nt-icon">🎒</span>Bolsa</button>
     <button class="nav-tab" data-page="postal" onclick="navTo('postal')"><span class="nt-icon">📮</span>Postal</button>
+    <button class="nav-tab" data-page="conjugar" onclick="navTo('conjugar')"><span class="nt-icon">🔤</span>Conjugar</button>
+    <button class="nav-tab" data-page="cultura" onclick="navTo('cultura')"><span class="nt-icon">🎵</span>Cultura</button>
     <button class="nav-tab" data-page="online" onclick="navTo('online')"><span class="nt-icon">🌐</span>Online</button>
   </div>
   <div class="nav-coins"><span style="font-size:0.9rem">&#x1F4B0;</span><span id="nav-coins">0</span></div>
@@ -616,6 +618,8 @@ body.weather-fog{background:radial-gradient(ellipse at top,#1a2e1a 0%,#0d1f1a 10
       <div class="tema-chip" data-tema="numeros">🔢 Números</div>
       <div class="tema-chip" data-tema="animales">🐾 Animales</div>
       <div class="tema-chip" data-tema="gramatica">📚 Gramática</div>
+      <div class="tema-chip" data-tema="comidas">🌿 Comidas</div>
+      <div class="tema-chip" data-tema="familia">👨‍👩‍👧 Familia</div>
     </div>
     <div class="setup-title">⚡ Dificultad:</div>
     <div class="nivel-row" id="nivel-row">
@@ -856,6 +860,77 @@ body.weather-fog{background:radial-gradient(ellipse at top,#1a2e1a 0%,#0d1f1a 10
       Ambas bufandas son equipables desde la tienda.
     </div>
     <button class="btn-ee" onclick="closeEE()">¡Genial! 🎉</button>
+  </div>
+</div>
+
+<!-- CONJUGAR PAGE -->
+<div class="page" id="page-conjugar" style="padding:14px;overflow-y:auto;">
+  <div style="text-align:center;margin-bottom:14px;">
+    <div style="font-size:2rem">🔤</div>
+    <div style="font-family:'Boogaloo',cursive;font-size:1.3rem;color:#52b788;">Modo Conjugación</div>
+    <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);margin-top:4px;">Practicá los prefijos verbales del guaraní</div>
+  </div>
+
+  <div id="conj-intro">
+    <div style="background:rgba(82,183,136,0.08);border:1px solid rgba(82,183,136,0.2);border-radius:14px;padding:14px;margin-bottom:14px;">
+      <div style="font-size:0.78rem;color:rgba(255,255,255,0.6);line-height:1.6;">
+        En guaraní, los verbos se conjugan con <strong style="color:#52b788;">prefijos</strong> según la persona. Por ejemplo, el verbo <strong style="color:#ffd166;">karu</strong> (comer):<br><br>
+        <span style="color:#74b9ff;">a</span>karu · <span style="color:#74b9ff;">re</span>karu · <span style="color:#74b9ff;">o</span>karu · <span style="color:#74b9ff;">ro</span>karu · <span style="color:#74b9ff;">ja</span>karu · <span style="color:#74b9ff;">pe</span>karu
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;" id="conj-verb-grid"></div>
+    <button onclick="startConjGame()" style="width:100%;padding:13px;border-radius:14px;border:none;background:linear-gradient(135deg,#2e8b57,#52b788);color:white;font-family:'Boogaloo',cursive;font-size:1.1rem;cursor:pointer;">🐸 ¡Conjugar!</button>
+  </div>
+
+  <div id="conj-game" style="display:none;">
+    <div style="text-align:center;margin-bottom:12px;">
+      <div style="font-size:0.7rem;color:rgba(255,255,255,0.3);">Pregunta <span id="cq-num">1</span>/10</div>
+      <div style="background:rgba(255,255,255,0.06);border-radius:99px;height:6px;margin:6px 0;overflow:hidden;"><div id="cq-bar" style="height:100%;background:linear-gradient(90deg,#2e8b57,#52b788);transition:width 0.3s;width:10%;"></div></div>
+    </div>
+    <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:16px;text-align:center;margin-bottom:14px;">
+      <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-bottom:6px;" id="cq-instruction">Elegí la forma correcta</div>
+      <div style="font-size:1.5rem;font-weight:800;color:#ffd166;font-family:'Boogaloo',cursive;" id="cq-verb"></div>
+      <div style="font-size:0.85rem;color:rgba(255,255,255,0.5);margin-top:4px;" id="cq-person"></div>
+    </div>
+    <div id="cq-opts" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;"></div>
+    <div id="cq-feedback" style="text-align:center;font-size:0.88rem;min-height:22px;font-weight:800;"></div>
+  </div>
+
+  <div id="conj-result" style="display:none;text-align:center;padding:20px;">
+    <div style="font-size:3rem;" id="cr-emoji">🐸</div>
+    <div style="font-family:'Boogaloo',cursive;font-size:1.4rem;color:#52b788;margin:8px 0;" id="cr-title"></div>
+    <div style="font-size:1rem;color:rgba(255,255,255,0.6);margin-bottom:16px;" id="cr-score"></div>
+    <button onclick="startConjGame()" style="padding:11px 28px;border-radius:12px;border:none;background:linear-gradient(135deg,#2e8b57,#52b788);color:white;font-family:'Boogaloo',cursive;font-size:1rem;cursor:pointer;">🔄 Otra vez</button>
+  </div>
+</div>
+
+<!-- CULTURA PAGE -->
+<div class="page" id="page-cultura" style="padding:14px;overflow-y:auto;">
+  <div style="text-align:center;margin-bottom:14px;">
+    <div style="font-size:2rem">🎵</div>
+    <div style="font-family:'Boogaloo',cursive;font-size:1.3rem;color:#52b788;">Cultura Guaraní</div>
+    <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);margin-top:4px;">Poesía, canciones y sabiduría del pueblo guaraní</div>
+  </div>
+
+  <div style="display:flex;gap:6px;margin-bottom:12px;">
+    <button class="cult-tab active" onclick="showCultTab('poesia')" id="ctab-poesia">🌿 Poesía</button>
+    <button class="cult-tab" onclick="showCultTab('dichos')" id="ctab-dichos">💬 Dichos</button>
+    <button class="cult-tab" onclick="showCultTab('cosmovision')" id="ctab-cosmovision">🌍 Cosmovisión</button>
+  </div>
+
+  <div id="cult-poesia">
+    <div style="font-size:0.7rem;color:rgba(255,255,255,0.3);margin-bottom:10px;">Fragmentos de la tradición oral guaraní</div>
+    <div id="poesia-list"></div>
+  </div>
+
+  <div id="cult-dichos" style="display:none;">
+    <div style="font-size:0.7rem;color:rgba(255,255,255,0.3);margin-bottom:10px;">Refranes y dichos populares</div>
+    <div id="dichos-list"></div>
+  </div>
+
+  <div id="cult-cosmovision" style="display:none;">
+    <div style="font-size:0.7rem;color:rgba(255,255,255,0.3);margin-bottom:10px;">Conceptos filosóficos del mundo guaraní</div>
+    <div id="cosmovision-list"></div>
   </div>
 </div>
 
@@ -1616,6 +1691,80 @@ const POOL = {
       {p:"Fenómeno fonológico clave del guaraní:",ops:["Tonos léxicos","Nasalidad","Consonantes retroflejas","Longitud vocálica"],c:1},
     ]
   }
+};
+
+// ── Tema: Comidas paraguayas ──
+POOL.comidas = {
+  basico:[
+    {p:"¿Cómo se dice 'comida' en guaraní?",ops:["Kamby","Karu","Ka'a","Mandi'o"],c:1,gua:"Karu"},
+    {p:"¿Qué es 'Mandi'o'?",ops:["Maíz","Mandioca / Yuca","Batata","Maní"],c:1,gua:"Mandi'o"},
+    {p:"¿Cómo se dice 'carne' en guaraní?",ops:["Karu","So'o","Pirã","Mbói"],c:1,gua:"So'o"},
+    {p:"¿Qué es 'Ka'a he'ẽ'?",ops:["Yerba mate","Stevia / yerba dulce","Menta","Albahaca"],c:1,gua:"Ka'a he'ẽ"},
+    {p:"¿Cómo se dice 'leche' en guaraní?",ops:["Y","So'o","Kamby","Karu"],c:2,gua:"Kamby"},
+    {p:"¿Qué significa 'Pakova'?",ops:["Naranja","Mango","Banana","Ananá"],c:2,gua:"Pakova"},
+    {p:"¿Cómo se dice 'sal' en guaraní?",ops:["Tuja","Juky","Ka'a","Avatí"],c:1,gua:"Juky"},
+    {p:"¿Qué es 'Arasa'?",ops:["Mango","Durazno","Guayaba","Mamón"],c:2,gua:"Arasa"},
+    {p:"¿Cómo se dice 'dulce / azúcar'?",ops:["He'ẽ","Juky","Tuja","Yvyra"],c:0,gua:"He'ẽ"},
+    {p:"¿Qué significa 'Avatí'?",ops:["Arroz","Trigo","Maíz","Poroto"],c:2,gua:"Avatí"},
+    {p:"¿Qué es 'Mbokaja'?",ops:["Mango","Coco mbocayá","Banana","Guayaba"],c:1,gua:"Mbokaja"},
+    {p:"¿Cómo se dice 'agua' en guaraní?",ops:["Ka'a","Tatá","Y","Yvytu"],c:2,gua:"Y"},
+  ],
+  intermedio:[
+    {p:"'Chipa' es un pan típico hecho de...",ops:["Trigo y sal","Almidón de mandioca y queso","Maíz y grasa","Arroz y leche"],c:1,gua:"Chipá"},
+    {p:"¿Qué es la 'Sopa paraguaya'?",ops:["Una sopa líquida","Un budín de maíz y queso","Un caldo de carne","Un postre"],c:1,gua:"Sopa paraguaya"},
+    {p:"¿Qué es 'Mbejú'?",ops:["Caldo","Torta de almidón de mandioca","Dulce de leche","Empanada"],c:1,gua:"Mbejú"},
+    {p:"¿Qué es 'Tereré'?",ops:["Té caliente de yerba","Yerba mate fría con agua o jugo","Jugo de frutas","Chicha"],c:1,gua:"Tereré"},
+    {p:"¿Qué es 'Yvapurũ'?",ops:["Naranja amarga","Jabuticaba / uva de monte","Banana verde","Coco"],c:1,gua:"Yvapurũ"},
+    {p:"¿Cómo se dice 'beber' en guaraní?",ops:["Karu","'U","Moñe'ẽ","Jukua"],c:1,gua:"'U"},
+    {p:"¿Cómo se dice 'maní' en guaraní?",ops:["Kumanda","Mandi'o","Manduvi","Avatí"],c:2,gua:"Manduvi"},
+    {p:"¿Qué significa 'Kumanda'?",ops:["Maíz","Poroto / Legumbre","Maní","Yuca"],c:1,gua:"Kumanda"},
+    {p:"¿Qué es 'So'o josopy'?",ops:["Caldo de carne","Carne molida / picada","Asado","Carne seca"],c:1,gua:"So'o josopy"},
+    {p:"¿Cómo se dice 'cocinar' en guaraní?",ops:["Karu","Moñe'ẽ","Jeporu","Jukua"],c:3,gua:"Jukua"},
+  ],
+  avanzado:[
+    {p:"'Tereré' es de origen guaraní...",ops:["Es del español","Onomatopéyico (sonido al sorber)","Del quechua","Del portugués"],c:1,gua:"Tereré"},
+    {p:"'Ka'a he'ẽ' literalmente significa...",ops:["Yerba amarga","Planta del monte","Hierba dulce","Hoja sagrada"],c:2,gua:"Ka'a he'ẽ"},
+    {p:"¿Qué cultivo es central en la cosmovisión guaraní?",ops:["La mandioca","El maíz (avatí)","El maní","El poroto"],c:1,gua:"Avatí"},
+    {p:"¿Qué significa 'he'ẽ' aplicado a una fruta?",ops:["Madura","Dulce","Grande","Fresca"],c:1,gua:"He'ẽ"},
+    {p:"'Mandi'o' y 'mandioca' tienen el mismo origen porque...",ops:["Son préstamos del español","Mandioca viene del guaraní mandi'o","Son palabras distintas","Vienen del quechua"],c:1,gua:"Mandi'o"},
+  ]
+};
+
+// ── Tema: Familia y cuerpo humano ──
+POOL.familia = {
+  basico:[
+    {p:"¿Cómo se dice 'madre' en guaraní?",ops:["Túva","Sy","Ryke'y","Reindy"],c:1,gua:"Sy"},
+    {p:"¿Qué significa 'Túva'?",ops:["Abuelo","Tío","Padre","Hermano"],c:2,gua:"Túva"},
+    {p:"¿Cómo se dice 'hijo/a' en guaraní?",ops:["Reindy","Ryke'y","Mitã","Tyvyta"],c:0,gua:"Reindy"},
+    {p:"¿Cómo se dice 'cabeza' en guaraní?",ops:["Akã","Tĩ","Po","Pya"],c:0,gua:"Akã"},
+    {p:"¿Qué significa 'Tĩ'?",ops:["Oreja","Boca","Nariz","Ojo"],c:2,gua:"Tĩ"},
+    {p:"¿Cómo se dice 'ojo' en guaraní?",ops:["Nami","Tĩ","Hesa","Po"],c:2,gua:"Hesa"},
+    {p:"¿Qué significa 'Po'?",ops:["Pie","Mano","Brazo","Pierna"],c:1,gua:"Po"},
+    {p:"¿Cómo se dice 'corazón' en guaraní?",ops:["Py'a","Akã","Rete","Nami"],c:0,gua:"Py'a"},
+    {p:"¿Cómo se dice 'boca' en guaraní?",ops:["Tĩ","Hesa","Nami","Yvu"],c:3,gua:"Yvu"},
+    {p:"¿Qué significa 'Nami'?",ops:["Nariz","Boca","Oreja","Ojo"],c:2,gua:"Nami"},
+    {p:"¿Cómo se dice 'niño/a' en guaraní?",ops:["Reindy","Mitã","Kuña","Kuimba'e"],c:1,gua:"Mitã"},
+    {p:"¿Qué significa 'Kuña'?",ops:["Hombre","Niño","Mujer","Anciana"],c:2,gua:"Kuña"},
+  ],
+  intermedio:[
+    {p:"¿Cómo se dice 'abuela' en guaraní?",ops:["Sy","Jarýi","Ryke'y","Reindy"],c:1,gua:"Jarýi"},
+    {p:"¿Qué significa 'Taita'?",ops:["Madre","Abuelo / Padre (afectivo)","Tío","Hermano"],c:1,gua:"Taita"},
+    {p:"¿Cómo se dice 'familia' en guaraní?",ops:["Angirũ","Ñemoñare","Teko","Tuvicha"],c:1,gua:"Ñemoñare"},
+    {p:"¿Qué significa 'Che rete'?",ops:["Mi alma","Mi casa","Mi cuerpo","Mi nombre"],c:2,gua:"Che rete"},
+    {p:"¿Cómo se dice 'sangre' en guaraní?",ops:["Aky","Tuguy","Tĩ","Hesa"],c:1,gua:"Tuguy"},
+    {p:"¿Qué significa 'Py'a guasu'?",ops:["Valiente / generoso (corazón grande)","Triste","Cansado","Alegre"],c:0,gua:"Py'a guasu"},
+    {p:"¿Cómo se dice 'hombre' en guaraní?",ops:["Kuña","Mitã","Kuimba'e","Reindy"],c:2,gua:"Kuimba'e"},
+    {p:"¿Qué significa 'Che py'a'?",ops:["Mi cabeza","Mi mano","Mi corazón / ánimo","Mi nombre"],c:2,gua:"Che py'a"},
+    {p:"¿Qué significa 'Ryke'y'?",ops:["Hijo","Hermano mayor","Prima","Abuela"],c:1,gua:"Ryke'y"},
+    {p:"¿Qué significa 'Angirũ'?",ops:["Enemigo","Amigo / compañero","Familiar","Vecino"],c:1,gua:"Angirũ"},
+  ],
+  avanzado:[
+    {p:"'Py'a guasu' literalmente significa...",ops:["Corazón valiente","Corazón grande (valentía/generosidad)","Corazón roto","Corazón pequeño"],c:1,gua:"Py'a guasu"},
+    {p:"En guaraní, 'che' antes de un sustantivo indica...",ops:["Plural","Posesión de 1ra persona","Futuro","Negación"],c:1,gua:"Che"},
+    {p:"¿Qué diferencia hay entre 'reindy' y 'mitã'?",ops:["No hay diferencia","Reindy = hijo/a de alguien, mitã = niño en general","Reindy es niña, mitã es niño","Reindy es mayor"],c:1,gua:"Reindy/Mitã"},
+    {p:"'Py'a' más allá del órgano físico expresa...",ops:["Solo el corazón físico","Ánimo, valentía y emociones","Solo el amor romántico","El alma eterna"],c:1,gua:"Py'a"},
+    {p:"¿Cómo se dice 'mi amigo' en guaraní?",ops:["Che angirũ","Nde angirũ","Ha'e angirũ","Ore angirũ"],c:0,gua:"Che angirũ"},
+  ]
 };
 
 const DICT_DATA = [
@@ -2877,7 +3026,7 @@ function checkAchievements(){
   if(S.easterEgg) unlockAchievement('daniel_secret');
   if(currentWeather==='night') unlockAchievement('play_night');
   if(currentWeather==='rain') unlockAchievement('play_rain');
-  if(S.stats.themesSeen&&Object.keys(S.stats.themesSeen).length>=4) unlockAchievement('all_themes');
+  if(S.stats.themesSeen&&Object.keys(S.stats.themesSeen).length>=6) unlockAchievement('all_themes');
   if((S.stats.feedCount||0)>=10) unlockAchievement('feed_10');
   const lvl=getLevel();
   if(lvl>=5) unlockAchievement('level_5');
@@ -3470,6 +3619,21 @@ const FRASES_GUARANI = [
   {gua:"Aikuaa", pron:"ai-KUA-a", esp:"Yo sé / Entiendo", extra:"Del verbo kuaa = saber"},
   {gua:"Ndaikuaái", pron:"nda-i-kua-Á-i", esp:"No sé / No entiendo", extra:"Negación con nda...i"},
   {gua:"Eñe'ẽ porãite", pron:"e-ñe-ẽ po-rã-I-te", esp:"¡Habla bien!", extra:"Elogio al buen hablar"},
+  // Comidas y naturaleza
+  {gua:"Mandi'o", pron:"man-DI-o", esp:"Mandioca / Yuca", extra:"Alimento base de la cultura guaraní. Origen de la palabra 'mandioca'."},
+  {gua:"Tereré", pron:"te-re-RÉ", esp:"Yerba mate fría", extra:"Bebida nacional paraguaya. Onomatopeya del sonido al sorber."},
+  {gua:"Ka'a he'ẽ", pron:"ka-a he-Ẽ", esp:"Stevia / Yerba dulce", extra:"Lit. 'hierba dulce'. Endulzante natural descubierto por el pueblo guaraní."},
+  {gua:"Avatí", pron:"a-va-TÍ", esp:"Maíz", extra:"Cultivo sagrado en la cosmovisión guaraní. Central en la alimentación y la espiritualidad."},
+  {gua:"Mbejú", pron:"mbe-YÚ", esp:"Torta de almidón", extra:"Comida tradicional paraguaya de origen guaraní. Hecha de almidón de mandioca."},
+  // Familia
+  {gua:"Sy", pron:"sy", esp:"Madre", extra:"Una de las palabras más cortas y sagradas del guaraní."},
+  {gua:"Py'a guasu", pron:"pya gua-SÚ", esp:"Corazón grande / Valentía", extra:"Lit. 'corazón grande'. Ser generoso, valiente y noble."},
+  {gua:"Che angirũ", pron:"che an-gi-RŨ", esp:"Mi amigo/a", extra:"Angirũ = compañero/a. Fuente: Guasch."},
+  {gua:"Ñemoñare", pron:"ñe-mo-ÑA-re", esp:"Familia", extra:"Lit. 'los que se cuidan mutuamente'."},
+  // Cosmovisión
+  {gua:"Yvy marane'ỹ", pron:"yvy ma-ra-ne-Ỹ", esp:"La tierra sin mal", extra:"Concepto sagrado guaraní: la búsqueda de un mundo perfecto de paz y abundancia."},
+  {gua:"Teko", pron:"TE-ko", esp:"Modo de ser / Forma de vida", extra:"'Nande teko' = nuestra forma de ser. El concepto central de la identidad guaraní."},
+  {gua:"Ava", pron:"A-va", esp:"Persona / Ser humano guaraní", extra:"Autodenominación del pueblo guaraní. 'Avañe'ẽ' = lengua de la gente."},
 ];
 
 // Pick frase del día determinística por fecha
@@ -3899,6 +4063,285 @@ setInterval(()=>{
     &nbsp;·&nbsp; Hecho con 💚 en Paraguay
   </div>
 </footer>
+<script>
+// ═══════════════════════════════════════════
+// MODO CONJUGACIÓN
+// ═══════════════════════════════════════════
+(()=>{
+  const st=document.createElement('style');
+  st.textContent=`
+.cult-tab{padding:7px 12px;border-radius:10px;border:1.5px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.4);font-weight:800;cursor:pointer;font-size:0.75rem;white-space:nowrap;transition:all 0.2s;}
+.cult-tab.active{background:rgba(82,183,136,0.2);border-color:rgba(82,183,136,0.4);color:#52b788;}
+.cult-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:14px;margin-bottom:10px;}
+.cult-gua{font-size:1.05rem;font-weight:800;color:#ffd166;font-family:'Boogaloo',cursive;line-height:1.5;}
+.cult-esp{font-size:0.82rem;color:rgba(255,255,255,0.6);margin-top:4px;font-style:italic;}
+.cult-note{font-size:0.72rem;color:rgba(255,255,255,0.35);margin-top:6px;line-height:1.4;}
+.conj-verb-btn{background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;padding:10px;text-align:center;cursor:pointer;transition:all 0.2s;}
+.conj-verb-btn:hover{background:rgba(82,183,136,0.15);border-color:rgba(82,183,136,0.3);}
+.conj-verb-btn.sel{background:rgba(82,183,136,0.2);border-color:#52b788;}
+.cq-opt{padding:11px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:white;font-size:0.95rem;font-weight:800;cursor:pointer;transition:all 0.15s;font-family:'Boogaloo',cursive;}
+.cq-opt:hover{background:rgba(82,183,136,0.15);border-color:rgba(82,183,136,0.4);}
+.cq-opt.ok{background:rgba(46,139,87,0.35);border-color:#52b788;}
+.cq-opt.fail{background:rgba(230,57,70,0.25);border-color:#e63946;}
+  `;
+  document.head.appendChild(st);
+})();
+
+const VERBOS = [
+  {inf:"karu",  esp:"comer",   ej:{a:"akaru",re:"rekaru",o:"okaru",ro:"rokaru",ja:"jakaru",pe:"pekaru"}},
+  {inf:"ho",    esp:"ir",      ej:{a:"aha",re:"reho",o:"oho",ro:"roho",ja:"jaho",pe:"peho"}},
+  {inf:"japo",  esp:"hacer",   ej:{a:"ajapo",re:"rejapo",o:"ojapo",ro:"rojapo",ja:"jajapo",pe:"pejapo"}},
+  {inf:"moñe'ẽ",esp:"leer/hablar",ej:{a:"amoñe'ẽ",re:"remoñe'ẽ",o:"omoñe'ẽ",ro:"romoñe'ẽ",ja:"jamoñe'ẽ",pe:"pemoñe'ẽ"}},
+  {inf:"hai",   esp:"escribir", ej:{a:"ahai",re:"rehai",o:"ohai",ro:"rohai",ja:"jahai",pe:"pehai"}},
+  {inf:"porandu",esp:"preguntar",ej:{a:"aporandu",re:"reporandu",o:"aporandu",ro:"roporandu",ja:"japorandu",pe:"peporandu"}},
+  {inf:"'u",    esp:"comer/beber",ej:{a:"a'u",re:"re'u",o:"o'u",ro:"ro'u",ja:"ña'u",pe:"pe'u"}},
+  {inf:"ky'a",  esp:"ensuciarse",ej:{a:"aky'a",re:"reky'a",o:"oky'a",ro:"roky'a",ja:"jaky'a",pe:"peky'a"}},
+];
+
+const PREFIJOS = [
+  {pre:"a-",  per:"Yo",             ej:"(a)karu = yo como"},
+  {pre:"re-", per:"Vos / Tú",       ej:"(re)karu = vos comés"},
+  {pre:"o-",  per:"Él / Ella",      ej:"(o)karu = él come"},
+  {pre:"ro-", per:"Yo y vos",       ej:"(ro)karu = comemos (vos y yo)"},
+  {pre:"ja-", per:"Nosotros (todos)",ej:"(ja)karu = comemos todos"},
+  {pre:"pe-", per:"Ustedes",        ej:"(pe)karu = ustedes comen"},
+];
+
+let CJ = {verb:null, qi:0, correct:0, qs:[]};
+let selectedVerb = VERBOS[0];
+
+function initConjPage(){
+  const grid = document.getElementById('conj-verb-grid');
+  if(!grid) return;
+  grid.innerHTML = VERBOS.map((v,i)=>`
+    <div class="conj-verb-btn${i===0?' sel':''}" onclick="selectVerb(${i})">
+      <div style="font-size:1rem;font-weight:800;color:#ffd166;font-family:'Boogaloo',cursive;">${v.inf}</div>
+      <div style="font-size:0.7rem;color:rgba(255,255,255,0.4);">${v.esp}</div>
+    </div>`).join('');
+}
+
+function selectVerb(i){
+  selectedVerb = VERBOS[i];
+  document.querySelectorAll('.conj-verb-btn').forEach((b,j)=>b.classList.toggle('sel',j===i));
+}
+
+function startConjGame(){
+  document.getElementById('conj-intro').style.display='none';
+  document.getElementById('conj-result').style.display='none';
+  document.getElementById('conj-game').style.display='block';
+  // Build 10 questions: random verb + random person
+  CJ = {qi:0, correct:0, qs:[]};
+  const allVerbs = [...VERBOS];
+  const persons = Object.keys(VERBOS[0].ej);
+  for(let i=0;i<10;i++){
+    const v = allVerbs[Math.floor(Math.random()*allVerbs.length)];
+    const p = persons[Math.floor(Math.random()*persons.length)];
+    const correct = v.ej[p];
+    // Generate wrong options: other persons of same verb
+    const wrongs = persons.filter(x=>x!==p).map(x=>v.ej[x]);
+    const opts = shuffle([correct, wrongs[0], wrongs[1], wrongs[2]]);
+    const perLabel = {a:"Yo",re:"Vos",o:"Él/Ella",ro:"Yo y vos",ja:"Nosotros",pe:"Ustedes"};
+    CJ.qs.push({verb:v.inf, esp:v.esp, person:p, personLabel:perLabel[p], correct, opts});
+  }
+  showConjQ();
+}
+
+function showConjQ(){
+  const q = CJ.qs[CJ.qi];
+  document.getElementById('cq-num').textContent = CJ.qi+1;
+  document.getElementById('cq-bar').style.width = ((CJ.qi+1)/10*100)+'%';
+  document.getElementById('cq-verb').textContent = q.verb + ' = "' + q.esp + '"';
+  document.getElementById('cq-person').textContent = '¿Cómo se dice "' + q.personLabel + '"?';
+  document.getElementById('cq-feedback').textContent = '';
+  const grid = document.getElementById('cq-opts');
+  grid.innerHTML = q.opts.map(o=>`<button class="cq-opt" onclick="answerConj('${o}')">${o}</button>`).join('');
+}
+
+function answerConj(ans){
+  const q = CJ.qs[CJ.qi];
+  const btns = document.querySelectorAll('.cq-opt');
+  btns.forEach(b=>{b.onclick=null; if(b.textContent===q.correct) b.classList.add('ok'); else if(b.textContent===ans && ans!==q.correct) b.classList.add('fail');});
+  const fb = document.getElementById('cq-feedback');
+  if(ans===q.correct){ CJ.correct++; fb.style.color='#52b788'; fb.textContent='✅ ¡Correcto!'; }
+  else { fb.style.color='#e63946'; fb.textContent='❌ Era: '+q.correct; }
+  CJ.qi++;
+  if(CJ.qi>=10) setTimeout(showConjResult,1100);
+  else setTimeout(showConjQ,1100);
+}
+
+function showConjResult(){
+  document.getElementById('conj-game').style.display='none';
+  const res = document.getElementById('conj-result');
+  res.style.display='block';
+  const pct = CJ.correct/10;
+  const emojis=['😢','😟','🤔','😊','🐸','⭐'];
+  const titles=['¡A practicar más!','Vas mejorando','¡Casi!','¡Bien hecho!','¡Excelente!','¡Perfecto!'];
+  document.getElementById('cr-emoji').textContent = emojis[Math.floor(pct*5)]||'🐸';
+  document.getElementById('cr-title').textContent = titles[Math.floor(pct*5)]||'¡Bien!';
+  document.getElementById('cr-score').textContent = CJ.correct+'/10 correctas';
+  addXP(Math.round(pct*25)+5);
+}
+
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a; }
+
+// ═══════════════════════════════════════════
+// CULTURA GUARANÍ
+// ═══════════════════════════════════════════
+const POESIA_DATA = [
+  {
+    gua:"Ñande yvyra ñande rete,\nÑande ka'aguy ñande py'a.",
+    esp:"Nuestro árbol es nuestro cuerpo,\nnuestro monte es nuestro corazón.",
+    note:"Expresión de la cosmovisión guaraní: la naturaleza y el ser humano son uno."
+  },
+  {
+    gua:"Che angirũ, eju jaike\nñande yvága rembiporu.",
+    esp:"Amigo mío, ven entremos\nen lo que el cielo nos ofrece.",
+    note:"Fragmento de poesía oral guaraní sobre la comunidad y la naturaleza."
+  },
+  {
+    gua:"Ka'aguy rendy,\nmainumby ovy'a,\nyvoty pyahu.",
+    esp:"Brilla el monte,\nel colibrí se alegra,\nflor nueva.",
+    note:"Imagen poética típica: el colibrí (mainumby) como símbolo de alegría."
+  },
+  {
+    gua:"Ñane ñe'ẽ\nñande ñe'ẽ\nñande ava ñe'ẽ.",
+    esp:"Nuestra lengua\nes nuestra lengua\nla lengua de nuestra gente.",
+    note:"Afirmación de identidad lingüística guaraní. Ñe'ẽ = palabra / lengua / alma."
+  },
+  {
+    gua:"Y mombyry oiko,\niche ningo aháta\namombyry che py'aguy.",
+    esp:"El agua corre lejos,\nyo también me iré\na alejar mi pena.",
+    note:"Imagen poética del río como metáfora del tiempo y la tristeza."
+  },
+  {
+    gua:"Tatá rendy\nhína pe ka'aguy,\noñemopy'aguasu.",
+    esp:"El fuego ilumina\nel monte ahí nomás,\nse hace grande el corazón.",
+    note:"El fuego (tatá) en la tradición guaraní representa vida, comunidad y reunión."
+  },
+];
+
+const DICHOS_DATA = [
+  {
+    gua:"Ñe'ẽ porã oiko karape.",
+    esp:"La buena palabra vive para siempre.",
+    note:"Refrán sobre el poder de las palabras bien dichas."
+  },
+  {
+    gua:"Mba'e vai rejapo va'erã rire, eñemongeta.",
+    esp:"Antes de hacer algo malo, pensá bien.",
+    note:"Dicho de prudencia y reflexión."
+  },
+  {
+    gua:"Py'a guasu oiko ñande angirũme.",
+    esp:"El corazón grande (la generosidad) vive en nuestro amigo.",
+    note:"Sobre la amistad y la generosidad como virtudes centrales."
+  },
+  {
+    gua:"Ka'aguy ndoikói rire, Y ndoúi.",
+    esp:"Sin monte, no viene el agua.",
+    note:"Sabiduría ecológica guaraní: el monte protege las aguas."
+  },
+  {
+    gua:"Avave ndoikuaái mba'érepa oiko.",
+    esp:"Nadie sabe para qué existe.",
+    note:"Reflexión filosófica sobre la existencia y el destino."
+  },
+  {
+    gua:"Ñande ñe'ẽ ha ñande teko peteĩ.",
+    esp:"Nuestra lengua y nuestra forma de vivir son una sola cosa.",
+    note:"La lengua (ñe'ẽ) y el modo de vida (teko) son inseparables en la cultura guaraní."
+  },
+  {
+    gua:"Oñondive jaiko, oñondive jaho.",
+    esp:"Juntos vivimos, juntos vamos.",
+    note:"El valor de la comunidad y la solidaridad en la cultura guaraní."
+  },
+];
+
+const COSMOVISION_DATA = [
+  {
+    gua:"Teko",
+    esp:"Modo de ser / Forma de vida",
+    note:"El 'teko' es el concepto central de la identidad guaraní: la forma de vivir en armonía con la naturaleza, la comunidad y lo sagrado. 'Nande teko' = nuestra forma de ser."
+  },
+  {
+    gua:"Ñe'ẽ",
+    esp:"Palabra / Lengua / Alma",
+    note:"En guaraní, 'ñe'ẽ' significa palabra, idioma Y alma al mismo tiempo. La lengua no es solo comunicación: es la esencia del ser. Por eso hablar guaraní es un acto espiritual."
+  },
+  {
+    gua:"Py'a",
+    esp:"Corazón / Ánimo / Emociones",
+    note:"El 'py'a' es mucho más que el órgano físico. 'Py'a guasu' (corazón grande) = valiente/generoso. 'Py'a'i' (corazón pequeño) = cobarde/mezquino. El corazón es el centro emocional y moral."
+  },
+  {
+    gua:"Yvy marane'ỹ",
+    esp:"La tierra sin mal",
+    note:"El concepto sagrado más importante del mundo guaraní: la búsqueda de una tierra perfecta de abundancia y paz. Motivó migraciones históricas de pueblos guaraníes en búsqueda de ese lugar mítico."
+  },
+  {
+    gua:"Jopara",
+    esp:"Mezcla / Lo mezclado",
+    note:"El guaraní hablado hoy en Paraguay mezcla naturalmente palabras del español. Este 'jopara' no es deterioro del idioma sino su vitalidad — la lengua viva absorbe lo que necesita."
+  },
+  {
+    gua:"Ava",
+    esp:"Persona / Ser humano guaraní",
+    note:"'Ava' significa persona, pero también es la autodenominación del pueblo guaraní. 'Avañe'ẽ' = lengua de la gente (la lengua guaraní). El nombre revela que la lengua es parte constitutiva de la identidad."
+  },
+];
+
+function renderCultura(){
+  renderPoesia();
+  renderDichos();
+  renderCosmovision();
+}
+
+function renderPoesia(){
+  document.getElementById('poesia-list').innerHTML = POESIA_DATA.map(p=>`
+    <div class="cult-card">
+      <div class="cult-gua">${p.gua.replace(/\n/g,'<br>')}</div>
+      <div class="cult-esp">${p.esp.replace(/\n/g,'<br>')}</div>
+      <div class="cult-note">📖 ${p.note}</div>
+      <button onclick="speakGuarani('${p.gua.replace(/\n/g,' ').replace(/'/g,"\\'")}',null)" style="margin-top:8px;background:rgba(26,154,184,0.15);border:1px solid rgba(26,154,184,0.3);border-radius:8px;padding:5px 12px;color:#4dd0e1;font-size:0.75rem;cursor:pointer;">🔊 Escuchar</button>
+    </div>`).join('');
+}
+
+function renderDichos(){
+  document.getElementById('dichos-list').innerHTML = DICHOS_DATA.map(d=>`
+    <div class="cult-card">
+      <div class="cult-gua">${d.gua}</div>
+      <div class="cult-esp">${d.esp}</div>
+      <div class="cult-note">💡 ${d.note}</div>
+      <button onclick="speakGuarani('${d.gua.replace(/'/g,"\\'")}',null)" style="margin-top:8px;background:rgba(26,154,184,0.15);border:1px solid rgba(26,154,184,0.3);border-radius:8px;padding:5px 12px;color:#4dd0e1;font-size:0.75rem;cursor:pointer;">🔊 Escuchar</button>
+    </div>`).join('');
+}
+
+function renderCosmovision(){
+  document.getElementById('cosmovision-list').innerHTML = COSMOVISION_DATA.map(c=>`
+    <div class="cult-card">
+      <div class="cult-gua" style="font-size:1.3rem;">${c.gua}</div>
+      <div style="font-size:0.78rem;color:#52b788;font-weight:800;margin-top:3px;">${c.esp}</div>
+      <div class="cult-note" style="font-size:0.75rem;color:rgba(255,255,255,0.5);">${c.note}</div>
+    </div>`).join('');
+}
+
+function showCultTab(tab){
+  ['poesia','dichos','cosmovision'].forEach(t=>{
+    document.getElementById('cult-'+t).style.display = t===tab?'block':'none';
+    document.getElementById('ctab-'+t).classList.toggle('active', t===tab);
+  });
+}
+
+// Hook navTo for new pages
+const _navToNew = window.navTo;
+window.navTo = function(id){
+  _navToNew(id);
+  if(id==='conjugar') initConjPage();
+  if(id==='cultura') renderCultura();
+};
+window.navTo._fbWrapped = window._navToNew?._fbWrapped; // preserve flag
+</script>
 <script>document.getElementById('footer-year').textContent=new Date().getFullYear();</script>
 <!-- FRIEND PROFILE MODAL -->
 <div id="friend-profile-overlay" onclick="closeFriendProfile()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:2000;backdrop-filter:blur(4px);overflow-y:auto;padding:16px;box-sizing:border-box;">
