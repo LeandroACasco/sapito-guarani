@@ -77,16 +77,32 @@ Contenido organizado en tres pestañas:
 | | |
 |---|---|
 | 🔐 | **Registro e inicio de sesión** con email y contraseña |
-| 🏆 | **Tabla de líderes global** — Top 20 jugadores por XP |
+| 🏆 | **Tabla de líderes global** — Top 20 jugadores por XP total |
+| 🏅 | **Liga Semanal** — Ranking que se resetea cada lunes, con temporadas |
+| 📣 | **Feed de actividad** — Logros, subidas de nivel, rachas y regalos de tus amigos en tiempo real |
 | 👥 | **Sistema de amigos** — Buscá, agregá y quitá amigos |
+| ⚔️ | **Desafíos 1v1** — Retá a un amigo a superar tu puntaje, con 24hs de vigencia |
+| 🎁 | **Regalos** — Mandá agua o comida a un amigo una vez por día; se suman al inventario |
 | 📊 | **Perfil detallado de amigos** — Stats, logros, skins y comparación directa |
 | 💬 | **Feedback para testers** — Comentarios categorizados en tiempo real |
 | 📈 | **Estadísticas globales** — Jugadores totales, partidas, preguntas más falladas |
-| 🔄 | **Sincronización automática** de XP, nivel y racha a la nube |
+| 🔄 | **Sincronización automática** de XP, nivel, racha y liga semanal a la nube |
 
 ---
 
-## 🗣️ Pronunciación guaraní real
+## 🔥 Colecciones Firestore
+
+| Colección | Descripción |
+|---|---|
+| `players/{uid}` | Perfil del jugador: XP, nivel, racha, logros, skins |
+| `liga/{week_uid}` | XP semanal por jugador para la Liga Semanal |
+| `activity/{doc}` | Feed de actividad: logros, niveles, rachas, regalos, desafíos |
+| `desafios/{doc}` | Desafíos 1v1 entre amigos (expiran en 24hs) |
+| `regalos/{doc}` | Regalos de agua/comida entre amigos |
+| `feedback/{doc}` | Comentarios y sugerencias de testers |
+| `wrongAnswers/{key}` | Preguntas más falladas globalmente |
+
+---
 
 El juego usa el modelo **[joselobenitezg/mms-grn-tts](https://huggingface.co/joselobenitezg/mms-grn-tts)** — un modelo VITS entrenado específicamente en guaraní por el proyecto **Meta MMS** (Massively Multilingual Speech), alojado en el Space **[bigproof2010/guarani](https://huggingface.co/spaces/bigproof2010/guarani)**. La voz es real, no una aproximación en español. Incluye fallback a Web Speech API.
 
