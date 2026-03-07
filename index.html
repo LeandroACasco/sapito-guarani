@@ -4154,13 +4154,23 @@ function showConjQ(){
   document.getElementById('cq-person').textContent = '¿Cómo se dice "' + q.personLabel + '"?';
   document.getElementById('cq-feedback').textContent = '';
   const grid = document.getElementById('cq-opts');
-  grid.innerHTML = q.opts.map(o=>`<button class="cq-opt" onclick="answerConj('${o}')">${o}</button>`).join('');
+  grid.innerHTML = q.opts.map(o=>`<button class="cq-opt" data-ans="${o.replace(/"/g,'&quot;')}">${o}</button>`).join('');
+  grid.querySelectorAll('.cq-opt').forEach(btn=>{
+    btn.addEventListener('click', ()=>answerConj(btn.dataset.ans));
+  });
 }
 
 function answerConj(ans){
   const q = CJ.qs[CJ.qi];
   const btns = document.querySelectorAll('.cq-opt');
-  btns.forEach(b=>{b.onclick=null; if(b.textContent===q.correct) b.classList.add('ok'); else if(b.textContent===ans && ans!==q.correct) b.classList.add('fail');});
+  btns.forEach(b=>{
+    b.onclick=null;
+    b.replaceWith(b.cloneNode(true)); // remove event listeners
+  });
+  document.querySelectorAll('.cq-opt').forEach(b=>{
+    if(b.textContent===q.correct) b.classList.add('ok');
+    else if(b.textContent===ans && ans!==q.correct) b.classList.add('fail');
+  });
   const fb = document.getElementById('cq-feedback');
   if(ans===q.correct){ CJ.correct++; fb.style.color='#52b788'; fb.textContent='✅ ¡Correcto!'; }
   else { fb.style.color='#e63946'; fb.textContent='❌ Era: '+q.correct; }
