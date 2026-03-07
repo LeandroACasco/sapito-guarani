@@ -68,11 +68,7 @@ Las traducciones del juego fueron revisadas y validadas utilizando las siguiente
 
 - **Cañete, Oscar Mauricio** (2022). *Diccionario Guaraní–Español–Inglés (Aragua Avañe'ẽ)*. Encarnación, Paraguay. Disponible en: [Portal Guaraní](https://portalguarani.com/3249_oscar_mauricio_canete/25309_diccionario__guarani_espanol_ingles__por_oscar_mauricio_canete.html)
 
-### Bibliografía complementaria (guaraní correntino)
-
-- **Ministerio de Educación de la Provincia de Corrientes** (2022). *Avañe'ẽ del Taragui: Diccionario guaraní-español / español-guaraní*. Coordinación de Educación Intercultural Bilingüe. ISBN 978-987-48916-3-1. Disponible en: [mec.gob.ar](https://www.mec.gob.ar/descargas/Documentos/Educacion%20Intercultural%20Bilingue/GUARANI/avane-Diccionario-Guarani-Esp-Esp-Guarani.pdf)
-
-> **Nota:** El juego prioriza las formas del guaraní paraguayo estándar (p. ej. *Pyhareve*, *Ka'aruma*, *Pytumia*, *Maitei*) sobre las variantes correntinas (*Ko'ê porã*, *Ka'aru porã*, *Pytû porã*), aunque ambas se incluyen en el diccionario in-game con su respectiva nota de variante.
+> El juego usa exclusivamente las formas del guaraní paraguayo estándar: *Pyhareve*, *Ka'aruma*, *Pytumia*, *Maitei*, según las fuentes académicas paraguayas citadas.
 
 ### Notas ortográficas
 
@@ -98,7 +94,7 @@ El juego utiliza la ortografía normalizada post-1950:
 
 ## 🇵🇾 Sobre el guaraní
 
-El guaraní es una lengua indígena hablada principalmente en Paraguay, donde es lengua oficial junto al español, y en la provincia de Corrientes (Argentina), donde fue declarada idioma oficial alternativo por la Ley Provincial Nº 5.598 (2004). Es hablado por más de 6 millones de personas en toda Sudamérica. Este proyecto busca contribuir a su difusión y aprendizaje de forma accesible y entretenida. **Hecho con 💚 en Paraguay.**
+El guaraní es una lengua indígena hablada principalmente en Paraguay, donde es lengua oficial junto al español. Es hablado por más de 6 millones de personas en toda Sudamérica. Este proyecto busca contribuir a su difusión y aprendizaje de forma accesible y entretenida. **Hecho con 💚 en Paraguay.**
 
 ---
 
