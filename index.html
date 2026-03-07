@@ -1478,7 +1478,7 @@ function makeFrogSVG(skinId, size=80, hat=null, acc=null, scarf=null){
 const POOL = {
   saludos:{
     basico:[
-      {p:"¿Cómo se dice 'buenos días' en guaraní paraguayo?",ops:["Pyhareve","Pytû porã","Ka'aruma","Aguyje"],c:0},
+      {p:"¿Cómo se dice 'buenos días' en guaraní paraguayo?",ops:["Mba'éichapa ne ko'ê","Pytumia","Mba'éichapa nde ka'aru","Aguyje"],c:0},
       {p:"¿Qué significa 'Mba'éichapa'?",ops:["Hasta luego","Gracias","¿Cómo estás?","Por favor"],c:2},
       {p:"¿Cómo se dice 'gracias' en guaraní?",ops:["Ndaipóri","Ha'e","Aguyje","Upe"],c:2},
       {p:"¿Qué significa 'Jajoecha'?",ops:["Hasta luego / Nos vemos","Bienvenido","Por favor","Buenos días"],c:0},
@@ -1486,9 +1486,9 @@ const POOL = {
       {p:"¿Qué significa 'Eguahê porã'?",ops:["Jajoecha","Bienvenido","Ko'ê porã","Aguyje"],c:1},
       {p:"¿Cómo se dice 'sí' en guaraní?",ops:["Añete / Héê","Nahániri","Avave","Upe"],c:0},
       {p:"¿Cómo se dice 'no' en guaraní?",ops:["Héê","Nahániri","Ha'e","Ikatúpa"],c:1},
-      {p:"¿Qué significa 'Ka'aruma'?",ops:["Buenas noches","Buenos días","Buenas tardes","Buen provecho"],c:2},
+      {p:"¿Qué significa 'Mba'éichapa nde ka'aru'?",ops:["Buenas noches","Buenos días","Buenas tardes","Buen provecho"],c:2},
       {p:"¿Qué es 'Maitei' en guaraní?",ops:["Gracias","Bienvenido","Saludo (para cualquier hora)","Hasta luego"],c:2},
-      {p:"¿Qué significa 'Pytumia'?",ops:["Buenas tardes","Buenas noches","Buenos días","Buen provecho"],c:1},
+      {p:"¿Qué significa 'Mba'éichapa ndepyhare'?",ops:["Buenas tardes","Buenas noches","Buenos días","Buen provecho"],c:1},
       {p:"¿Cómo se dice 'hasta mañana'?",ops:["Jajoecha ko'ẽme","Jajoecha pytûme","Ko'ê porã","Aguyje"],c:0},
     ],
     intermedio:[
@@ -1620,9 +1620,9 @@ const POOL = {
 
 const DICT_DATA = [
   // Saludos — formas paraguayas (fuente: Guasch, MITIC-SPL)
-  {gua:"Pyhareve",es:"Buenos días / Por la mañana",cat:"saludos",note:"Forma paraguaya estándar. Lit. 'madrugada'. Fuente: Guasch/SPL."},
-  {gua:"Ka'aruma",es:"Buenas tardes",cat:"saludos",note:"Forma paraguaya estándar. Lit. 'ya es tarde'. Fuente: Guasch/SPL."},
-  {gua:"Pytumia",es:"Buenas noches",cat:"saludos",note:"Forma paraguaya estándar. Lit. 'ya es de noche'. Fuente: Guasch/SPL."},
+  {gua:"Mba'éichapa ne ko'ê",es:"Buenos días",cat:"saludos",note:"Lit. '¿Cómo está tu amanecer?'. Saludo matutino paraguayo."},
+  {gua:"Mba'éichapa nde ka'aru",es:"Buenas tardes",cat:"saludos",note:"Lit. '¿Cómo está tu tarde?'. Saludo vespertino paraguayo."},
+  {gua:"Mba'éichapa ndepyhare",es:"Buenas noches",cat:"saludos",note:"Lit. '¿Cómo está tu noche?'. Saludo nocturno paraguayo."},
   {gua:"Maitei",es:"Saludo (cualquier hora)",cat:"saludos",note:"El saludo universal paraguayo, válido para todas las horas del día. Fuente: Guasch."},
   {gua:"Mba'éichapa reiko?",es:"¿Cómo estás?",cat:"saludos",note:"Forma completa. Abreviado: Mba'éichapa."},
   {gua:"Iporãite",es:"Estoy bien (respuesta)",cat:"saludos",note:"Respuesta común al saludo."},
@@ -3448,9 +3448,9 @@ const FRASES_GUARANI = [
   {gua:"Jajoechapeve", pron:"ya-yo-echa-PE-ve", esp:"Hasta la vista / Hasta que nos veamos", extra:"Despedida afectuosa"},
   {gua:"Mba'épa nde rera?", pron:"mba-E-pa nde RE-ra", esp:"¿Cuál es tu nombre?", extra:"Más formal que Nde réra mba'épa"},
   {gua:"Ko'ãga", pron:"ko-Ã-ga", esp:"Ahora / Hoy en día", extra:"Indica tiempo presente"},
-  {gua:"Pyhareve", pron:"pi-ya-RE-ve", esp:"Buenos días / Por la mañana", extra:"Saludo matutino estándar en guaraní paraguayo. Fuente: Guasch/SPL."},
-  {gua:"Ka'aruma", pron:"ka-a-RU-ma", esp:"Buenas tardes", extra:"Saludo vespertino estándar en guaraní paraguayo. Lit. 'ya es tarde'."},
-  {gua:"Pytumia", pron:"py-tu-MI-a", esp:"Buenas noches", extra:"Saludo nocturno estándar en guaraní paraguayo. Lit. 'ya es de noche'."},
+  {gua:"Mba'éichapa ne ko'ê", pron:"mba-ei-CHA-pa ne KO-ê", esp:"Buenos días", extra:"Lit. '¿Cómo está tu amanecer?'. Saludo matutino paraguayo."},
+  {gua:"Mba'éichapa nde ka'aru", pron:"mba-ei-CHA-pa nde ka-A-ru", esp:"Buenas tardes", extra:"Lit. '¿Cómo está tu tarde?'. Saludo vespertino paraguayo."},
+  {gua:"Mba'éichapa ndepyhare", pron:"mba-ei-CHA-pa nde-py-HA-re", esp:"Buenas noches", extra:"Lit. '¿Cómo está tu noche?'. Saludo nocturno paraguayo."},
   {gua:"Maitei", pron:"mai-TEI", esp:"Saludo / Saludos", extra:"El saludo universal paraguayo, válido para cualquier hora del día. Fuente: Guasch."},
   {gua:"Ndaipóri mba'eve", pron:"nda-i-PO-ri mba-E-ve", esp:"No hay nada / De nada", extra:"Respuesta amable a 'gracias'"},
   {gua:"Eju", pron:"E-yu", esp:"Vení", extra:"Imperativo de 'venir'"},

@@ -68,7 +68,7 @@ Las traducciones del juego fueron revisadas y validadas utilizando las siguiente
 
 - **Cañete, Oscar Mauricio** (2022). *Diccionario Guaraní–Español–Inglés (Aragua Avañe'ẽ)*. Encarnación, Paraguay. Disponible en: [Portal Guaraní](https://portalguarani.com/3249_oscar_mauricio_canete/25309_diccionario__guarani_espanol_ingles__por_oscar_mauricio_canete.html)
 
-> El juego usa exclusivamente las formas del guaraní paraguayo estándar: *Pyhareve*, *Ka'aruma*, *Pytumia*, *Maitei*, según las fuentes académicas paraguayas citadas.
+> El juego usa exclusivamente las formas del guaraní paraguayo auténtico: *Mba'éichapa ne ko'ê* (buenos días), *Mba'éichapa nde ka'aru* (buenas tardes), *Mba'éichapa ndepyhare* (buenas noches) y *Maitei* (saludo universal), según las fuentes académicas paraguayas citadas.
 
 ### Notas ortográficas
 
