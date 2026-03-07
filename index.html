@@ -1317,29 +1317,68 @@ function checkOnlineReminder(){
   }
 }
 
-// ── Sync on page open ──
-const _origNavTo = window.navTo;
-window.navTo = function(id){
-  _origNavTo(id);
-  if(id==='online' && window.fbUser){
-    document.getElementById('ol-username').textContent = window.fbUser.displayName||window.fbUser.email;
-    syncPlayerData(window.fbUser);
+// ── Sync on page open — hook set after main script loads ──
+document.addEventListener('DOMContentLoaded', ()=>{
+  // Wait for main game script to define navTo, then wrap it
+  const waitNavTo = setInterval(()=>{
+    if(typeof window.navTo === 'function' && window.navTo._fbWrapped !== true){
+      const _orig = window.navTo;
+      window.navTo = function(id){
+        _orig(id);
+        if(id==='online') renderOnlinePage();
+      };
+      window.navTo._fbWrapped = true;
+      clearInterval(waitNavTo);
+    }
+  }, 100);
+});
+
+function renderOnlinePage(){
+  const loading = document.getElementById('online-loading');
+  const authDiv = document.getElementById('online-auth');
+  const main    = document.getElementById('online-main');
+
+  // Firebase module not loaded yet — retry
+  if(!window.FB || window.fbUser === undefined){
+    loading.style.display = 'block';
+    authDiv.style.display = 'none';
+    main.style.display    = 'none';
+    setTimeout(renderOnlinePage, 400);
+    return;
+  }
+
+  const user = window.fbUser; // null = logged out, object = logged in
+  loading.style.display = 'none';
+
+  if(user){
+    authDiv.style.display = 'none';
+    main.style.display    = 'block';
+    document.getElementById('ol-username').textContent = user.displayName || user.email;
+    syncPlayerData(user);
     loadLeaderboard();
     loadFriends();
     loadFeedback();
     loadGlobalStats();
+  } else {
+    authDiv.style.display = 'block';
+    main.style.display    = 'none';
   }
+}
+
+// ── Auth state handler (called from Firebase module) ──
+window.onFBAuthChange = function(user){
+  // fbUser already set by module before this call — just re-render if on page
+  const pg = document.getElementById('page-online');
+  if(pg && pg.classList.contains('active')) renderOnlinePage();
+  if(user && typeof syncPlayerData === 'function') syncPlayerData(user);
 };
 
-// ── Sync XP after endGame ──
+// ── Sync XP after addXP ──
 const _origAddXP = window.addXP;
 window.addXP = function(amount){
-  _origAddXP(amount);
-  if(window.fbUser) syncPlayerData(window.fbUser);
+  if(typeof _origAddXP === 'function') _origAddXP(amount);
+  if(window.fbUser && typeof syncPlayerData === 'function') syncPlayerData(window.fbUser);
 };
-
-// Init online page state
-window.onFBAuthChange(window.fbUser || null);
 </script>
 
 <script>
@@ -3873,6 +3912,9 @@ window.FB = { auth, db, serverTimestamp,
   doc, setDoc, getDoc, updateDoc, collection, query, orderBy, limit,
   getDocs, addDoc, onSnapshot, where, arrayUnion, arrayRemove,
   signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile };
+
+// Set null immediately so "undefined" check resolves — will be overwritten by onAuthStateChanged
+window.fbUser = null;
 
 onAuthStateChanged(auth, user => {
   window.fbUser = user || null;
