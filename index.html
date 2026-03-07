@@ -112,6 +112,7 @@ body{font-family:'Nunito',sans-serif;background:var(--g1);color:var(--white);dis
 .btn-play-big:hover{transform:translateY(-3px);box-shadow:0 9px 0 var(--g1),0 14px 28px rgba(46,139,87,0.5);}
 .btn-play-big:active{transform:translateY(2px);box-shadow:0 4px 0 var(--g1);}
 .btn-play-big:disabled{opacity:0.45;cursor:not-allowed;transform:none;box-shadow:0 4px 0 var(--g1);}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
 
 .home-setup{
   background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);
@@ -2310,7 +2311,30 @@ function renderHomeEnergy(){
   if(fBtn){ fBtn.disabled=inv.food<=0;  if(fcd)fcd.textContent=inv.food>0?'(x'+inv.food+')':'(0)'; }
 
   const playBtn=document.getElementById('btn-play');
-  if(playBtn) playBtn.disabled=!canPlay();
+  if(playBtn){
+    if(!canPlay()){
+      playBtn.disabled=false; // keep clickable so we can show message
+      playBtn.onclick = function(){
+        const inv=S.inventory||{water:0,food:0};
+        const hasItems = inv.water>0||inv.food>0;
+        if(hasItems){
+          showToast('⚡ Energía baja — usá 💧 agua o 🌿 comida para recargar');
+        } else {
+          showToast('😴 Sin energía ni ítems — comprá en la Tienda 🛒');
+        }
+        // Shake the energy bar to draw attention
+        const wrap=document.querySelector('.home-energy');
+        if(wrap){ wrap.style.animation='none'; setTimeout(()=>{ wrap.style.animation='shake 0.4s ease'; },10); }
+      };
+      playBtn.style.opacity='0.45';
+      playBtn.style.cursor='not-allowed';
+    } else {
+      playBtn.disabled=false;
+      playBtn.onclick=startGame;
+      playBtn.style.opacity='';
+      playBtn.style.cursor='';
+    }
+  }
 }
 
 function fmtCd(ms){
@@ -4688,7 +4712,7 @@ window.navTo = function(id){
   if(id==='conjugar') initConjPage();
   if(id==='cultura') renderCultura();
 };
-window.navTo._fbWrapped = window._navToNew?._fbWrapped; // preserve flag
+window.navTo._fbWrapped = _navToNew._fbWrapped || false;
 </script>
 <script>document.getElementById('footer-year').textContent=new Date().getFullYear();</script>
 <!-- FRIEND PROFILE MODAL -->
