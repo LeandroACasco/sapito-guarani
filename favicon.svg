@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Body -->
+  <ellipse cx="16" cy="19" rx="10" ry="8" fill="#4caf50"/>
+  <!-- Belly -->
+  <ellipse cx="16" cy="20" rx="6" ry="5" fill="#a5d6a7"/>
+  <!-- Left eye bump -->
+  <ellipse cx="10" cy="12" rx="4" ry="3.5" fill="#4caf50"/>
+  <!-- Right eye bump -->
+  <ellipse cx="22" cy="12" rx="4" ry="3.5" fill="#4caf50"/>
+  <!-- Left eye white -->
+  <ellipse cx="10" cy="11.5" rx="2.8" ry="2.5" fill="#fff"/>
+  <!-- Right eye white -->
+  <ellipse cx="22" cy="11.5" rx="2.8" ry="2.5" fill="#fff"/>
+  <!-- Left pupil -->
+  <circle cx="10.5" cy="11.5" r="1.4" fill="#1b5e20"/>
+  <!-- Right pupil -->
+  <circle cx="22.5" cy="11.5" r="1.4" fill="#1b5e20"/>
+  <!-- Smile -->
+  <path d="M12 22 Q16 25.5 20 22" stroke="#2e7d32" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <!-- Left front leg -->
+  <ellipse cx="7" cy="24" rx="3" ry="1.5" fill="#4caf50" transform="rotate(-20 7 24)"/>
+  <!-- Right front leg -->
+  <ellipse cx="25" cy="24" rx="3" ry="1.5" fill="#4caf50" transform="rotate(20 25 24)"/>
+</svg>
