@@ -1865,18 +1865,20 @@ function makeFrogSVG(skinId, size=80, hat=null, acc=null, scarf=null){
 const POOL = {
   saludos:{
     basico:[
-      {p:"¿Cómo se dice 'buenos días' en guaraní paraguayo?",ops:["Mba'éichapa ne ko'ê","Pytumia","Mba'éichapa nde ka'aru","Aguyje"],c:0},
-      {p:"¿Qué significa 'Mba'éichapa'?",ops:["Hasta luego","Gracias","¿Cómo estás?","Por favor"],c:2},
+      // DEBUGEABLES: "Pytumia" eliminada (no existe en diccionario MITIC/SPL).
+      // DEBUGEABLES: "por favor" movido a avanzado (es sufijo -mína, complejo).
+      // DEBUGEABLES: "Jajoecha" → "Jajohechata" (más correcto según usuario).
+      {p:"¿Cómo se dice 'buenos días' en guaraní?",ops:["Mba'éichapa ne ko'ê","Ko'ê porã","Mba'éichapa nde ka'aru","Aguyje"],c:0},
+      {p:"¿Qué significa 'Mba'éichapa'?",ops:["Hasta luego","Gracias","¿Cómo estás?","Bienvenido"],c:2},
       {p:"¿Cómo se dice 'gracias' en guaraní?",ops:["Ndaipóri","Ha'e","Aguyje","Upe"],c:2},
-      {p:"¿Qué significa 'Jajoecha'?",ops:["Hasta luego / Nos vemos","Bienvenido","Por favor","Buenos días"],c:0},
-      {p:"¿Cómo se dice 'por favor' en guaraní?",ops:["Aguyje","Añeténte","Ikatúpa","Ndaipóri"],c:1},
+      {p:"¿Qué significa 'Jajohechata'?",ops:["Hasta luego / Nos vemos","Bienvenido","Gracias","Buenos días"],c:0},
       {p:"¿Qué significa 'Eguahê porã'?",ops:["Jajoecha","Bienvenido","Ko'ê porã","Aguyje"],c:1},
       {p:"¿Cómo se dice 'sí' en guaraní?",ops:["Añete / Héê","Nahániri","Avave","Upe"],c:0},
       {p:"¿Cómo se dice 'no' en guaraní?",ops:["Héê","Nahániri","Ha'e","Ikatúpa"],c:1},
       {p:"¿Qué significa 'Mba'éichapa nde ka'aru'?",ops:["Buenas noches","Buenos días","Buenas tardes","Buen provecho"],c:2},
       {p:"¿Qué es 'Maitei' en guaraní?",ops:["Gracias","Bienvenido","Saludo (para cualquier hora)","Hasta luego"],c:2},
       {p:"¿Qué significa 'Mba'éichapa ndepyhare'?",ops:["Buenas tardes","Buenas noches","Buenos días","Buen provecho"],c:1},
-      {p:"¿Cómo se dice 'hasta mañana'?",ops:["Jajoecha ko'ẽme","Jajoecha pytûme","Ko'ê porã","Aguyje"],c:0},
+      {p:"¿Cómo se dice 'hasta mañana'?",ops:["Jajohechata ko'ẽme","Jajohechata pytûme","Ko'ê porã","Aguyje"],c:0},
     ],
     intermedio:[
       {p:"¿Cómo se dice 'Me llamo...' en guaraní?",ops:["Che réra...","Ha'e réra...","Nde réra...","Ore réra..."],c:0},
@@ -1886,11 +1888,14 @@ const POOL = {
       {p:"¿Qué significa 'Che añoite'?",ops:["Estoy solo/a","Tengo sed","Estoy cansado","Me duele"],c:0},
       {p:"¿Cómo se dice 'Mucho gusto' en guaraní?",ops:["Aguyje","Che py'a guasu","Iporãve","Jajoecha"],c:1},
       {p:"¿Qué significa 'Reikuaápa guaraní'?",ops:["¿Hablás guaraní?","¿Sabés guaraní?","¿Entendés guaraní?","¿Estudiás guaraní?"],c:1},
-      {p:"¿Cómo se dice 'Perdón / Lo siento' en guaraní?",ops:["Ikatúpa","Emongeta","Che mba'ete","Emboguereko"],c:0},
+      // DEBUGEABLES: "Ikatúpa" (es posible) no significa perdón. Reemplazado por ejercicio con "Moñyrõ" (perdonar, del diccionario).
+      {p:"¿Cómo se dice 'Perdón / Disculpá' en guaraní?",ops:["Moñyrõ","Emongeta","Che mba'ete","Ndaipóri"],c:0},
       {p:"¿Qué significa 'Ereraha'?",ops:["Llevalo","Traelo","Miralo","Escuchalo"],c:0},
       {p:"¿Cómo se dice 'Te voy a extrañar'?",ops:["Rohayhu","Che añomi nderehe","Jajoecha","Rohechase"],c:1},
     ],
     avanzado:[
+      // DEBUGEABLES: "por favor" movido aquí desde básico. En guaraní no es palabra directa sino sufijo -mína (cortesía). Se explica como concepto avanzado.
+      {p:"¿Cómo se expresa 'por favor' en guaraní?",ops:["Aguyje","Es el sufijo -mína añadido al verbo","Ha'e","Nahániri"],c:1},
       {p:"¿Cómo se forma el imperativo en guaraní?",ops:["Prefijo 're-'","Solo el verbo sin prefijo","Prefijo 'o-'","Sufijo '-va'"],c:1},
       {p:"'Rohayhu' usa 'ro-' que indica...",ops:["Yo te (1ra→2da)","Él te","Nosotros os","Vos me"],c:0},
       {p:"¿Qué indica '-pa' en la pregunta guaraní?",ops:["Negación","Marcador interrogativo","Futuro","Plural"],c:1},
@@ -1941,12 +1946,14 @@ const POOL = {
       {p:"¿Qué animal es 'Karumbé'?",ops:["Serpiente","Tortuga","Lagarto","Rana"],c:1},
       {p:"¿Cómo se dice 'caballo'?",ops:["Kavaju","Vaka","Kamby","Jagua"],c:0},
       {p:"¿Qué animal es 'Vaka'?",ops:["Cabra","Oveja","Vaca","Cerdo"],c:2},
-      {p:"¿Cómo se dice 'rana' en guaraní?",ops:["Kururu","Mbói","Karumbé","Ryapu"],c:0},
-      {p:"¿Cómo se llama el jaguar en guaraní?",ops:["Jagua","Jaguarete","Karaya","Puma"],c:1},
+      // DEBUGEABLES: "kururu" = sapo (no rana). "ju'i" = rana. Corregido a sapo.
+      {p:"¿Cómo se dice 'sapo' en guaraní?",ops:["Kururu","Mbói","Karumbé","Ju'i"],c:0},
+      {p:"¿Cómo se llama el jaguar en guaraní?",ops:["Jagua","Jaguarete","Ka'i","Puma"],c:1},
       {p:"¿Qué animal es 'Ype'?",ops:["Ganso","Pato","Gallina","Paloma"],c:1},
       {p:"¿Cómo se dice 'gato' en guaraní?",ops:["Mbarakaja","Jagua","Mbói","Guyra"],c:0},
       {p:"¿Qué animal es 'Mbói chini'?",ops:["Lombriz","Víbora de cascabel","Salamandra","Lagartija"],c:1},
-      {p:"¿Cómo se dice 'mono' en guaraní?",ops:["Karaya","Jaguarete","Guyra","Tapiti"],c:0},
+      // DEBUGEABLES: "Karaya" no aparece en diccionario MITIC/SPL. "Ka'i" = mono ✓ / "Karaja" = gorila/mono grande ✓. Reemplazado.
+      {p:"¿Cómo se dice 'mono' en guaraní?",ops:["Ka'i","Jaguarete","Guyra","Tapiti"],c:0},
     ],
     intermedio:[
       {p:"¿Cómo se dice 'mariposa'?",ops:["Paranã","Panambi","Yvyja","Mberu"],c:1},
@@ -1957,7 +1964,8 @@ const POOL = {
       {p:"¿Qué significa 'Yvoty'?",ops:["Hoja","Árbol","Flor","Raíz"],c:2},
       {p:"¿Cómo se llama el colibrí?",ops:["Mainumby","Guyra","Ñakurutû","Mbatovi"],c:0},
       {p:"¿Qué significa 'Ñakurutû'?",ops:["Halcón","Lechuza/búho","Loro","Tucán"],c:1},
-      {p:"¿Cómo se dice 'hormiga'?",ops:["Ysapy","Tuju","Tajy","Yvyja"],c:1},
+      // DEBUGEABLES: "Tajy" = lapacho/nervio, NO hormiga. "Tahýi" = hormiga ✓. Corregido opciones y respuesta.
+      {p:"¿Cómo se dice 'hormiga'?",ops:["Ysapy","Tahýi","Tajy","Yvyja"],c:1},
       {p:"¿Qué planta paraguaya viene del guaraní?",ops:["Ka'a he'ẽ (yerba mate)","Ruda","Tilo","Lavanda"],c:0},
     ],
     avanzado:[
@@ -2027,11 +2035,12 @@ POOL.comidas = {
     {p:"¿Qué es 'Mbejú'?",ops:["Caldo","Torta de almidón de mandioca","Dulce de leche","Empanada"],c:1,gua:"Mbejú"},
     {p:"¿Qué es 'Tereré'?",ops:["Té caliente de yerba","Yerba mate fría con agua o jugo","Jugo de frutas","Chicha"],c:1,gua:"Tereré"},
     {p:"¿Qué es 'Yvapurũ'?",ops:["Naranja amarga","Jabuticaba / uva de monte","Banana verde","Coco"],c:1,gua:"Yvapurũ"},
-    {p:"¿Cómo se dice 'beber' en guaraní?",ops:["Karu","'U","Moñe'ẽ","Jukua"],c:1,gua:"'U"},
+    {p:"¿Cómo se dice 'beber' en guaraní?",ops:["Karu","'U","Moñe'ẽ","Mbojy"],c:1,gua:"'U"},
     {p:"¿Cómo se dice 'maní' en guaraní?",ops:["Kumanda","Mandi'o","Manduvi","Avatí"],c:2,gua:"Manduvi"},
     {p:"¿Qué significa 'Kumanda'?",ops:["Maíz","Poroto / Legumbre","Maní","Yuca"],c:1,gua:"Kumanda"},
     {p:"¿Qué es 'So'o josopy'?",ops:["Caldo de carne","Carne molida / picada","Asado","Carne seca"],c:1,gua:"So'o josopy"},
-    {p:"¿Cómo se dice 'cocinar' en guaraní?",ops:["Karu","Moñe'ẽ","Jeporu","Jukua"],c:3,gua:"Jukua"},
+    // DEBUGEABLES: "Jukua" no existe; "juka" = MATAR. "Mbojy" = cocinar ✓ (mbojy: cocer, cocinar).
+    {p:"¿Cómo se dice 'cocinar' en guaraní?",ops:["Karu","Moñe'ẽ","Jeporu","Mbojy"],c:3,gua:"Mbojy"},
   ],
   avanzado:[
     {p:"'Tereré' es de origen guaraní...",ops:["Es del español","Onomatopéyico (sonido al sorber)","Del quechua","Del portugués"],c:1,gua:"Tereré"},
@@ -2053,7 +2062,8 @@ POOL.familia = {
     {p:"¿Cómo se dice 'ojo' en guaraní?",ops:["Nami","Tĩ","Hesa","Po"],c:2,gua:"Hesa"},
     {p:"¿Qué significa 'Po'?",ops:["Pie","Mano","Brazo","Pierna"],c:1,gua:"Po"},
     {p:"¿Cómo se dice 'corazón' en guaraní?",ops:["Py'a","Akã","Rete","Nami"],c:0,gua:"Py'a"},
-    {p:"¿Cómo se dice 'boca' en guaraní?",ops:["Tĩ","Hesa","Nami","Yvu"],c:3,gua:"Yvu"},
+    // DEBUGEABLES: "Yvu" = manantial/fuente (NO boca). "Juru" = boca ✓.
+    {p:"¿Cómo se dice 'boca' en guaraní?",ops:["Tĩ","Hesa","Nami","Juru"],c:3,gua:"Juru"},
     {p:"¿Qué significa 'Nami'?",ops:["Nariz","Boca","Oreja","Ojo"],c:2,gua:"Nami"},
     {p:"¿Cómo se dice 'niño/a' en guaraní?",ops:["Reindy","Mitã","Kuña","Kuimba'e"],c:1,gua:"Mitã"},
     {p:"¿Qué significa 'Kuña'?",ops:["Hombre","Niño","Mujer","Anciana"],c:2,gua:"Kuña"},
@@ -2067,7 +2077,8 @@ POOL.familia = {
     {p:"¿Qué significa 'Py'a guasu'?",ops:["Valiente / generoso (corazón grande)","Triste","Cansado","Alegre"],c:0,gua:"Py'a guasu"},
     {p:"¿Cómo se dice 'hombre' en guaraní?",ops:["Kuña","Mitã","Kuimba'e","Reindy"],c:2,gua:"Kuimba'e"},
     {p:"¿Qué significa 'Che py'a'?",ops:["Mi cabeza","Mi mano","Mi corazón / ánimo","Mi nombre"],c:2,gua:"Che py'a"},
-    {p:"¿Qué significa 'Ryke'y'?",ops:["Hijo","Hermano mayor","Prima","Abuela"],c:1,gua:"Ryke'y"},
+    // DEBUGEABLES: "Ryke'y" = hermana (kypy'y=hermana menor, ryke=hermana mayor). "Ryvy" = hermano mayor. Corregido.
+    {p:"¿Qué significa 'Ryke'y'?",ops:["Hermano mayor","Hermana mayor","Prima","Abuela"],c:1,gua:"Ryke'y"},
     {p:"¿Qué significa 'Angirũ'?",ops:["Enemigo","Amigo / compañero","Familiar","Vecino"],c:1,gua:"Angirũ"},
   ],
   avanzado:[
@@ -2127,7 +2138,8 @@ const DICT_DATA = [
   {gua:"Mbói",es:"Serpiente",cat:"animales"},
   {gua:"Pirã",es:"Pez",cat:"animales"},
   {gua:"Panambi",es:"Mariposa",cat:"animales"},
-  {gua:"Karaya",es:"Mono (aullador)",cat:"animales"},
+  // DEBUGEABLES: "Karaya" eliminada de flashcards (no en MITIC/SPL dict). Ka'i=mono ✓
+  {gua:"Ka'i",es:"Mono",cat:"animales"},
   {gua:"Yvyra",es:"Árbol",cat:"animales"},
   {gua:"Ka'a",es:"Hierba / Yerba / Monte",cat:"animales",note:"Raíz de palabras como Ka'a he'ẽ."},
   {gua:"Yvoty",es:"Flor",cat:"animales"},
