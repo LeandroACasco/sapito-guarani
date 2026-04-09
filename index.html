@@ -1881,7 +1881,19 @@ const POOL = {
       {p:"¿Cómo se dice 'hasta mañana'?",ops:["Jajohechata ko'ẽme","Jajohechata pytũme","Ko'ẽ porã","Aguyje"],c:0},
       {p:"¿Qué significa 'Vy'a'?",ops:["Tristeza","Alegría / felicidad","Cansancio","Miedo"],c:1},
       {p:"¿Cómo se dice 'bienvenido' en guaraní?",ops:["Aguyje","Maitei","Eguahẽ porã","Jajoecha"],c:2},
-      {p:"¿Qué significa 'Ndaipóri'?",ops:["Gracias","No hay / falta","Sí","Hasta luego"],c:1},
+// ── NUEVAS: saludos básico ──
+      {p:"¿Qué significa 'Iporã'?",ops:["Qué malo","Muy bien / Está bien","Hasta luego","No sé"],c:1},
+      {p:"¿Cómo se dice 'estoy bien' en guaraní?",ops:["Ndaipóri","Iporãite","Nahániri","Aguyje"],c:1},
+      {p:"¿Qué significa 'Mba'épa'?",ops:["¿Cómo?","¿Cuándo?","¿Qué?","¿Dónde?"],c:2},
+      {p:"¿Cómo se dice '¿dónde?' en guaraní?",ops:["Mba'épa","Araka'e","Moõpa","Mba'érepa"],c:2},
+      {p:"¿Qué significa 'Héê'?",ops:["No","Quizás","Sí","Tal vez"],c:2},
+      {p:"¿Cómo se responde 'de nada' en guaraní?",ops:["Aguyje","Ndaipóri mba'eve","Iporã","Jajoecha"],c:1},
+      {p:"¿Qué significa 'Vy'a'?",ops:["Tristeza","Cansancio","Alegría","Miedo"],c:2},
+      {p:"¿Cómo se dice 'hola' en guaraní?",ops:["Aguyje","Jajoecha","Maitei","Eguahẽ porã"],c:2},
+      {p:"¿Qué significa 'Kane'õ'?",ops:["Alegría","Cansancio / fatiga","Hambre","Frío"],c:1},
+      {p:"¿Cómo se dice 'tengo hambre'?",ops:["Che kane'õ","Che ro'y","Che vare'a","Che yuhéi"],c:2},
+
+      
     ],
     intermedio:[
       {p:"¿Cómo se dice 'Me llamo...' en guaraní?",ops:["Che réra...","Ha'e réra...","Nde réra...","Ore réra..."],c:0},
@@ -1896,7 +1908,21 @@ const POOL = {
       {p:"¿Qué significa 'Ereraha'?",ops:["Llevalo","Traelo","Miralo","Escuchalo"],c:0},
       {p:"¿Cómo se dice 'Te voy a extrañar'?",ops:["Rohayhu","Rohechase","Jajoecha","Che techaga'u nderehe"],c:3},
       {p:"¿Cómo se dice 'tengo sed' en guaraní?",ops:["Che vare'a","Che yuhéi","Che kane'õ","Che py'a guasu"],c:1},
-      {p:"¿Qué significa 'Che vare'a'?",ops:["Tengo frío","Tengo sueño","Tengo hambre / apetito","Estoy cansado"],c:2},
+// ── NUEVAS: saludos intermedio ──
+      {p:"¿Qué significa 'Che ro'y'?",ops:["Tengo calor","Tengo frío","Estoy mojado","Tengo sueño"],c:1},
+      {p:"¿Cómo se dice 'estoy cansado/a'?",ops:["Che vare'a","Che kane'õ","Che yuhéi","Che ro'y"],c:1},
+      {p:"¿Qué significa 'Eju'?",ops:["Andate","Vení","Escuchá","Mirá"],c:1},
+      {p:"¿Cómo se dice 'escuchame' en guaraní?",ops:["Ejapysaka","Ehecháke","Emoñe'ẽ","Eju"],c:0},
+      {p:"¿Qué significa 'Che mombyry'?",ops:["Estoy cerca","Estoy lejos / me alejé","Tengo prisa","Estoy perdido"],c:1},
+      {p:"¿Cómo se dice '¿cuánto cuesta?' en guaraní?",ops:["Mboy pa?","Mbovy hepy?","Mba'érepa?","Moõpa?"],c:1},
+      {p:"¿Qué significa 'Nderéra mba'épa?'",ops:["¿Cómo estás?","¿De dónde sos?","¿Cómo te llamás?","¿Cuántos años tenés?"],c:2},
+      {p:"¿Cómo se dice 'no entiendo'?",ops:["Ndaikuaái","Aikuaa","Ndaipóri","Nde'ỹ"],c:0},
+      {p:"¿Qué significa 'Aikuaa'?",ops:["No sé","Yo sé / entiendo","Quiero aprender","No entiendo"],c:1},
+      {p:"¿Cómo se dice 'por favor hablá despacio'?",ops:["Ñe'ẽ pya'e","Ñe'ẽ mbegue","Ñe'ẽ hatã","Ñe'ẽ porã"],c:1},
+      {p:"¿Qué significa 'Techaga'u'?",ops:["Alegría","Enojo","Extrañar / añoranza","Miedo"],c:2},
+      {p:"¿Cómo se dice 'cuántos años tenés'?",ops:["Mbovy reikove?","Mba'éichapa reiko?","Moõgui reju?","Mbovy reraha?"],c:0},
+
+      
     ],
     avanzado:[
       // DEBUGEABLES: "por favor" movido aquí desde básico. En guaraní no es palabra directa sino sufijo -mína (cortesía). Se explica como concepto avanzado.
@@ -1905,7 +1931,15 @@ const POOL = {
       {p:"'Rohayhu' usa 'ro-' que indica...",ops:["Yo te (1ra→2da)","Él te","Nosotros os","Vos me"],c:0},
       {p:"¿Qué indica '-pa' en la pregunta guaraní?",ops:["Negación","Marcador interrogativo","Futuro","Plural"],c:1},
       {p:"¿Qué función tiene '-rã'?",ops:["Pasado remoto","Futuro o intención","Plural","Aspecto habitual"],c:1},
-      {p:"¿Cómo se forma el plural con 'kuéra'?",ops:["Prefijo al verbo","Sufijo al sustantivo","Partícula independiente","Se prefija al adjetivo"],c:2},
+// ── NUEVAS: saludos avanzado ──
+      {p:"¿Qué diferencia hay entre 'Aguyje' y 'Aguyjevete'?",ops:["Son sinónimos exactos","Aguyjevete es más intenso (muchísimas gracias)","Aguyjevete es informal","Aguyje es más formal"],c:1},
+      {p:"'Eju ñande guata' significa...",ops:["Vení a comer","Vení caminemos juntos","Andá solo","Vamos rápido"],c:1},
+      {p:"¿Qué expresa 'Che py'a guasu nde resẽhápe'?",ops:["Me alegro de que te vayas","Me pone triste que te vayas","Buen viaje","Hasta pronto"],c:1},
+      {p:"'Ereikuaápa avañe'ẽ?' pregunta...",ops:["¿Estudiaste guaraní?","¿Sabés / hablás guaraní?","¿Te gusta el guaraní?","¿Enseñás guaraní?"],c:1},
+      {p:"¿Cuál es la forma completa de saludar a la mañana?",ops:["Mba'éichapa ne ko'ẽ, mba'éichapa reiko?","Ko'ẽ porã, aguyje","Maitei, iporã","Eguahẽ porã, ko'ẽ"],c:0},
+      {p:"El sufijo '-mína' agrega al pedido un tono de...",ops:["Urgencia","Cortesía / por favor","Negación","Duda"],c:1},
+
+      
     ]
   },
   numeros:{
@@ -1921,7 +1955,21 @@ const POOL = {
       {p:"¿Cómo se dice 'blanco' en guaraní?",ops:["Morotĩ","Hũ","Pytã","Hovy"],c:0},
       {p:"¿Qué color es 'Hũ'?",ops:["Blanco","Verde","Negro","Azul"],c:2},
       {p:"¿Cómo se dice 'seis' en guaraní?",ops:["Po","Poteĩ","Pokõi","Mbohapy"],c:1},
-      {p:"¿Qué número es 'Po'?",ops:["4","5","6","8"],c:1},
+// ── NUEVAS: números básico ──
+      {p:"¿Cómo se dice 'cuatro' en guaraní?",ops:["Mbohapy","Irundy","Pokõi","Po"],c:1},
+      {p:"¿Qué número es 'Mbohapy'?",ops:["2","4","3","5"],c:2},
+      {p:"¿Cómo se dice 'siete' en guaraní?",ops:["Poapy","Pokõi","Poteĩ","Porundy"],c:1},
+      {p:"¿Qué número es 'Poteĩ'?",ops:["5","7","6","8"],c:2},
+      {p:"¿Qué color es 'Hovy'?",ops:["Rojo","Negro","Verde/Azul","Blanco"],c:2},
+      {p:"¿Cómo se dice 'negro' en guaraní?",ops:["Morotĩ","Pytã","Sa'yju","Hũ"],c:3},
+      {p:"¿Qué número es 'Poapy'?",ops:["5","6","7","8"],c:3},
+      {p:"¿Cómo se dice 'dos' en guaraní?",ops:["Peteĩ","Mokõi","Mbohapy","Irundy"],c:1},
+      {p:"¿Qué color es 'Morotĩ'?",ops:["Negro","Amarillo","Blanco","Verde"],c:2},
+      {p:"¿Cómo se dice 'nueve' en guaraní?",ops:["Pokõi","Poapy","Porundy","Pa"],c:2},
+      {p:"¿Qué número es 'Porundy'?",ops:["7","8","9","10"],c:2},
+      {p:"¿Cómo se dice 'rojo' en guaraní?",ops:["Sa'yju","Hovy","Hũ","Pytã"],c:3},
+
+      
     ],
     intermedio:[
       {p:"¿Cómo se dice 'diez' en guaraní?",ops:["Po","Poapy","Pa","Pokõi"],c:2},
@@ -1933,14 +1981,34 @@ const POOL = {
       {p:"¿Cómo se dice 'primero'?",ops:["Peteĩha","Mokõiha","Mbohapyha","Irundyha"],c:0},
       {p:"¿Cuánto es 'Irundy pa'?",ops:["14","40","44","400"],c:1},
       {p:"¿Cómo se dice 'color rosado'?",ops:["Pytã morotĩ","Morotĩ pytã","Pytã hovy","Sa'yju hũ"],c:1},
-      {p:"¿Qué color es 'Hovy hũ'?",ops:["Azul claro","Verde oscuro","Azul oscuro","Gris"],c:2},
+// ── NUEVAS: números intermedio ──
+      {p:"¿Cómo se dice 'quince' en guaraní?",ops:["Mokõipa","Pa po","Papo","Poteĩpa"],c:2},
+      {p:"¿Cómo se dice 'once' en guaraní?",ops:["Pateĩ","Pakõi","Pa ha peteĩ","Paapy"],c:2},
+      {p:"¿Cuánto es 'Mokõipa'?",ops:["12","20","22","200"],c:1},
+      {p:"¿Cómo se dice 'treinta' en guaraní?",ops:["Mbohapypa","Mbohapy pa","Irundypa","Mbohapysa"],c:1},
+      {p:"¿Qué color es 'Sa'yju hũ'?",ops:["Verde oscuro","Dorado","Marrón oscuro","Azul oscuro"],c:2},
+      {p:"¿Cómo se dice 'segundo' (ordinal)?",ops:["Mokõiha","Peteĩha","Mbohapyha","Irundyha"],c:0},
+      {p:"¿Qué significa 'Sa'yju pytã'?",ops:["Verde claro","Naranja","Rosado","Dorado"],c:1},
+      {p:"¿Cuánto es 'Peteĩ sa'?",ops:["10","1000","100","50"],c:2},
+      {p:"¿Cómo se dice 'cuarenta' en guaraní?",ops:["Pokõipa","Irundypa","Poteĩpa","Poapypa"],c:1},
+      {p:"¿Qué color es 'Pytã hũ'?",ops:["Rosado","Naranja oscuro","Bordó / vino","Marrón"],c:2},
+
+      
     ],
     avanzado:[
       {p:"¿Cómo se forman los números mayores en guaraní?",ops:["Solo multiplicando","Solo sumando con 'ha'","Ambos: multiplicación y suma","Con prefijos especiales"],c:2},
       {p:"'Sa' en guaraní equivale a...",ops:["10","100","1000","50"],c:1},
       {p:"El sistema numérico guaraní tradicional es base...",ops:["Base 10","Base 5","Base 20","Base 12"],c:1},
       {p:"¿Cómo se dice 'el tercer día'?",ops:["Mbohapy ára","Ára mbohapy","Mbohapyha ára","Ára mbohapyha"],c:2},
-      {p:"¿Cómo se dice 'mil' en guaraní?",ops:["Sa guasu","Pá guasu","Miĩ","Sa pa"],c:2},
+// ── NUEVAS: números avanzado ──
+      {p:"¿Cómo se dice 'doscientos' en guaraní?",ops:["Mokõi sa","Sa mokõi","Mokõipa sa","Sa ha mokõi"],c:0},
+      {p:"¿Cuánto es 'Mbohapy miĩ'?",ops:["300","3000","30","3 millones"],c:1},
+      {p:"¿Cómo expresarías '23' en guaraní?",ops:["Mokõipa ha mbohapy","Mbohapy ha mokõi","Mbohapypa ha mbohapy","Mokõi mbohapy"],c:0},
+      {p:"'Po' como base numérica refleja...",ops:["El sistema solar","La cantidad de dedos de la mano","El ciclo lunar","La cosmovisión de la tierra"],c:1},
+      {p:"¿Cómo se dice 'la mitad'?",ops:["Peteĩ","Ku'a","Mbyte","Mbyte peteĩ"],c:1},
+      {p:"En guaraní, 'sa' (100) viene del concepto de...",ops:["Una estación","Una cosecha completa","Todos los dedos de manos y pies","Un ciclo lunar"],c:2},
+
+      
     ]
   },
   animales:{
@@ -1961,7 +2029,21 @@ const POOL = {
       {p:"¿Cómo se dice 'mono' en guaraní?",ops:["Ka'i","Jaguarete","Guyra","Tapiti"],c:0},
       {p:"¿Cómo se dice 'gallina' en guaraní?",ops:["Ryguasu","Ype","Guyra","Kavaju"],c:0},
       {p:"¿Qué animal es 'Tapiti'?",ops:["Zorro","Carpincho","Liebre","Armadillo"],c:2},
-      {p:"¿Cómo se dice 'armadillo' en guaraní?",ops:["Karumbe","Tatu","Mbói","Jakare"],c:1},
+// ── NUEVAS: animales básico ──
+      {p:"¿Cómo se dice 'vaca' en guaraní?",ops:["Kavaju","Vaka","Jagua","Mymba"],c:1},
+      {p:"¿Qué animal es 'Jakare'?",ops:["Nutria","Carpincho","Yacaré / caimán","Rana"],c:2},
+      {p:"¿Cómo se dice 'serpiente' en guaraní?",ops:["Yvyja","Mbói","Jagua","Guyra"],c:1},
+      {p:"¿Qué animal es 'Ryguasu'?",ops:["Pato","Paloma","Gallina","Pájaro"],c:2},
+      {p:"¿Cómo se dice 'pato' en guaraní?",ops:["Guyra","Ype","Ryguasu","Panambi"],c:1},
+      {p:"¿Qué animal es 'Ka'i'?",ops:["Zorro","Mono","Gato montés","Carpincho"],c:1},
+      {p:"¿Cómo se dice 'zorro' en guaraní?",ops:["Jakare","Tapiti","Aguara","Mbarakaja"],c:2},
+      {p:"¿Qué animal es 'Mbarakaja'?",ops:["Perro","Gato","Ratón","Conejo"],c:1},
+      {p:"¿Cómo se dice 'rana' en guaraní?",ops:["Kururu","Ju'i","Karumbe","Mbói"],c:1},
+      {p:"¿Qué animal es 'Aguara'?",ops:["Lobo","Ciervo","Zorro","Puma"],c:2},
+      {p:"¿Cómo se dice 'mariposa' en guaraní?",ops:["Mberu","Tahýi","Panambi","Yvyja"],c:2},
+      {p:"¿Qué insecto es 'Tahýi'?",ops:["Mosca","Abeja","Hormiga","Mariposa"],c:2},
+
+      
     ],
     intermedio:[
       {p:"¿Cómo se dice 'mariposa'?",ops:["Paranã","Panambi","Yvyja","Mberu"],c:1},
@@ -1974,14 +2056,38 @@ const POOL = {
       {p:"¿Qué significa 'Ñakurutũ'?",ops:["Halcón","Lechuza/búho","Loro","Tucán"],c:1},
       // DEBUGEABLES: "Tajy" = lapacho/nervio, NO hormiga. "Tahýi" = hormiga ✓. Corregido opciones y respuesta.
       {p:"¿Cómo se dice 'hormiga'?",ops:["Ysapy","Tahýi","Tajy","Yvyja"],c:1},
-      {p:"¿Qué planta paraguaya viene del guaraní?",ops:["Ka'a he'ẽ (yerba mate)","Ruda","Tilo","Lavanda"],c:0},
+// ── NUEVAS: animales intermedio ──
+      {p:"¿Cómo se dice 'carpincho' en guaraní?",ops:["Tapiti","Kapiyvara","Jakare","Mborevi"],c:1},
+      {p:"¿Qué animal es 'Mborevi'?",ops:["Oso hormiguero","Tapir","Ciervo","Jabalí"],c:1},
+      {p:"¿Cómo se dice 'tucán' en guaraní?",ops:["Mainumby","Tukã","Guyra","Ñakurutũ"],c:1},
+      {p:"¿Qué animal es 'Yryvu'?",ops:["Águila","Flamenco","Buitre / cuervo","Loro"],c:2},
+      {p:"¿Cómo se dice 'loro' en guaraní?",ops:["Tu'ĩ","Guyra","Mainumby","Tukã"],c:0},
+      {p:"¿Qué significa 'Yvyja' como animal?",ops:["Lagarto","Culebra / serpiente del suelo","Lagartija","Yacaré"],c:1},
+      {p:"¿Cómo se dice 'abeja' en guaraní?",ops:["Ñati'ũ","Káva","Mberu","Tahýi"],c:1},
+      {p:"¿Qué insecto es 'Ñati'ũ'?",ops:["Abeja","Hormiga","Mosquito","Mosca"],c:2},
+      {p:"¿Cómo se dice 'flor' en guaraní?",ops:["Yvyra","Ka'a","Yvoty","Togue"],c:2},
+      {p:"¿Qué significa 'Togue'?",ops:["Raíz","Hoja","Fruto","Flor"],c:1},
+      {p:"¿Cómo se dice 'luna' en guaraní?",ops:["Kuarahy","Jasy","Mbyja","Yvága"],c:1},
+      {p:"¿Qué significa 'Kuarahy'?",ops:["Luna","Estrella","Sol","Nube"],c:2},
+
+      
     ],
     avanzado:[
       {p:"'Jaguarete' literalmente significa...",ops:["Jaguar verdadero/auténtico","Jaguar grande","Jaguar negro","Tigre del monte"],c:0},
       {p:"El sufijo '-ete' indica...",ops:["Tamaño grande","Autenticidad","Color negro","Peligro"],c:1},
       {p:"¿Qué significa 'Mymba' como categoría?",ops:["Solo domésticos","Animal en general","Solo salvajes","Insectos"],c:1},
       {p:"'Paranã' se refiere a...",ops:["Lago","Río grande/mar","Laguna","Arroyo"],c:1},
-      {p:"¿Cuál es el origen del nombre 'Paraguay'?",ops:["'Río de papagayos'","'Tierra grande'","'Río coronado' o 'río que viene del mar'","Sin traducción"],c:2},
+// ── NUEVAS: animales avanzado ──
+      {p:"¿Qué significa 'Ka'aguy' literalmente?",ops:["Abajo del árbol","Debajo de la yerba / monte","El río profundo","El cielo abierto"],c:1},
+      {p:"'Mainumby' es el colibrí. ¿Qué significa su nombre?",ops:["El que zumba","El que vuela solo","Pájaro pequeño","El que toca las flores"],c:0},
+      {p:"¿Qué significa 'Yvytu'?",ops:["Lluvia","Tierra","Viento","Fuego"],c:2},
+      {p:"¿Cuál es el nombre del ñandú (avestruz americana)?",ops:["Ñakurutũ","Ñandu","Guyra guasu","Yryvu"],c:1},
+      {p:"¿Qué significa 'Ysyry'?",ops:["Laguna","Corriente de agua / arroyo","Lluvia","Pantano"],c:1},
+      {p:"'Yvyra' significa árbol. ¿Qué significa 'Yvyra atã'?",ops:["Árbol seco","Quebracho (árbol duro)","Árbol del monte","Árbol caído"],c:1},
+      {p:"¿Cómo se llama la luciérnaga en guaraní?",ops:["Muã","Mbyja","Ysoindy","Tataindy"],c:0},
+      {p:"¿Qué es 'Ysopo'?",ops:["Mosquito","Sanguijuela","Lombriz","Hormiga"],c:1},
+
+      
     ]
   },
   gramatica:{
@@ -1997,7 +2103,19 @@ const POOL = {
       {p:"¿Cuál es la negación básica?",ops:["No-...-i","Nd-...-i","Na-...-a","Ni-...-i"],c:1},
       {p:"¿El guaraní es lengua...?",ops:["Aislante","Aglutinante","Fusional","Tonal"],c:1},
       {p:"¿Cómo se dice 'ellos/ellas'?",ops:["Ore","Ñande","Ha'ekuéra","Pende"],c:2},
-      {p:"¿Cuál es el prefijo de plural 2ª persona?",ops:["A-","Re-","O-","Pe-"],c:3},
+// ── NUEVAS: gramática básico ──
+      {p:"¿Qué significa el prefijo 'a-' en un verbo?",ops:["Él hace","Vos hacés","Yo hago","Nosotros hacemos"],c:2},
+      {p:"¿Qué significa el prefijo 're-' en un verbo?",ops:["Yo hago","Vos hacés","Él hace","Ellos hacen"],c:1},
+      {p:"¿Qué significa el prefijo 'o-' en un verbo?",ops:["Yo","Vos","Él / Ella","Nosotros"],c:2},
+      {p:"¿Cómo se dice 'yo como' en guaraní?",ops:["Rekaru","Akaru","Okaru","Jakaru"],c:1},
+      {p:"¿Cómo se dice 'él/ella come'?",ops:["Akaru","Rekaru","Okaru","Pekaru"],c:2},
+      {p:"¿Cuál es el pronombre 'ustedes' en guaraní?",ops:["Ore","Ñande","Pende","Ha'ekuéra"],c:2},
+      {p:"¿Cómo se dice 'ellos comen'?",ops:["Jakaru","Pekaru","Ha'ekuéra okaru","Rokaru"],c:2},
+      {p:"¿Cómo se niega 'Aiko' (estoy)?",ops:["Noaiko","Ndaikói","Naikoi","Ndaiko"],c:1},
+      {p:"¿Qué significa 'Che réra'?",ops:["Mi casa","Mi nombre","Mi familia","Mi amigo"],c:1},
+      {p:"¿Cómo se dice 'mi madre' en guaraní?",ops:["Che sy","Nde sy","Ha'e sy","Ore sy"],c:0},
+
+      
     ],
     intermedio:[
       {p:"¿Qué indica '-kue'?",ops:["Futuro","Pasado/ya no es","Plural","Posesión ajena"],c:1},
@@ -2009,14 +2127,40 @@ const POOL = {
       {p:"¿Qué indica 'jo-'?",ops:["Recíproco","Causativo","Reflexivo","Pasivo"],c:0},
       {p:"¿Qué son los verbos 'che'?",ops:["Acción","Estativos (estados)","Movimiento","Causativos"],c:1},
       {p:"'-mi' en guaraní indica...",ops:["Diminutivo/tierno","Aumentativo","Plural","Progresivo"],c:0},
-      {p:"¿Qué indica 'ete' en adjetivos?",ops:["Comparativo","Superlativo/intensificador","Negación","Posesión"],c:1},
+// ── NUEVAS: gramática intermedio ──
+      {p:"¿Qué indica el sufijo '-va' en 'oguatáva'?",ops:["Pasado","El que camina (forma relativa)","Futuro","Plural"],c:1},
+      {p:"¿Cómo se forma 'el que come' en guaraní?",ops:["Okaruva","Karuva","Okarupa","Okarukue"],c:0},
+      {p:"¿Qué indica '-kue' en 'ogakue'?",ops:["La casa futura","La casa de alguien","La casa que fue","La casa grande"],c:2},
+      {p:"¿Cómo se dice 'la casa que será' en guaraní?",ops:["Ogakue","Ogarã","Ogava","Ogaite"],c:1},
+      {p:"¿Qué función cumple 'hína' en una oración?",ops:["Negación","Aspecto progresivo (estar haciendo)","Pasado","Plural"],c:1},
+      {p:"'Oguata hína' significa...",ops:["Caminó","Está caminando","Caminará","Caminaban"],c:1},
+      {p:"¿Qué indica 'nd-...-i' en 'Ndaikói'?",ops:["Futuro negativo","Negación del verbo","Plural negativo","Pasado negativo"],c:1},
+      {p:"¿Cómo se dice 'no camina'?",ops:["Oguata'ỹ","Ndoguatái","Oguatakue","Oguatarei"],c:1},
+      {p:"¿Qué significa el prefijo 'ñe-' en verbos?",ops:["Causativo","Reflexivo / recíproco","Plural","Negación"],c:1},
+      {p:"'jo-' en 'joayhu' (amarse mutuamente) indica...",ops:["Causativo","Recíproco (acción mutua)","Reflexivo","Pasado"],c:1},
+      {p:"¿Qué significa 'mba'apo' compuesto de 'mba'e+apo'?",ops:["Cosa hecha → trabajo","Hacer cosas → jugar","Cosa dicha → promesa","No hacer nada"],c:0},
+      {p:"¿Cómo se agrega posesión de 2da persona?",ops:["Prefijo 'che-'","Prefijo 'nde-' al sustantivo","Sufijo '-pe'","Prefijo 'ore-'"],c:1},
+
+      
     ],
     avanzado:[
       {p:"Diferencia entre 'ore' y 'ñande':",ops:["Ore formal, ñande informal","Ore excluye al oyente, ñande lo incluye","Ore es plural","No hay diferencia"],c:1},
       {p:"Verbos guaraníes se clasifican según...",ops:["El tiempo","La persona","Inicial vocálica o consonántica","Las sílabas"],c:2},
       {p:"¿Qué es el 'jopara'?",ops:["Dialecto puro","Mezcla guaraní-español cotidiana","Texto sagrado","Dialecto del Chaco"],c:1},
       {p:"El guaraní es oficial en Paraguay desde...",ops:["1967","1992","1811","2010"],c:1},
-      {p:"Fenómeno fonológico clave del guaraní:",ops:["Tonos léxicos","Nasalidad","Consonantes retroflejas","Longitud vocálica"],c:1},
+// ── NUEVAS: gramática avanzado ──
+      {p:"¿Qué diferencia a los verbos 'che' de los verbos 'a-'?",ops:["Los verbos che expresan acciones, los a- estados","Los verbos che expresan estados, los a- acciones","No hay diferencia","Los verbos che son irregulares"],c:1},
+      {p:"'Che rasy' (me duele) usa 'che' porque...",ops:["Es pasado","Es un estado que afecta al sujeto, no una acción","Es plural","Es negación"],c:1},
+      {p:"¿Qué es la 'nasalidad armónica' del guaraní?",ops:["Solo las vocales son nasales","La nasalidad se propaga a toda la palabra","Solo los verbos tienen nasalidad","La nasalidad es opcional"],c:1},
+      {p:"El apóstrofo en guaraní representa...",ops:["Una vocal omitida","La oclusiva glotal (corte de la voz)","Un acento tónico","Una consonante nasal"],c:1},
+      {p:"¿Qué indica '-rehe' en 'nderehe'?",ops:["Posesión","Por vos / sobre vos","Con vos","Sin vos"],c:1},
+      {p:"'-ndive' en 'nendive' significa...",ops:["Sin ti","Por ti","Con vos","De vos"],c:2},
+      {p:"¿Cuál es la diferencia entre 'ha'e' y 'ha'ekuéra'?",ops:["Ha'e es plural, ha'ekuéra singular","Ha'e es él/ella, ha'ekuéra es ellos/ellas","Son sinónimos","Ha'e es formal"],c:1},
+      {p:"'Ñande ñe'ẽ' significa literalmente...",ops:["Nuestra tierra","Nuestra lengua / palabra","Nuestro cuerpo","Nuestra familia"],c:1},
+      {p:"¿Qué función tiene '-gui' en 'ka'aguy'?",ops:["Aumentativo","Indica procedencia o contenido (de, desde)","Plural","Diminutivo"],c:1},
+      {p:"'-pe' al final de una palabra indica...",ops:["Futuro","Locativo (en, a)","Plural","Pasado"],c:1},
+
+      
     ]
   }
 };
@@ -2035,7 +2179,21 @@ POOL.comidas = {
     {p:"¿Cómo se dice 'dulce / azúcar'?",ops:["He'ẽ","Juky","Tuja","Yvyra"],c:0,gua:"He'ẽ"},
     {p:"¿Qué significa 'Avatí'?",ops:["Arroz","Trigo","Maíz","Poroto"],c:2,gua:"Avatí"},
     {p:"¿Qué es 'Mbokaja'?",ops:["Mango","Coco mbocayá","Banana","Guayaba"],c:1,gua:"Mbokaja"},
-    {p:"¿Cómo se dice 'agua' en guaraní?",ops:["Ka'a","Tatá","Y","Yvytu"],c:2,gua:"Y"},
+// ── NUEVAS: comidas básico ──
+      {p:"¿Cómo se dice 'sal' en guaraní?",ops:["Tuja","Ka'a","Juky","He'ẽ"],c:2},
+      {p:"¿Qué es 'He'ẽ' en guaraní?",ops:["Sal","Amargo","Dulce / azúcar","Picante"],c:2},
+      {p:"¿Cómo se dice 'agua' en guaraní?",ops:["Ka'a","Y","Tatá","Yvytu"],c:1},
+      {p:"¿Qué significa 'Kamby'?",ops:["Agua","Jugo","Leche","Caldo"],c:2},
+      {p:"¿Cómo se dice 'fruta' en guaraní?",ops:["Ka'a","Yvoty","Yva","Yvyra"],c:2},
+      {p:"¿Qué es 'Manduvi'?",ops:["Poroto","Maíz","Mandioca","Maní"],c:3},
+      {p:"¿Cómo se dice 'banana' en guaraní?",ops:["Arasa","Pakova","Mbokaja","Yvapurũ"],c:1},
+      {p:"¿Qué significa 'So'o'?",ops:["Pez","Leche","Carne","Pollo"],c:2},
+      {p:"¿Cómo se dice 'guayaba' en guaraní?",ops:["Pakova","Arasa","Mbokaja","Yvapurũ"],c:1},
+      {p:"¿Qué es 'Avatí'?",ops:["Poroto","Maíz","Mandioca","Maní"],c:1},
+      {p:"¿Cómo se dice 'comer' en guaraní?",ops:["'U","Mbojy","Karu","Jeporu"],c:2},
+      {p:"¿Qué significa 'Y mombyry'?",ops:["Agua caliente","Agua fresca","El agua corre lejos","Mucha agua"],c:2},
+
+      
   ],
   intermedio:[
     {p:"'Chipa' es un pan típico hecho de...",ops:["Trigo y sal","Almidón de mandioca y queso","Maíz y grasa","Arroz y leche"],c:1,gua:"Chipá"},
@@ -2048,14 +2206,36 @@ POOL.comidas = {
     {p:"¿Qué significa 'Kumanda'?",ops:["Maíz","Poroto / Legumbre","Maní","Yuca"],c:1,gua:"Kumanda"},
     {p:"¿Qué es 'So'o josopy'?",ops:["Caldo de carne","Carne molida / picada","Asado","Carne seca"],c:1,gua:"So'o josopy"},
     // DEBUGEABLES: "Jukua" no existe; "juka" = MATAR. "Mbojy" = cocinar ✓ (mbojy: cocer, cocinar).
-    {p:"¿Cómo se dice 'cocinar' en guaraní?",ops:["Karu","Moñe'ẽ","Jeporu","Mbojy"],c:3,gua:"Mbojy"},
+// ── NUEVAS: comidas intermedio ──
+      {p:"¿Qué ingrediente define al 'Mbejú'?",ops:["Harina de trigo","Almidón de mandioca","Maíz molido","Arroz"],c:1},
+      {p:"¿Qué es 'Eíra'?",ops:["Sal","Miel","Grasa","Azúcar"],c:1},
+      {p:"¿Cómo se dice 'miel' en guaraní?",ops:["He'ẽ","Kamby","Eíra","Juky"],c:2},
+      {p:"¿Qué es 'Kavaju eíra'?",ops:["Jarabe de caña","Miel de abejas silvestres","Caldo de hueso","Grasa animal"],c:1},
+      {p:"¿Cómo se dice 'asado' (comida) en guaraní?",ops:["Mimói","Ka'ẽ","So'o josopy","Mbojy"],c:1},
+      {p:"¿Qué es 'Mimói'?",ops:["Asado","Hervido / cocido en agua","Frito","Ahumado"],c:1},
+      {p:"¿Cómo se dice 'amargo' en guaraní?",ops:["He'ẽ","Juky","Ro","Tái"],c:2},
+      {p:"¿Qué significa 'Tái'?",ops:["Dulce","Salado","Amargo","Picante"],c:3},
+      {p:"¿Qué es 'Ka'ay'?",ops:["Agua fría","Mate (infusión de yerba)","Jugo de frutas","Chicha"],c:1},
+      {p:"¿Cómo se dice 'hambre' en guaraní?",ops:["Yuhéi","Vare'a","Kane'õ","Ro'y"],c:1},
+      {p:"'Mandi'o' es central en la dieta guaraní porque...",ops:["Es importado","Es el cultivo más antiguo y base de la alimentación","Es el más fácil de conseguir","Lo trajo España"],c:1},
+      {p:"¿Qué fruta es 'Yvapurũ'?",ops:["Naranja","Guayaba","Jabuticaba (uva de monte)","Banana"],c:2},
+
+      
   ],
   avanzado:[
     {p:"'Tereré' es de origen guaraní...",ops:["Es del español","Onomatopéyico (sonido al sorber)","Del quechua","Del portugués"],c:1,gua:"Tereré"},
     {p:"'Ka'a he'ẽ' literalmente significa...",ops:["Yerba amarga","Planta del monte","Hierba dulce","Hoja sagrada"],c:2,gua:"Ka'a he'ẽ"},
     {p:"¿Qué cultivo es central en la cosmovisión guaraní?",ops:["La mandioca","El maíz (avatí)","El maní","El poroto"],c:1,gua:"Avatí"},
     {p:"¿Qué significa 'he'ẽ' aplicado a una fruta?",ops:["Madura","Dulce","Grande","Fresca"],c:1,gua:"He'ẽ"},
-    {p:"'Mandi'o' y 'mandioca' tienen el mismo origen porque...",ops:["Son préstamos del español","Mandioca viene del guaraní mandi'o","Son palabras distintas","Vienen del quechua"],c:1,gua:"Mandi'o"},
+// ── NUEVAS: comidas avanzado ──
+      {p:"¿Por qué el 'Tereré' es onomatopéyico?",ops:["Imita el sonido del agua","Imita el sonido al sorber por la bombilla","Imita al viento","Imita al fuego"],c:1},
+      {p:"'Ka'a' como raíz aparece en Ka'ay, Ka'aguy y Ka'a he'ẽ. ¿Qué une estos términos?",ops:["Todos son bebidas","La raíz 'ka'a' refiere a hierba/planta","Todos vienen del español","Son todos alimentos dulces"],c:1},
+      {p:"¿Qué relación tiene 'eíra' (miel) con la palabra 'eiraity' (colmena)?",ops:["No tienen relación","Eiraity significa 'lugar/nido de miel'","Son sinónimos","Eiraity es el plural de eíra"],c:1},
+      {p:"¿Qué significa 'So'o piru'?",ops:["Carne asada","Carne cruda","Carne seca / charqui","Carne molida"],c:2},
+      {p:"¿Cuál de estas bebidas es de origen guaraní puro?",ops:["Chicha de maíz","Tereré con jugos artificiales","Ka'ay (mate amargo)","Caña"],c:2},
+      {p:"'Avatí' (maíz) en la cosmovisión guaraní es...",ops:["Solo un alimento","Un cultivo sagrado central en la espiritualidad","Un alimento importado","Solo para animales"],c:1},
+
+      
   ]
 };
 
@@ -2077,7 +2257,21 @@ POOL.familia = {
     {p:"¿Qué significa 'Kuña'?",ops:["Hombre","Niño","Mujer","Anciana"],c:2,gua:"Kuña"},
     {p:"¿Cómo se dice 'pie' en guaraní?",ops:["Po","Py","Kupy","Akã"],c:1,gua:"Py"},
     {p:"¿Qué significa 'Tuguy'?",ops:["Sudor","Lágrima","Sangre","Saliva"],c:2,gua:"Tuguy"},
-    {p:"¿Cómo se dice 'brazo' en guaraní?",ops:["Kupy","Jyva","Po","Tĩ"],c:1,gua:"Jyva"},
+// ── NUEVAS: familia básico ──
+      {p:"¿Cómo se dice 'padre' en guaraní?",ops:["Sy","Jarýi","Túva","Taita"],c:2},
+      {p:"¿Qué significa 'Mitã'?",ops:["Adulto","Anciano","Niño","Joven"],c:2},
+      {p:"¿Cómo se dice 'abuelo' en guaraní?",ops:["Túva","Taita","Sy","Ryke'y"],c:1},
+      {p:"¿Qué parte del cuerpo es 'Akã'?",ops:["Mano","Pie","Cabeza","Ojo"],c:2},
+      {p:"¿Cómo se dice 'nariz' en guaraní?",ops:["Juru","Hesa","Nambi","Tĩ"],c:3},
+      {p:"¿Qué parte del cuerpo es 'Juru'?",ops:["Nariz","Ojo","Boca","Oreja"],c:2},
+      {p:"¿Cómo se dice 'oreja' en guaraní?",ops:["Hesa","Nambi","Tĩ","Jyva"],c:1},
+      {p:"¿Qué parte del cuerpo es 'Kupy'?",ops:["Brazo","Mano","Pierna / canilla","Espalda"],c:2},
+      {p:"¿Cómo se dice 'espalda / lomo' en guaraní?",ops:["Tete","Ape","Kupy","Akã"],c:1},
+      {p:"¿Qué significa 'Rete'?",ops:["Alma","Nombre","Cuerpo","Corazón"],c:2},
+      {p:"¿Cómo se dice 'mujer' en guaraní?",ops:["Kuimba'e","Mitã","Kuña","Jarýi"],c:2},
+      {p:"¿Qué significa 'Kuimba'e'?",ops:["Mujer","Niño","Hombre / varón","Anciano"],c:2},
+
+      
   ],
   intermedio:[
     {p:"¿Cómo se dice 'abuela' en guaraní?",ops:["Sy","Jarýi","Ryke'y","Reindy"],c:1,gua:"Jarýi"},
@@ -2090,14 +2284,36 @@ POOL.familia = {
     {p:"¿Qué significa 'Che py'a'?",ops:["Mi cabeza","Mi mano","Mi corazón / ánimo","Mi nombre"],c:2,gua:"Che py'a"},
     // DEBUGEABLES: "Ryke'y" = hermana (kypy'y=hermana menor, ryke=hermana mayor). "Ryvy" = hermano mayor. Corregido.
     {p:"¿Qué significa 'Ryke'y'?",ops:["Hermano mayor","Hermana mayor","Prima","Abuela"],c:1,gua:"Ryke'y"},
-    {p:"¿Qué significa 'Angirũ'?",ops:["Enemigo","Amigo / compañero","Familiar","Vecino"],c:1,gua:"Angirũ"},
+// ── NUEVAS: familia intermedio ──
+      {p:"¿Cómo se dice 'hermano mayor' en guaraní?",ops:["Kyvy","Ryke'y","Ryvy","Pehẽngue"],c:2},
+      {p:"¿Qué significa 'Kyvy'?",ops:["Hermana mayor","Hermano menor","Hermana menor","Primo"],c:1},
+      {p:"¿Cómo se dice 'cuñado/a'?",ops:["Angirũ","Tovaja","Pehẽngue","Reindy"],c:1},
+      {p:"¿Qué significa 'Che ñemoñare'?",ops:["Mi nombre","Mi pueblo","Mi familia","Mi amigo"],c:2},
+      {p:"¿Cómo se dice 'pierna' en guaraní?",ops:["Jyva","Po","Tetyma","Kupy"],c:2},
+      {p:"¿Qué parte del cuerpo es 'Tyvyta'?",ops:["Labio","Ceja","Frente","Mejilla"],c:1},
+      {p:"¿Cómo se dice 'frente' en guaraní?",ops:["Tyvyta","Syva","Tova","Akã"],c:1},
+      {p:"¿Qué significa 'Tesa'?",ops:["Ojo / vista","Nariz","Boca","Frente"],c:0},
+      {p:"¿Cómo se dice 'lágrima' en guaraní?",ops:["Tuguy","Ty'ái","Tesay","Tendy"],c:2},
+      {p:"¿Qué significa 'Ty'ái'?",ops:["Lágrima","Sudor","Sangre","Saliva"],c:1},
+      {p:"¿Cómo se dice 'joven' en guaraní?",ops:["Tuja","Mitãrusu","Mitã","Kuimba'e"],c:1},
+      {p:"¿Qué significa 'Tuja'?",ops:["Joven","Niño","Viejo / anciano","Adulto"],c:2},
+
+      
   ],
   avanzado:[
     {p:"'Py'a guasu' literalmente significa...",ops:["Corazón valiente","Corazón grande (valentía/generosidad)","Corazón roto","Corazón pequeño"],c:1,gua:"Py'a guasu"},
     {p:"En guaraní, 'che' antes de un sustantivo indica...",ops:["Plural","Posesión de 1ra persona","Futuro","Negación"],c:1,gua:"Che"},
     {p:"¿Qué diferencia hay entre 'reindy' y 'mitã'?",ops:["No hay diferencia","Reindy = hijo/a de alguien, mitã = niño en general","Reindy es niña, mitã es niño","Reindy es mayor"],c:1,gua:"Reindy/Mitã"},
     {p:"'Py'a' más allá del órgano físico expresa...",ops:["Solo el corazón físico","Ánimo, valentía y emociones","Solo el amor romántico","El alma eterna"],c:1,gua:"Py'a"},
-    {p:"¿Cómo se dice 'mi amigo' en guaraní?",ops:["Che angirũ","Nde angirũ","Ha'e angirũ","Ore angirũ"],c:0,gua:"Che angirũ"},
+// ── NUEVAS: familia avanzado ──
+      {p:"'Ñemoñare' literalmente implica...",ops:["Los que nacen juntos","Los que se recuerdan mutuamente","Los que viven cerca","Los que comen juntos"],c:1},
+      {p:"En guaraní, el cuerpo 'rete' y el alma 'ánga' son...",ops:["La misma cosa","Conceptos separados pero inseparables en vida","El rete es el alma","El ánga es el cuerpo"],c:1},
+      {p:"¿Qué expresa 'Che py'a rasy'?",ops:["Tengo dolor de estómago / me duele el corazón","Tengo hambre","Estoy cansado","Tengo frío"],c:0},
+      {p:"'Ánga' en guaraní se traduce como...",ops:["Solo el corazón físico","Alma / espíritu","El nombre","El cuerpo"],c:1},
+      {p:"¿Cómo se diría 'nuestros antepasados' en guaraní?",ops:["Ñande mitã","Ñande ypykuéra","Ñande tuvicha","Ñande ñemoñare"],c:1},
+      {p:"'Py'a' (corazón/ánimo) aparece en muchas expresiones. ¿Qué indica 'Py'a mirĩ'?",ops:["Corazón pequeño / cobardía","Corazón roto","Corazón grande","Alegría del corazón"],c:0},
+      {p:"¿Qué significa 'Ñande teko'?",ops:["Nuestra tierra","Nuestra lengua","Nuestra forma de ser / modo de vida","Nuestra familia"],c:2},
+
   ]
 };
 
@@ -2126,9 +2342,9 @@ const DICT_DATA = [
   {gua:"Po",es:"Cinco (5)",cat:"numeros",note:"Lit. 'mano'. Base del sistema numérico."},
   {gua:"Poteĩ",es:"Seis (6)",cat:"numeros",note:"Lit. 'cinco y uno'."},
   {gua:"Pokõi",es:"Siete (7)",cat:"numeros",note:"Lit. 'cinco y dos'."},
-  {gua:"Poapy",es:"Ocho (8)",cat:"numeros",note:"Lit. 'cinco más tres'. Po=5 + apy=sufijo para 3."},
+  {gua:"Poapy",es:"Ocho (8)",cat:"numeros",note:"Po=5 + apy=sufijo para 3."},
   {gua:"Pa",es:"Diez (10)",cat:"numeros"},
-  {gua:"Papo",es:"Quince (15)",cat:"numeros",note:"Pa (10) + po (5). Sistema vigesimal."},
+  {gua:"Papo",es:"Quince (15)",cat:"numeros",note:"Pa(10) + po(5). Sistema vigesimal."},
   {gua:"Sa",es:"Cien (100)",cat:"numeros"},
   {gua:"Miĩ",es:"Mil (1000)",cat:"numeros"},
   {gua:"Pytã",es:"Rojo",cat:"numeros"},
